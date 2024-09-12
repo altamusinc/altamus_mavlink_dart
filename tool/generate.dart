@@ -873,9 +873,7 @@ Future<void> runFormatter(String path) async {
 void main() async {
   final dir = await Directory('mavlink/message_definitions/v1.0/').list()
     .map((f) => f.path.toString())
-    .where((f) =>
-      (!f.endsWith('all.xml')) && (!f.contains('test'))
-    )
+    .where((f) => (f.endsWith('altamus.xml')))
     .toList();
 
   var dstDir = 'lib/dialects';

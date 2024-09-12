@@ -1,3 +1,5 @@
-# dart_mavlink
+```git submodule update --init --recursive``` to fetch required git submodule holding our forked message definitions.
 
-This is a Dart package which parse and serialize MAVLink v1/v2 packets.
+```flutter pub get``` to install depenencies
+
+```flutter run ./tool/generate.dart``` to generate files. Currently hard coded to only generate altamus.xml.
