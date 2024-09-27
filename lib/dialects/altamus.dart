@@ -2507,6 +2507,54 @@ class Identifier implements MavlinkMessage {
   }
 }
 
+/// Requests that the device tests/retests a specified component. Pass EOS_COMPONENT_ALL to test all
+///
+/// COMPONENT_HEALTH_TEST
+class ComponentHealthTest implements MavlinkMessage {
+  static const int _mavlinkMessageId = 8;
+
+  static const int _mavlinkCrcExtra = 199;
+
+  static const int mavlinkEncodedLength = 1;
+
+  @override
+  int get mavlinkMessageId => _mavlinkMessageId;
+
+  @override
+  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+
+  /// Which component(s) to request retest for
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// enum: [EosComponent]
+  ///
+  /// component
+  final EosComponent component;
+
+  ComponentHealthTest({
+    required this.component,
+  });
+
+  factory ComponentHealthTest.parse(ByteData data_) {
+    if (data_.lengthInBytes < ComponentHealthTest.mavlinkEncodedLength) {
+      var len = ComponentHealthTest.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var component = data_.getUint8(0);
+
+    return ComponentHealthTest(component: component);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint8(0, component);
+    return data_;
+  }
+}
+
 class MavlinkDialectAltamus implements MavlinkDialect {
   static const int mavlinkVersion = 1;
 
@@ -2548,6 +2596,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return MotorStatus.parse(data);
       case 7:
         return Identifier.parse(data);
+      case 8:
+        return ComponentHealthTest.parse(data);
       default:
         return null;
     }
@@ -2588,6 +2638,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return MotorStatus._mavlinkCrcExtra;
       case 7:
         return Identifier._mavlinkCrcExtra;
+      case 8:
+        return ComponentHealthTest._mavlinkCrcExtra;
       default:
         return -1;
     }
