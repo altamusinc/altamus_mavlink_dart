@@ -1208,6 +1208,348 @@ class MissionItem implements MavlinkMessage {
   }
 }
 
+/// Send a command with up to seven parameters to the MAV, where params 5 and 6 are integers and the other values are floats. This is preferred over COMMAND_LONG as it allows the MAV_FRAME to be specified for interpreting positional information, such as altitude. COMMAND_INT is also preferred when sending latitude and longitude data in params 5 and 6, as it allows for greater precision. Param 5 and 6 encode positional data as scaled integers, where the scaling depends on the actual command value. NaN or INT32_MAX may be used in float/integer params (respectively) to indicate optional/default values (e.g. to use the component's current latitude, yaw rather than a specific value). The command microservice is documented at https://mavlink.io/en/services/command.html
+///
+/// COMMAND_INT
+class CommandInt implements MavlinkMessage {
+  static const int _mavlinkMessageId = 75;
+
+  static const int _mavlinkCrcExtra = 158;
+
+  static const int mavlinkEncodedLength = 35;
+
+  @override
+  int get mavlinkMessageId => _mavlinkMessageId;
+
+  @override
+  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+
+  /// PARAM1, see MAV_CMD enum
+  ///
+  /// MAVLink type: float
+  ///
+  /// param1
+  final float param1;
+
+  /// PARAM2, see MAV_CMD enum
+  ///
+  /// MAVLink type: float
+  ///
+  /// param2
+  final float param2;
+
+  /// PARAM3, see MAV_CMD enum
+  ///
+  /// MAVLink type: float
+  ///
+  /// param3
+  final float param3;
+
+  /// PARAM4, see MAV_CMD enum
+  ///
+  /// MAVLink type: float
+  ///
+  /// param4
+  final float param4;
+
+  /// PARAM5 / local: x position in meters * 1e4, global: latitude in degrees * 10^7
+  ///
+  /// MAVLink type: int32_t
+  ///
+  /// x
+  final int32_t x;
+
+  /// PARAM6 / local: y position in meters * 1e4, global: longitude in degrees * 10^7
+  ///
+  /// MAVLink type: int32_t
+  ///
+  /// y
+  final int32_t y;
+
+  /// PARAM7 / z position: global: altitude in meters (relative or absolute, depending on frame).
+  ///
+  /// MAVLink type: float
+  ///
+  /// z
+  final float z;
+
+  /// The scheduled action for the mission item.
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// enum: [MavCmd]
+  ///
+  /// command
+  final MavCmd command;
+
+  /// System ID
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// target_system
+  final uint8_t targetSystem;
+
+  /// Component ID
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// target_component
+  final uint8_t targetComponent;
+
+  /// The coordinate system of the COMMAND.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// enum: [MavFrame]
+  ///
+  /// frame
+  final MavFrame frame;
+
+  /// Not used.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// current
+  final uint8_t current;
+
+  /// Not used (set 0).
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// autocontinue
+  final uint8_t autocontinue;
+
+  CommandInt({
+    required this.param1,
+    required this.param2,
+    required this.param3,
+    required this.param4,
+    required this.x,
+    required this.y,
+    required this.z,
+    required this.command,
+    required this.targetSystem,
+    required this.targetComponent,
+    required this.frame,
+    required this.current,
+    required this.autocontinue,
+  });
+
+  factory CommandInt.parse(ByteData data_) {
+    if (data_.lengthInBytes < CommandInt.mavlinkEncodedLength) {
+      var len = CommandInt.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var param1 = data_.getFloat32(0, Endian.little);
+    var param2 = data_.getFloat32(4, Endian.little);
+    var param3 = data_.getFloat32(8, Endian.little);
+    var param4 = data_.getFloat32(12, Endian.little);
+    var x = data_.getInt32(16, Endian.little);
+    var y = data_.getInt32(20, Endian.little);
+    var z = data_.getFloat32(24, Endian.little);
+    var command = data_.getUint16(28, Endian.little);
+    var targetSystem = data_.getUint8(30);
+    var targetComponent = data_.getUint8(31);
+    var frame = data_.getUint8(32);
+    var current = data_.getUint8(33);
+    var autocontinue = data_.getUint8(34);
+
+    return CommandInt(
+        param1: param1,
+        param2: param2,
+        param3: param3,
+        param4: param4,
+        x: x,
+        y: y,
+        z: z,
+        command: command,
+        targetSystem: targetSystem,
+        targetComponent: targetComponent,
+        frame: frame,
+        current: current,
+        autocontinue: autocontinue);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setFloat32(0, param1, Endian.little);
+    data_.setFloat32(4, param2, Endian.little);
+    data_.setFloat32(8, param3, Endian.little);
+    data_.setFloat32(12, param4, Endian.little);
+    data_.setInt32(16, x, Endian.little);
+    data_.setInt32(20, y, Endian.little);
+    data_.setFloat32(24, z, Endian.little);
+    data_.setUint16(28, command, Endian.little);
+    data_.setUint8(30, targetSystem);
+    data_.setUint8(31, targetComponent);
+    data_.setUint8(32, frame);
+    data_.setUint8(33, current);
+    data_.setUint8(34, autocontinue);
+    return data_;
+  }
+}
+
+/// Send a command with up to seven parameters to the MAV. COMMAND_INT is generally preferred when sending MAV_CMD commands that include positional information; it offers higher precision and allows the MAV_FRAME to be specified (which may otherwise be ambiguous, particularly for altitude). The command microservice is documented at https://mavlink.io/en/services/command.html
+///
+/// COMMAND_LONG
+class CommandLong implements MavlinkMessage {
+  static const int _mavlinkMessageId = 76;
+
+  static const int _mavlinkCrcExtra = 152;
+
+  static const int mavlinkEncodedLength = 33;
+
+  @override
+  int get mavlinkMessageId => _mavlinkMessageId;
+
+  @override
+  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+
+  /// Parameter 1 (for the specific command).
+  ///
+  /// MAVLink type: float
+  ///
+  /// param1
+  final float param1;
+
+  /// Parameter 2 (for the specific command).
+  ///
+  /// MAVLink type: float
+  ///
+  /// param2
+  final float param2;
+
+  /// Parameter 3 (for the specific command).
+  ///
+  /// MAVLink type: float
+  ///
+  /// param3
+  final float param3;
+
+  /// Parameter 4 (for the specific command).
+  ///
+  /// MAVLink type: float
+  ///
+  /// param4
+  final float param4;
+
+  /// Parameter 5 (for the specific command).
+  ///
+  /// MAVLink type: float
+  ///
+  /// param5
+  final float param5;
+
+  /// Parameter 6 (for the specific command).
+  ///
+  /// MAVLink type: float
+  ///
+  /// param6
+  final float param6;
+
+  /// Parameter 7 (for the specific command).
+  ///
+  /// MAVLink type: float
+  ///
+  /// param7
+  final float param7;
+
+  /// Command ID (of command to send).
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// enum: [MavCmd]
+  ///
+  /// command
+  final MavCmd command;
+
+  /// System which should execute the command
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// target_system
+  final uint8_t targetSystem;
+
+  /// Component which should execute the command, 0 for all components
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// target_component
+  final uint8_t targetComponent;
+
+  /// 0: First transmission of this command. 1-255: Confirmation transmissions (e.g. for kill command)
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// confirmation
+  final uint8_t confirmation;
+
+  CommandLong({
+    required this.param1,
+    required this.param2,
+    required this.param3,
+    required this.param4,
+    required this.param5,
+    required this.param6,
+    required this.param7,
+    required this.command,
+    required this.targetSystem,
+    required this.targetComponent,
+    required this.confirmation,
+  });
+
+  factory CommandLong.parse(ByteData data_) {
+    if (data_.lengthInBytes < CommandLong.mavlinkEncodedLength) {
+      var len = CommandLong.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var param1 = data_.getFloat32(0, Endian.little);
+    var param2 = data_.getFloat32(4, Endian.little);
+    var param3 = data_.getFloat32(8, Endian.little);
+    var param4 = data_.getFloat32(12, Endian.little);
+    var param5 = data_.getFloat32(16, Endian.little);
+    var param6 = data_.getFloat32(20, Endian.little);
+    var param7 = data_.getFloat32(24, Endian.little);
+    var command = data_.getUint16(28, Endian.little);
+    var targetSystem = data_.getUint8(30);
+    var targetComponent = data_.getUint8(31);
+    var confirmation = data_.getUint8(32);
+
+    return CommandLong(
+        param1: param1,
+        param2: param2,
+        param3: param3,
+        param4: param4,
+        param5: param5,
+        param6: param6,
+        param7: param7,
+        command: command,
+        targetSystem: targetSystem,
+        targetComponent: targetComponent,
+        confirmation: confirmation);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setFloat32(0, param1, Endian.little);
+    data_.setFloat32(4, param2, Endian.little);
+    data_.setFloat32(8, param3, Endian.little);
+    data_.setFloat32(12, param4, Endian.little);
+    data_.setFloat32(16, param5, Endian.little);
+    data_.setFloat32(20, param6, Endian.little);
+    data_.setFloat32(24, param7, Endian.little);
+    data_.setUint16(28, command, Endian.little);
+    data_.setUint8(30, targetSystem);
+    data_.setUint8(31, targetComponent);
+    data_.setUint8(32, confirmation);
+    return data_;
+  }
+}
+
 /// Report status of a command. Includes feedback whether the command was
 /// executed. The command microservice is documented at
 /// https://mavlink.io/en/services/command.html
@@ -2182,6 +2524,10 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return GpsRawInt.parse(data);
       case 39:
         return MissionItem.parse(data);
+      case 75:
+        return CommandInt.parse(data);
+      case 76:
+        return CommandLong.parse(data);
       case 77:
         return CommandAck.parse(data);
       case 80:
@@ -2218,6 +2564,10 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return GpsRawInt._mavlinkCrcExtra;
       case 39:
         return MissionItem._mavlinkCrcExtra;
+      case 75:
+        return CommandInt._mavlinkCrcExtra;
+      case 76:
+        return CommandLong._mavlinkCrcExtra;
       case 77:
         return CommandAck._mavlinkCrcExtra;
       case 80:
