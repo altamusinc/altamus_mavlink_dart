@@ -1414,6 +1414,68 @@ class CommandCancel implements MavlinkMessage {
   }
 }
 
+///
+/// The interval between messages for a particular MAVLink message ID.
+/// This message is sent in response to the MAV_CMD_REQUEST_MESSAGE command with param1=244 (this message) and param2=message_id (the id of the message for which the interval is required).
+/// It may also be sent in response to MAV_CMD_GET_MESSAGE_INTERVAL.
+/// This interface replaces DATA_STREAM.
+///
+/// MESSAGE_INTERVAL
+class MessageInterval implements MavlinkMessage {
+  static const int _mavlinkMessageId = 244;
+
+  static const int _mavlinkCrcExtra = 95;
+
+  static const int mavlinkEncodedLength = 6;
+
+  @override
+  int get mavlinkMessageId => _mavlinkMessageId;
+
+  @override
+  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+
+  /// The interval between two messages. A value of -1 indicates this stream is disabled, 0 indicates it is not available, > 0 indicates the interval at which it is sent.
+  ///
+  /// MAVLink type: int32_t
+  ///
+  /// units: us
+  ///
+  /// interval_us
+  final int32_t intervalUs;
+
+  /// The ID of the requested MAVLink message. v1.0 is limited to 254 messages.
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// message_id
+  final uint16_t messageId;
+
+  MessageInterval({
+    required this.intervalUs,
+    required this.messageId,
+  });
+
+  factory MessageInterval.parse(ByteData data_) {
+    if (data_.lengthInBytes < MessageInterval.mavlinkEncodedLength) {
+      var len = MessageInterval.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List() + List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var intervalUs = data_.getInt32(0, Endian.little);
+    var messageId = data_.getUint16(4, Endian.little);
+
+    return MessageInterval(intervalUs: intervalUs, messageId: messageId);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setInt32(0, intervalUs, Endian.little);
+    data_.setUint16(4, messageId, Endian.little);
+    return data_;
+  }
+}
+
 /// Readings from the lidar
 ///
 /// LIDAR_READING
@@ -2124,6 +2186,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return CommandAck.parse(data);
       case 80:
         return CommandCancel.parse(data);
+      case 244:
+        return MessageInterval.parse(data);
       case 1:
         return LidarReading.parse(data);
       case 2:
@@ -2158,6 +2222,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return CommandAck._mavlinkCrcExtra;
       case 80:
         return CommandCancel._mavlinkCrcExtra;
+      case 244:
+        return MessageInterval._mavlinkCrcExtra;
       case 1:
         return LidarReading._mavlinkCrcExtra;
       case 2:
