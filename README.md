@@ -2,4 +2,4 @@
 
 ```flutter pub get``` to install depenencies
 
-```flutter run ./tool/generate.dart``` to generate files. Currently hard coded to only generate altamus.xml.
+```dart run ./tool/generate.dart``` to generate files. Currently hard coded to only generate altamus.xml.

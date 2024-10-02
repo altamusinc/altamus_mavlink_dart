@@ -2572,6 +2572,121 @@ class ComponentHealthTest implements MavlinkMessage {
   }
 }
 
+/// Settings for a space scan
+///
+/// SCAN_SETTINGS
+class ScanSettings implements MavlinkMessage {
+  static const int _mavlinkMessageId = 9;
+
+  static const int _mavlinkCrcExtra = 155;
+
+  static const int mavlinkEncodedLength = 24;
+
+  @override
+  int get mavlinkMessageId => _mavlinkMessageId;
+
+  @override
+  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+
+  /// Starting yaw angle, relative to the homed position
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: deg
+  ///
+  /// yaw_start
+  final float yawStart;
+
+  /// Ending yaw angle, relative to the homed position
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: deg
+  ///
+  /// yaw_stop
+  final float yawStop;
+
+  /// Starting pitch angle, relative to the homed position
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: deg
+  ///
+  /// pitch_start
+  final float pitchStart;
+
+  /// Ending pitch angle, relative to the homed position
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: deg
+  ///
+  /// pitch_stop
+  final float pitchStop;
+
+  /// Spacing between point samples. Smaller spacing leads to denser point clouds
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: deg
+  ///
+  /// point_spacing
+  final float pointSpacing;
+
+  /// How fast, in RPM to spin the pitch motor
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: rpm
+  ///
+  /// scan_speed
+  final float scanSpeed;
+
+  ScanSettings({
+    required this.yawStart,
+    required this.yawStop,
+    required this.pitchStart,
+    required this.pitchStop,
+    required this.pointSpacing,
+    required this.scanSpeed,
+  });
+
+  factory ScanSettings.parse(ByteData data_) {
+    if (data_.lengthInBytes < ScanSettings.mavlinkEncodedLength) {
+      var len = ScanSettings.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var yawStart = data_.getFloat32(0, Endian.little);
+    var yawStop = data_.getFloat32(4, Endian.little);
+    var pitchStart = data_.getFloat32(8, Endian.little);
+    var pitchStop = data_.getFloat32(12, Endian.little);
+    var pointSpacing = data_.getFloat32(16, Endian.little);
+    var scanSpeed = data_.getFloat32(20, Endian.little);
+
+    return ScanSettings(
+        yawStart: yawStart,
+        yawStop: yawStop,
+        pitchStart: pitchStart,
+        pitchStop: pitchStop,
+        pointSpacing: pointSpacing,
+        scanSpeed: scanSpeed);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setFloat32(0, yawStart, Endian.little);
+    data_.setFloat32(4, yawStop, Endian.little);
+    data_.setFloat32(8, pitchStart, Endian.little);
+    data_.setFloat32(12, pitchStop, Endian.little);
+    data_.setFloat32(16, pointSpacing, Endian.little);
+    data_.setFloat32(20, scanSpeed, Endian.little);
+    return data_;
+  }
+}
+
 class MavlinkDialectAltamus implements MavlinkDialect {
   static const int mavlinkVersion = 1;
 
@@ -2615,6 +2730,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return Identifier.parse(data);
       case 8:
         return ComponentHealthTest.parse(data);
+      case 9:
+        return ScanSettings.parse(data);
       default:
         return null;
     }
@@ -2657,6 +2774,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return Identifier._mavlinkCrcExtra;
       case 8:
         return ComponentHealthTest._mavlinkCrcExtra;
+      case 9:
+        return ScanSettings._mavlinkCrcExtra;
       default:
         return -1;
     }
