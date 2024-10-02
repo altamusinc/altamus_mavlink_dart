@@ -67,6 +67,16 @@ const MavType mavTypeCamera = 30;
 /// MAV_CMD
 typedef MavCmd = int;
 
+/// Starts a scan on the targeted scanner. Takes no arguments
+///
+/// MAV_CMD_START_EOS_SCAN
+const MavCmd mavCmdStartEosScan = 1;
+
+/// Stops a scan on the targeted scanner. Takes no arguments
+///
+/// MAV_CMD_STOP_EOS_SCAN
+const MavCmd mavCmdStopEosScan = 2;
+
 /// Set the interval between messages for a particular MAVLink message ID. This interface replaces REQUEST_DATA_STREAM.
 ///
 /// MAV_CMD_SET_MESSAGE_INTERVAL
@@ -316,6 +326,11 @@ const MavResult mavResultInProgress = 5;
 ///
 /// MAV_RESULT_CANCELLED
 const MavResult mavResultCancelled = 6;
+
+/// Indicates that a command has timed out. Intended for use on GCS side to indicate that target hasn't replied back with an expected ACK/NACK
+///
+/// MAV_RESULT_TIMED_OUT
+const MavResult mavResultTimedOut = 7;
 
 /// Coordinate frames used by MAVLink. Not all frames are supported by all
 ///
