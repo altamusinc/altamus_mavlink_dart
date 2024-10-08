@@ -1842,15 +1842,15 @@ class MessageInterval implements MavlinkMessage {
   }
 }
 
-/// Readings from the lidar
+/// Readings from the lidar. Compressed into an array of uint64 to take advantage of Mavlink2 truncating empty packets. Each field is 2 bytes. [distance][pitch][yaw][return strength]
 ///
 /// LIDAR_READING
 class LidarReading implements MavlinkMessage {
   static const int _mavlinkMessageId = 1;
 
-  static const int _mavlinkCrcExtra = 134;
+  static const int _mavlinkCrcExtra = 192;
 
-  static const int mavlinkEncodedLength = 40;
+  static const int mavlinkEncodedLength = 256;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -1860,12 +1860,10 @@ class LidarReading implements MavlinkMessage {
 
   ///
   ///
-  /// MAVLink type: uint32_t[10]
-  ///
-  /// units: foo
+  /// MAVLink type: uint64_t[32]
   ///
   /// readings
-  final List<int32_t> readings;
+  final List<int64_t> readings;
 
   LidarReading({
     required this.readings,
@@ -1878,7 +1876,7 @@ class LidarReading implements MavlinkMessage {
           List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
-    var readings = MavlinkMessage.asUint32List(data_, 0, 10);
+    var readings = MavlinkMessage.asUint64List(data_, 0, 32);
 
     return LidarReading(readings: readings);
   }
@@ -1886,7 +1884,7 @@ class LidarReading implements MavlinkMessage {
   @override
   ByteData serialize() {
     var data_ = ByteData(mavlinkEncodedLength);
-    MavlinkMessage.setUint32List(data_, 0, readings);
+    MavlinkMessage.setUint64List(data_, 0, readings);
     return data_;
   }
 }
