@@ -1848,9 +1848,9 @@ class MessageInterval implements MavlinkMessage {
 class LidarReading implements MavlinkMessage {
   static const int _mavlinkMessageId = 1;
 
-  static const int _mavlinkCrcExtra = 192;
+  static const int _mavlinkCrcExtra = 125;
 
-  static const int mavlinkEncodedLength = 256;
+  static const int mavlinkEncodedLength = 248;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -1860,7 +1860,7 @@ class LidarReading implements MavlinkMessage {
 
   ///
   ///
-  /// MAVLink type: uint64_t[32]
+  /// MAVLink type: uint64_t[31]
   ///
   /// readings
   final List<int64_t> readings;
@@ -1876,7 +1876,7 @@ class LidarReading implements MavlinkMessage {
           List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
-    var readings = MavlinkMessage.asUint64List(data_, 0, 32);
+    var readings = MavlinkMessage.asUint64List(data_, 0, 31);
 
     return LidarReading(readings: readings);
   }
@@ -2700,6 +2700,80 @@ class ScanSettings implements MavlinkMessage {
   }
 }
 
+/// Status of a scan
+///
+/// SCAN_STATUS
+class ScanStatus implements MavlinkMessage {
+  static const int _mavlinkMessageId = 10;
+
+  static const int _mavlinkCrcExtra = 17;
+
+  static const int mavlinkEncodedLength = 7;
+
+  @override
+  int get mavlinkMessageId => _mavlinkMessageId;
+
+  @override
+  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+
+  /// Time that scan started
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// start_time_unix
+  final uint32_t startTimeUnix;
+
+  /// Estimated time remaining in the scan, in seconds
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// units: seconds
+  ///
+  /// time_remaining
+  final uint16_t timeRemaining;
+
+  /// Percentage complete of the scan
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// units: %
+  ///
+  /// scan_completion
+  final uint8_t scanCompletion;
+
+  ScanStatus({
+    required this.startTimeUnix,
+    required this.timeRemaining,
+    required this.scanCompletion,
+  });
+
+  factory ScanStatus.parse(ByteData data_) {
+    if (data_.lengthInBytes < ScanStatus.mavlinkEncodedLength) {
+      var len = ScanStatus.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var startTimeUnix = data_.getUint32(0, Endian.little);
+    var timeRemaining = data_.getUint16(4, Endian.little);
+    var scanCompletion = data_.getUint8(6);
+
+    return ScanStatus(
+        startTimeUnix: startTimeUnix,
+        timeRemaining: timeRemaining,
+        scanCompletion: scanCompletion);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint32(0, startTimeUnix, Endian.little);
+    data_.setUint16(4, timeRemaining, Endian.little);
+    data_.setUint8(6, scanCompletion);
+    return data_;
+  }
+}
+
 class MavlinkDialectAltamus implements MavlinkDialect {
   static const int mavlinkVersion = 1;
 
@@ -2745,6 +2819,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return ComponentHealthTest.parse(data);
       case 9:
         return ScanSettings.parse(data);
+      case 10:
+        return ScanStatus.parse(data);
       default:
         return null;
     }
@@ -2789,6 +2865,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return ComponentHealthTest._mavlinkCrcExtra;
       case 9:
         return ScanSettings._mavlinkCrcExtra;
+      case 10:
+        return ScanStatus._mavlinkCrcExtra;
       default:
         return -1;
     }
