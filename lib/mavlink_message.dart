@@ -6,8 +6,9 @@ abstract class MavlinkMessage {
   factory MavlinkMessage.parse(ByteData data) {
     throw UnimplementedError('Implement this constructor on inheriting class');
   }
-  
+
   int get mavlinkCrcExtra;
+  int get mavlinkMessageId;
 
   ByteData serialize();
 
