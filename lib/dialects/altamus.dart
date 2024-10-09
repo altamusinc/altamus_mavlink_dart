@@ -2774,6 +2774,142 @@ class ScanStatus implements MavlinkMessage {
   }
 }
 
+/// Settings for remote server locations. Includes settings server and FTP server
+///
+/// REMOTE_SERVER_SETTINGS
+class RemoteServerSettings implements MavlinkMessage {
+  static const int _mavlinkMessageId = 11;
+
+  static const int _mavlinkCrcExtra = 79;
+
+  static const int mavlinkEncodedLength = 230;
+
+  @override
+  int get mavlinkMessageId => _mavlinkMessageId;
+
+  @override
+  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+
+  /// Port to send checkin info to. Defaults to 80
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// post_port
+  final uint16_t postPort;
+
+  /// Port to send FTP info to. Defaults to 21
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// ftp_port
+  final uint16_t ftpPort;
+
+  /// Bool value controlling if settings and checkin information should be sent to a remote server. 0 = disabled, 1 = enabled. If enabled must provide server information.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// server_enable
+  final uint8_t serverEnable;
+
+  /// Server to send checkin info to, as well as get settings from
+  ///
+  /// MAVLink type: char[64]
+  ///
+  /// post_server
+  final List<char> postServer;
+
+  /// URI to send checkin info to. appended to post server. E.g. /php/api.php
+  ///
+  /// MAVLink type: char[32]
+  ///
+  /// post_uri
+  final List<char> postUri;
+
+  /// Bool value controlling if files should be sent to FTP server. 0 = disabled, 1 = enabled. If enabled, must provide valid settings.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// ftp_enable
+  final uint8_t ftpEnable;
+
+  /// Address of server to send FTP files too.
+  ///
+  /// MAVLink type: char[64]
+  ///
+  /// ftp_server
+  final List<char> ftpServer;
+
+  /// Username to use when logging into FTP server
+  ///
+  /// MAVLink type: char[32]
+  ///
+  /// ftp_username
+  final List<char> ftpUsername;
+
+  /// Password to use for FTP upload
+  ///
+  /// MAVLink type: char[32]
+  ///
+  /// ftp_password
+  final List<char> ftpPassword;
+
+  RemoteServerSettings({
+    required this.postPort,
+    required this.ftpPort,
+    required this.serverEnable,
+    required this.postServer,
+    required this.postUri,
+    required this.ftpEnable,
+    required this.ftpServer,
+    required this.ftpUsername,
+    required this.ftpPassword,
+  });
+
+  factory RemoteServerSettings.parse(ByteData data_) {
+    if (data_.lengthInBytes < RemoteServerSettings.mavlinkEncodedLength) {
+      var len = RemoteServerSettings.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var postPort = data_.getUint16(0, Endian.little);
+    var ftpPort = data_.getUint16(2, Endian.little);
+    var serverEnable = data_.getUint8(4);
+    var postServer = MavlinkMessage.asInt8List(data_, 5, 64);
+    var postUri = MavlinkMessage.asInt8List(data_, 69, 32);
+    var ftpEnable = data_.getUint8(101);
+    var ftpServer = MavlinkMessage.asInt8List(data_, 102, 64);
+    var ftpUsername = MavlinkMessage.asInt8List(data_, 166, 32);
+    var ftpPassword = MavlinkMessage.asInt8List(data_, 198, 32);
+
+    return RemoteServerSettings(
+        postPort: postPort,
+        ftpPort: ftpPort,
+        serverEnable: serverEnable,
+        postServer: postServer,
+        postUri: postUri,
+        ftpEnable: ftpEnable,
+        ftpServer: ftpServer,
+        ftpUsername: ftpUsername,
+        ftpPassword: ftpPassword);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint16(0, postPort, Endian.little);
+    data_.setUint16(2, ftpPort, Endian.little);
+    data_.setUint8(4, serverEnable);
+    MavlinkMessage.setInt8List(data_, 5, postServer);
+    MavlinkMessage.setInt8List(data_, 69, postUri);
+    data_.setUint8(101, ftpEnable);
+    MavlinkMessage.setInt8List(data_, 102, ftpServer);
+    MavlinkMessage.setInt8List(data_, 166, ftpUsername);
+    MavlinkMessage.setInt8List(data_, 198, ftpPassword);
+    return data_;
+  }
+}
+
 class MavlinkDialectAltamus implements MavlinkDialect {
   static const int mavlinkVersion = 1;
 
@@ -2821,6 +2957,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return ScanSettings.parse(data);
       case 10:
         return ScanStatus.parse(data);
+      case 11:
+        return RemoteServerSettings.parse(data);
       default:
         return null;
     }
@@ -2867,6 +3005,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return ScanSettings._mavlinkCrcExtra;
       case 10:
         return ScanStatus._mavlinkCrcExtra;
+      case 11:
+        return RemoteServerSettings._mavlinkCrcExtra;
       default:
         return -1;
     }
