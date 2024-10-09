@@ -540,7 +540,7 @@ const EosComponentPowerBehavior eosComponentPowerBehaviorReboot = 4;
 ///
 /// HEARTBEAT
 class Heartbeat implements MavlinkMessage {
-  static const int _mavlinkMessageId = 0;
+  static const int mavlinkMessageId = 0;
 
   static const int _mavlinkCrcExtra = 50;
 
@@ -651,7 +651,7 @@ class Heartbeat implements MavlinkMessage {
 ///
 /// PROTOCOL_VERSION
 class ProtocolVersion implements MavlinkMessage {
-  static const int _mavlinkMessageId = 300;
+  static const int mavlinkMessageId = 300;
 
   static const int _mavlinkCrcExtra = 217;
 
@@ -746,7 +746,7 @@ class ProtocolVersion implements MavlinkMessage {
 ///
 /// GPS_RAW_INT
 class GpsRawInt implements MavlinkMessage {
-  static const int _mavlinkMessageId = 24;
+  static const int mavlinkMessageId = 24;
 
   static const int _mavlinkCrcExtra = 24;
 
@@ -1017,7 +1017,7 @@ class GpsRawInt implements MavlinkMessage {
 ///
 /// MISSION_ITEM
 class MissionItem implements MavlinkMessage {
-  static const int _mavlinkMessageId = 39;
+  static const int mavlinkMessageId = 39;
 
   static const int _mavlinkCrcExtra = 254;
 
@@ -1231,7 +1231,7 @@ class MissionItem implements MavlinkMessage {
 ///
 /// COMMAND_INT
 class CommandInt implements MavlinkMessage {
-  static const int _mavlinkMessageId = 75;
+  static const int mavlinkMessageId = 75;
 
   static const int _mavlinkCrcExtra = 158;
 
@@ -1415,7 +1415,7 @@ class CommandInt implements MavlinkMessage {
 ///
 /// COMMAND_LONG
 class CommandLong implements MavlinkMessage {
-  static const int _mavlinkMessageId = 76;
+  static const int mavlinkMessageId = 76;
 
   static const int _mavlinkCrcExtra = 152;
 
@@ -1577,7 +1577,7 @@ class CommandLong implements MavlinkMessage {
 ///
 /// COMMAND_ACK
 class CommandAck implements MavlinkMessage {
-  static const int _mavlinkMessageId = 77;
+  static const int mavlinkMessageId = 77;
 
   static const int _mavlinkCrcExtra = 143;
 
@@ -1710,7 +1710,7 @@ class CommandAck implements MavlinkMessage {
 ///
 /// COMMAND_CANCEL
 class CommandCancel implements MavlinkMessage {
-  static const int _mavlinkMessageId = 80;
+  static const int mavlinkMessageId = 80;
 
   static const int _mavlinkCrcExtra = 14;
 
@@ -1787,7 +1787,7 @@ class CommandCancel implements MavlinkMessage {
 ///
 /// MESSAGE_INTERVAL
 class MessageInterval implements MavlinkMessage {
-  static const int _mavlinkMessageId = 244;
+  static const int mavlinkMessageId = 244;
 
   static const int _mavlinkCrcExtra = 95;
 
@@ -1846,7 +1846,7 @@ class MessageInterval implements MavlinkMessage {
 ///
 /// LIDAR_READING
 class LidarReading implements MavlinkMessage {
-  static const int _mavlinkMessageId = 1;
+  static const int mavlinkMessageId = 1;
 
   static const int _mavlinkCrcExtra = 125;
 
@@ -1893,7 +1893,7 @@ class LidarReading implements MavlinkMessage {
 ///
 /// COMPONENT_POWER_CONTROL
 class ComponentPowerControl implements MavlinkMessage {
-  static const int _mavlinkMessageId = 2;
+  static const int mavlinkMessageId = 2;
 
   static const int _mavlinkCrcExtra = 246;
 
@@ -1955,7 +1955,7 @@ class ComponentPowerControl implements MavlinkMessage {
 ///
 /// SYSTEM_STATUS
 class SystemStatus implements MavlinkMessage {
-  static const int _mavlinkMessageId = 3;
+  static const int mavlinkMessageId = 3;
 
   static const int _mavlinkCrcExtra = 252;
 
@@ -2031,7 +2031,7 @@ class SystemStatus implements MavlinkMessage {
 ///
 /// MOTOR_CONTROL
 class MotorControl implements MavlinkMessage {
-  static const int _mavlinkMessageId = 4;
+  static const int mavlinkMessageId = 4;
 
   static const int _mavlinkCrcExtra = 37;
 
@@ -2149,7 +2149,7 @@ class MotorControl implements MavlinkMessage {
 ///
 /// MOTOR_SETTINGS
 class MotorSettings implements MavlinkMessage {
-  static const int _mavlinkMessageId = 5;
+  static const int mavlinkMessageId = 5;
 
   static const int _mavlinkCrcExtra = 39;
 
@@ -2324,7 +2324,7 @@ class MotorSettings implements MavlinkMessage {
 ///
 /// MOTOR_STATUS
 class MotorStatus implements MavlinkMessage {
-  static const int _mavlinkMessageId = 6;
+  static const int mavlinkMessageId = 6;
 
   static const int _mavlinkCrcExtra = 61;
 
@@ -2462,7 +2462,7 @@ class MotorStatus implements MavlinkMessage {
 ///
 /// IDENTIFIER
 class Identifier implements MavlinkMessage {
-  static const int _mavlinkMessageId = 7;
+  static const int mavlinkMessageId = 7;
 
   static const int _mavlinkCrcExtra = 110;
 
@@ -2540,7 +2540,7 @@ class Identifier implements MavlinkMessage {
 ///
 /// COMPONENT_HEALTH_TEST
 class ComponentHealthTest implements MavlinkMessage {
-  static const int _mavlinkMessageId = 8;
+  static const int mavlinkMessageId = 8;
 
   static const int _mavlinkCrcExtra = 199;
 
@@ -2589,7 +2589,7 @@ class ComponentHealthTest implements MavlinkMessage {
 ///
 /// SCAN_SETTINGS
 class ScanSettings implements MavlinkMessage {
-  static const int _mavlinkMessageId = 9;
+  static const int mavlinkMessageId = 9;
 
   static const int _mavlinkCrcExtra = 155;
 
@@ -2704,7 +2704,7 @@ class ScanSettings implements MavlinkMessage {
 ///
 /// SCAN_STATUS
 class ScanStatus implements MavlinkMessage {
-  static const int _mavlinkMessageId = 10;
+  static const int mavlinkMessageId = 10;
 
   static const int _mavlinkCrcExtra = 17;
 
@@ -2778,7 +2778,7 @@ class ScanStatus implements MavlinkMessage {
 ///
 /// REMOTE_SERVER_SETTINGS
 class RemoteServerSettings implements MavlinkMessage {
-  static const int _mavlinkMessageId = 11;
+  static const int mavlinkMessageId = 11;
 
   static const int _mavlinkCrcExtra = 79;
 
