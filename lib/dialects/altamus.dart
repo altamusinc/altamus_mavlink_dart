@@ -63,6 +63,51 @@ const MavType mavTypeAdsb = 27;
 /// MAV_TYPE_CAMERA
 const MavType mavTypeCamera = 30;
 
+/// Indicates the severity level, generally used for status messages to indicate their relative urgency. Based on RFC-5424 using expanded definitions at: http://www.kiwisyslog.com/kb/info:-syslog-message-levels/.
+///
+/// MAV_SEVERITY
+typedef MavSeverity = int;
+
+/// System is unusable. This is a "panic" condition.
+///
+/// MAV_SEVERITY_EMERGENCY
+const MavSeverity mavSeverityEmergency = 0;
+
+/// Action should be taken immediately. Indicates error in non-critical systems.
+///
+/// MAV_SEVERITY_ALERT
+const MavSeverity mavSeverityAlert = 1;
+
+/// Action must be taken immediately. Indicates failure in a primary system.
+///
+/// MAV_SEVERITY_CRITICAL
+const MavSeverity mavSeverityCritical = 2;
+
+/// Indicates an error in secondary/redundant systems.
+///
+/// MAV_SEVERITY_ERROR
+const MavSeverity mavSeverityError = 3;
+
+/// Indicates about a possible future error if this is not resolved within a given timeframe. Example would be a low battery warning.
+///
+/// MAV_SEVERITY_WARNING
+const MavSeverity mavSeverityWarning = 4;
+
+/// An unusual event has occurred, though not an error condition. This should be investigated for the root cause.
+///
+/// MAV_SEVERITY_NOTICE
+const MavSeverity mavSeverityNotice = 5;
+
+/// Normal operational messages. Useful for logging. No action is required for these messages.
+///
+/// MAV_SEVERITY_INFO
+const MavSeverity mavSeverityInfo = 6;
+
+/// Useful non-operational messages that can assist in debugging. These should not occur during normal operation.
+///
+/// MAV_SEVERITY_DEBUG
+const MavSeverity mavSeverityDebug = 7;
+
 ///
 /// MAV_CMD
 typedef MavCmd = int;
@@ -1842,6 +1887,90 @@ class MessageInterval implements MavlinkMessage {
   }
 }
 
+/// Status text message. These messages are printed in yellow in the COMM console of QGroundControl. WARNING: They consume quite some bandwidth, so use only for important status and error messages. If implemented wisely, these messages are buffered on the MCU and sent only at a limited rate (e.g. 10 Hz).
+///
+/// STATUSTEXT
+class Statustext implements MavlinkMessage {
+  static const int _mavlinkMessageId = 253;
+
+  static const int _mavlinkCrcExtra = 83;
+
+  static const int mavlinkEncodedLength = 54;
+
+  @override
+  int get mavlinkMessageId => _mavlinkMessageId;
+
+  @override
+  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+
+  /// Severity of status. Relies on the definitions within RFC-5424.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// enum: [MavSeverity]
+  ///
+  /// severity
+  final MavSeverity severity;
+
+  /// Status text message, without null termination character
+  ///
+  /// MAVLink type: char[50]
+  ///
+  /// text
+  final List<char> text;
+
+  /// Unique (opaque) identifier for this statustext message.  May be used to reassemble a logical long-statustext message from a sequence of chunks.  A value of zero indicates this is the only chunk in the sequence and the message can be emitted immediately.
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// id
+  final uint16_t id;
+
+  /// This chunk's sequence number; indexing is from zero.  Any null character in the text field is taken to mean this was the last chunk.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// chunk_seq
+  final uint8_t chunkSeq;
+
+  Statustext({
+    required this.severity,
+    required this.text,
+    required this.id,
+    required this.chunkSeq,
+  });
+
+  factory Statustext.parse(ByteData data_) {
+    if (data_.lengthInBytes < Statustext.mavlinkEncodedLength) {
+      var len = Statustext.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var severity = data_.getUint8(0);
+    var text = MavlinkMessage.asInt8List(data_, 1, 50);
+    var id = data_.getUint16(51, Endian.little);
+    var chunkSeq = data_.getUint8(53);
+
+    return Statustext(
+        severity: severity, text: text, id: id, chunkSeq: chunkSeq);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint8(0, severity);
+    MavlinkMessage.setInt8List(data_, 1, text);
+    data_.setUint16(51, id, Endian.little);
+    data_.setUint8(53, chunkSeq);
+    return data_;
+  }
+}
+
 /// Readings from the lidar. Compressed into an array of uint64 to take advantage of Mavlink2 truncating empty packets. Each field is 2 bytes. [distance][pitch][yaw][return strength]
 ///
 /// LIDAR_READING
@@ -2542,9 +2671,9 @@ class Identifier implements MavlinkMessage {
 class ComponentHealthTest implements MavlinkMessage {
   static const int _mavlinkMessageId = 8;
 
-  static const int _mavlinkCrcExtra = 199;
+  static const int _mavlinkCrcExtra = 179;
 
-  static const int mavlinkEncodedLength = 1;
+  static const int mavlinkEncodedLength = 4;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -2554,7 +2683,7 @@ class ComponentHealthTest implements MavlinkMessage {
 
   /// Which component(s) to request retest for
   ///
-  /// MAVLink type: uint8_t
+  /// MAVLink type: uint32_t
   ///
   /// enum: [EosComponent]
   ///
@@ -2572,7 +2701,7 @@ class ComponentHealthTest implements MavlinkMessage {
           List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
-    var component = data_.getUint8(0);
+    var component = data_.getUint32(0, Endian.little);
 
     return ComponentHealthTest(component: component);
   }
@@ -2580,7 +2709,7 @@ class ComponentHealthTest implements MavlinkMessage {
   @override
   ByteData serialize() {
     var data_ = ByteData(mavlinkEncodedLength);
-    data_.setUint8(0, component);
+    data_.setUint32(0, component, Endian.little);
     return data_;
   }
 }
@@ -2910,6 +3039,95 @@ class RemoteServerSettings implements MavlinkMessage {
   }
 }
 
+/// Power stats of device
+///
+/// POWER_INFORMATION
+class PowerInformation implements MavlinkMessage {
+  static const int _mavlinkMessageId = 12;
+
+  static const int _mavlinkCrcExtra = 89;
+
+  static const int mavlinkEncodedLength = 10;
+
+  @override
+  int get mavlinkMessageId => _mavlinkMessageId;
+
+  @override
+  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+
+  /// Accumulated power since last reset in Joules
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// units: J
+  ///
+  /// energy_consumed
+  final uint32_t energyConsumed;
+
+  /// Instant current at sensor in Milliamps
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// units: mA
+  ///
+  /// instant_current
+  final uint16_t instantCurrent;
+
+  /// Instant voltage at sensor in Millivolts
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// units: mV
+  ///
+  /// instant_voltage
+  final uint16_t instantVoltage;
+
+  /// Instant power at sensor in Milliwatts
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// units: mW
+  ///
+  /// instant_power
+  final uint16_t instantPower;
+
+  PowerInformation({
+    required this.energyConsumed,
+    required this.instantCurrent,
+    required this.instantVoltage,
+    required this.instantPower,
+  });
+
+  factory PowerInformation.parse(ByteData data_) {
+    if (data_.lengthInBytes < PowerInformation.mavlinkEncodedLength) {
+      var len = PowerInformation.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var energyConsumed = data_.getUint32(0, Endian.little);
+    var instantCurrent = data_.getUint16(4, Endian.little);
+    var instantVoltage = data_.getUint16(6, Endian.little);
+    var instantPower = data_.getUint16(8, Endian.little);
+
+    return PowerInformation(
+        energyConsumed: energyConsumed,
+        instantCurrent: instantCurrent,
+        instantVoltage: instantVoltage,
+        instantPower: instantPower);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint32(0, energyConsumed, Endian.little);
+    data_.setUint16(4, instantCurrent, Endian.little);
+    data_.setUint16(6, instantVoltage, Endian.little);
+    data_.setUint16(8, instantPower, Endian.little);
+    return data_;
+  }
+}
+
 class MavlinkDialectAltamus implements MavlinkDialect {
   static const int mavlinkVersion = 1;
 
@@ -2937,6 +3155,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return CommandCancel.parse(data);
       case 244:
         return MessageInterval.parse(data);
+      case 253:
+        return Statustext.parse(data);
       case 1:
         return LidarReading.parse(data);
       case 2:
@@ -2959,6 +3179,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return ScanStatus.parse(data);
       case 11:
         return RemoteServerSettings.parse(data);
+      case 12:
+        return PowerInformation.parse(data);
       default:
         return null;
     }
@@ -2985,6 +3207,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return CommandCancel._mavlinkCrcExtra;
       case 244:
         return MessageInterval._mavlinkCrcExtra;
+      case 253:
+        return Statustext._mavlinkCrcExtra;
       case 1:
         return LidarReading._mavlinkCrcExtra;
       case 2:
@@ -3007,6 +3231,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return ScanStatus._mavlinkCrcExtra;
       case 11:
         return RemoteServerSettings._mavlinkCrcExtra;
+      case 12:
+        return PowerInformation._mavlinkCrcExtra;
       default:
         return -1;
     }
