@@ -1052,6 +1052,147 @@ class GpsRawInt implements MavlinkMessage {
   }
 }
 
+/// The attitude in the aeronautical frame (right-handed, Z-down, Y-right, X-front, ZYX, intrinsic).
+///
+/// ATTITUDE
+class Attitude implements MavlinkMessage {
+  static const int _mavlinkMessageId = 30;
+
+  static const int _mavlinkCrcExtra = 227;
+
+  static const int mavlinkEncodedLength = 32;
+
+  @override
+  int get mavlinkMessageId => _mavlinkMessageId;
+
+  @override
+  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+
+  /// Timestamp (time since system boot).
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// units: ms
+  ///
+  /// time_boot_ms
+  final uint32_t timeBootMs;
+
+  /// Roll angle (-pi..+pi)
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: rad
+  ///
+  /// roll
+  final float roll;
+
+  /// Pitch angle (-pi..+pi)
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: rad
+  ///
+  /// pitch
+  final float pitch;
+
+  /// Yaw angle (-pi..+pi)
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: rad
+  ///
+  /// yaw
+  final float yaw;
+
+  /// Roll angular speed
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: rad/s
+  ///
+  /// rollspeed
+  final float rollspeed;
+
+  /// Pitch angular speed
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: rad/s
+  ///
+  /// pitchspeed
+  final float pitchspeed;
+
+  /// Yaw angular speed
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: rad/s
+  ///
+  /// yawspeed
+  final float yawspeed;
+
+  /// Temperature of the accel,
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: degreesC
+  ///
+  /// temp
+  final float temp;
+
+  Attitude({
+    required this.timeBootMs,
+    required this.roll,
+    required this.pitch,
+    required this.yaw,
+    required this.rollspeed,
+    required this.pitchspeed,
+    required this.yawspeed,
+    required this.temp,
+  });
+
+  factory Attitude.parse(ByteData data_) {
+    if (data_.lengthInBytes < Attitude.mavlinkEncodedLength) {
+      var len = Attitude.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var timeBootMs = data_.getUint32(0, Endian.little);
+    var roll = data_.getFloat32(4, Endian.little);
+    var pitch = data_.getFloat32(8, Endian.little);
+    var yaw = data_.getFloat32(12, Endian.little);
+    var rollspeed = data_.getFloat32(16, Endian.little);
+    var pitchspeed = data_.getFloat32(20, Endian.little);
+    var yawspeed = data_.getFloat32(24, Endian.little);
+    var temp = data_.getFloat32(28, Endian.little);
+
+    return Attitude(
+        timeBootMs: timeBootMs,
+        roll: roll,
+        pitch: pitch,
+        yaw: yaw,
+        rollspeed: rollspeed,
+        pitchspeed: pitchspeed,
+        yawspeed: yawspeed,
+        temp: temp);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint32(0, timeBootMs, Endian.little);
+    data_.setFloat32(4, roll, Endian.little);
+    data_.setFloat32(8, pitch, Endian.little);
+    data_.setFloat32(12, yaw, Endian.little);
+    data_.setFloat32(16, rollspeed, Endian.little);
+    data_.setFloat32(20, pitchspeed, Endian.little);
+    data_.setFloat32(24, yawspeed, Endian.little);
+    data_.setFloat32(28, temp, Endian.little);
+    return data_;
+  }
+}
+
 /// Message encoding a mission item. This message is emitted to announce
 /// the presence of a mission item and to set a mission item on the system. The mission
 /// item can be either in x, y, z meters (type: LOCAL) or x:lat, y:lon, z:altitude.
@@ -2086,9 +2227,9 @@ class ComponentPowerControl implements MavlinkMessage {
 class SystemStatus implements MavlinkMessage {
   static const int _mavlinkMessageId = 3;
 
-  static const int _mavlinkCrcExtra = 252;
+  static const int _mavlinkCrcExtra = 212;
 
-  static const int mavlinkEncodedLength = 5;
+  static const int mavlinkEncodedLength = 7;
 
   @override
   int get mavlinkMessageId => _mavlinkMessageId;
@@ -2114,6 +2255,15 @@ class SystemStatus implements MavlinkMessage {
   /// health_status_bitmask
   final EosComponent healthStatusBitmask;
 
+  /// Device uptime in seconds
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// units: seconds
+  ///
+  /// uptime
+  final uint16_t uptime;
+
   /// Current State of the Device
   ///
   /// MAVLink type: uint8_t
@@ -2126,6 +2276,7 @@ class SystemStatus implements MavlinkMessage {
   SystemStatus({
     required this.powerStatusBitmask,
     required this.healthStatusBitmask,
+    required this.uptime,
     required this.state,
   });
 
@@ -2138,11 +2289,13 @@ class SystemStatus implements MavlinkMessage {
     }
     var powerStatusBitmask = data_.getUint16(0, Endian.little);
     var healthStatusBitmask = data_.getUint16(2, Endian.little);
-    var state = data_.getUint8(4);
+    var uptime = data_.getUint16(4, Endian.little);
+    var state = data_.getUint8(6);
 
     return SystemStatus(
         powerStatusBitmask: powerStatusBitmask,
         healthStatusBitmask: healthStatusBitmask,
+        uptime: uptime,
         state: state);
   }
 
@@ -2151,7 +2304,8 @@ class SystemStatus implements MavlinkMessage {
     var data_ = ByteData(mavlinkEncodedLength);
     data_.setUint16(0, powerStatusBitmask, Endian.little);
     data_.setUint16(2, healthStatusBitmask, Endian.little);
-    data_.setUint8(4, state);
+    data_.setUint16(4, uptime, Endian.little);
+    data_.setUint8(6, state);
     return data_;
   }
 }
@@ -3128,6 +3282,109 @@ class PowerInformation implements MavlinkMessage {
   }
 }
 
+/// Information about the WiFi connection
+///
+/// WIFI_INFORMATION
+class WifiInformation implements MavlinkMessage {
+  static const int _mavlinkMessageId = 13;
+
+  static const int _mavlinkCrcExtra = 121;
+
+  static const int mavlinkEncodedLength = 42;
+
+  @override
+  int get mavlinkMessageId => _mavlinkMessageId;
+
+  @override
+  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+
+  /// Name of the SSID
+  ///
+  /// MAVLink type: char[32]
+  ///
+  /// ssid
+  final List<char> ssid;
+
+  /// BSSID of the access point that the scanner is connected to
+  ///
+  /// MAVLink type: uint8_t[6]
+  ///
+  /// bssid
+  final List<int8_t> bssid;
+
+  /// RSSI of the signal. expressed in negative dBm
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// rssi
+  final uint8_t rssi;
+
+  /// RSSI of the signal, expressed as a percentage
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// rssi_percent
+  final uint8_t rssiPercent;
+
+  /// SNR of the wifi. expressed as positive dB
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// snr
+  final uint8_t snr;
+
+  /// SNR of the wifi, expreseed as a percentage
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// snr_percent
+  final uint8_t snrPercent;
+
+  WifiInformation({
+    required this.ssid,
+    required this.bssid,
+    required this.rssi,
+    required this.rssiPercent,
+    required this.snr,
+    required this.snrPercent,
+  });
+
+  factory WifiInformation.parse(ByteData data_) {
+    if (data_.lengthInBytes < WifiInformation.mavlinkEncodedLength) {
+      var len = WifiInformation.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var ssid = MavlinkMessage.asInt8List(data_, 0, 32);
+    var bssid = MavlinkMessage.asUint8List(data_, 32, 6);
+    var rssi = data_.getUint8(38);
+    var rssiPercent = data_.getUint8(39);
+    var snr = data_.getUint8(40);
+    var snrPercent = data_.getUint8(41);
+
+    return WifiInformation(
+        ssid: ssid,
+        bssid: bssid,
+        rssi: rssi,
+        rssiPercent: rssiPercent,
+        snr: snr,
+        snrPercent: snrPercent);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    MavlinkMessage.setInt8List(data_, 0, ssid);
+    MavlinkMessage.setUint8List(data_, 32, bssid);
+    data_.setUint8(38, rssi);
+    data_.setUint8(39, rssiPercent);
+    data_.setUint8(40, snr);
+    data_.setUint8(41, snrPercent);
+    return data_;
+  }
+}
+
 class MavlinkDialectAltamus implements MavlinkDialect {
   static const int mavlinkVersion = 1;
 
@@ -3143,6 +3400,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return ProtocolVersion.parse(data);
       case 24:
         return GpsRawInt.parse(data);
+      case 30:
+        return Attitude.parse(data);
       case 39:
         return MissionItem.parse(data);
       case 75:
@@ -3181,6 +3440,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return RemoteServerSettings.parse(data);
       case 12:
         return PowerInformation.parse(data);
+      case 13:
+        return WifiInformation.parse(data);
       default:
         return null;
     }
@@ -3195,6 +3456,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return ProtocolVersion._mavlinkCrcExtra;
       case 24:
         return GpsRawInt._mavlinkCrcExtra;
+      case 30:
+        return Attitude._mavlinkCrcExtra;
       case 39:
         return MissionItem._mavlinkCrcExtra;
       case 75:
@@ -3233,6 +3496,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return RemoteServerSettings._mavlinkCrcExtra;
       case 12:
         return PowerInformation._mavlinkCrcExtra;
+      case 13:
+        return WifiInformation._mavlinkCrcExtra;
       default:
         return -1;
     }
