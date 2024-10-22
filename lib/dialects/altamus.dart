@@ -122,6 +122,11 @@ const MavCmd mavCmdStartEosScan = 1;
 /// MAV_CMD_STOP_EOS_SCAN
 const MavCmd mavCmdStopEosScan = 2;
 
+/// Requests that device identify itself by flashing it's LED. Takes no arguments
+///
+/// MAV_CMD_IDENTIFY
+const MavCmd mavCmdIdentify = 3;
+
 /// Set the interval between messages for a particular MAVLink message ID. This interface replaces REQUEST_DATA_STREAM.
 ///
 /// MAV_CMD_SET_MESSAGE_INTERVAL
