@@ -127,6 +127,11 @@ const MavCmd mavCmdStopEosScan = 2;
 /// MAV_CMD_IDENTIFY
 const MavCmd mavCmdIdentify = 3;
 
+/// Requests that device sends it's settings to the settings server configured in REMOTE_SERVER_SETTINGS. Takes no arguments
+///
+/// MAV_CMD_SEND_SETTINGS_TO_SERVER
+const MavCmd mavCmdSendSettingsToServer = 4;
+
 /// Set the interval between messages for a particular MAVLink message ID. This interface replaces REQUEST_DATA_STREAM.
 ///
 /// MAV_CMD_SET_MESSAGE_INTERVAL
