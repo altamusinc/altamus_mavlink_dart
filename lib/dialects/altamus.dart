@@ -132,6 +132,11 @@ const MavCmd mavCmdIdentify = 3;
 /// MAV_CMD_SEND_SETTINGS_TO_SERVER
 const MavCmd mavCmdSendSettingsToServer = 4;
 
+/// Requests that device clears it's stored EEPROM. Takes no Arguments
+///
+/// MAV_CMD_CLEAR_EEPROM
+const MavCmd mavCmdClearEeprom = 5;
+
 /// Set the interval between messages for a particular MAVLink message ID. This interface replaces REQUEST_DATA_STREAM.
 ///
 /// MAV_CMD_SET_MESSAGE_INTERVAL
@@ -2444,7 +2449,7 @@ class MotorControl implements MavlinkMessage {
 class MotorSettings implements MavlinkMessage {
   static const int _mavlinkMessageId = 5;
 
-  static const int _mavlinkCrcExtra = 39;
+  static const int _mavlinkCrcExtra = 42;
 
   static const int mavlinkEncodedLength = 24;
 
@@ -2488,10 +2493,10 @@ class MotorSettings implements MavlinkMessage {
 
   /// Number of steps to move from home position after homing.
   ///
-  /// MAVLink type: uint16_t
+  /// MAVLink type: int16_t
   ///
   /// home_offset_steps
-  final uint16_t homeOffsetSteps;
+  final int16_t homeOffsetSteps;
 
   /// Number of steps from home switch triggering to repeatable index pulse. Read Only.
   ///
@@ -2570,7 +2575,7 @@ class MotorSettings implements MavlinkMessage {
     var ustepsRate = data_.getFloat32(4, Endian.little);
     var ustepAngle = data_.getFloat32(8, Endian.little);
     var current = data_.getUint16(12, Endian.little);
-    var homeOffsetSteps = data_.getUint16(14, Endian.little);
+    var homeOffsetSteps = data_.getInt16(14, Endian.little);
     var stepsToNextIndex = data_.getUint16(16, Endian.little);
     var motor = data_.getUint8(18);
     var microsteps = data_.getUint8(19);
@@ -2601,7 +2606,7 @@ class MotorSettings implements MavlinkMessage {
     data_.setFloat32(4, ustepsRate, Endian.little);
     data_.setFloat32(8, ustepAngle, Endian.little);
     data_.setUint16(12, current, Endian.little);
-    data_.setUint16(14, homeOffsetSteps, Endian.little);
+    data_.setInt16(14, homeOffsetSteps, Endian.little);
     data_.setUint16(16, stepsToNextIndex, Endian.little);
     data_.setUint8(18, motor);
     data_.setUint8(19, microsteps);
