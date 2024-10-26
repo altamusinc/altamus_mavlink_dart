@@ -3400,6 +3400,117 @@ class WifiInformation implements MavlinkMessage {
   }
 }
 
+/// Status of an upload
+///
+/// UPLOAD_STATUS
+class UploadStatus implements MavlinkMessage {
+  static const int _mavlinkMessageId = 14;
+
+  static const int _mavlinkCrcExtra = 141;
+
+  static const int mavlinkEncodedLength = 17;
+
+  @override
+  int get mavlinkMessageId => _mavlinkMessageId;
+
+  @override
+  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+
+  /// Time that scan started
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// start_time_unix
+  final uint32_t startTimeUnix;
+
+  /// number of bytes uploaded
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// bytes_uploaded
+  final uint32_t bytesUploaded;
+
+  /// Size of the upload
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// units: bytes
+  ///
+  /// upload_size
+  final uint32_t uploadSize;
+
+  /// Upload rate in bytes per seconds
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// units: Bps
+  ///
+  /// upload_rate
+  final uint16_t uploadRate;
+
+  /// Estimated time remaining, in seconds
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// units: seconds
+  ///
+  /// time_remaining
+  final uint16_t timeRemaining;
+
+  /// Percentage complete of the scan
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// units: %
+  ///
+  /// upload_completion
+  final uint8_t uploadCompletion;
+
+  UploadStatus({
+    required this.startTimeUnix,
+    required this.bytesUploaded,
+    required this.uploadSize,
+    required this.uploadRate,
+    required this.timeRemaining,
+    required this.uploadCompletion,
+  });
+
+  factory UploadStatus.parse(ByteData data_) {
+    if (data_.lengthInBytes < UploadStatus.mavlinkEncodedLength) {
+      var len = UploadStatus.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var startTimeUnix = data_.getUint32(0, Endian.little);
+    var bytesUploaded = data_.getUint32(4, Endian.little);
+    var uploadSize = data_.getUint32(8, Endian.little);
+    var uploadRate = data_.getUint16(12, Endian.little);
+    var timeRemaining = data_.getUint16(14, Endian.little);
+    var uploadCompletion = data_.getUint8(16);
+
+    return UploadStatus(
+        startTimeUnix: startTimeUnix,
+        bytesUploaded: bytesUploaded,
+        uploadSize: uploadSize,
+        uploadRate: uploadRate,
+        timeRemaining: timeRemaining,
+        uploadCompletion: uploadCompletion);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint32(0, startTimeUnix, Endian.little);
+    data_.setUint32(4, bytesUploaded, Endian.little);
+    data_.setUint32(8, uploadSize, Endian.little);
+    data_.setUint16(12, uploadRate, Endian.little);
+    data_.setUint16(14, timeRemaining, Endian.little);
+    data_.setUint8(16, uploadCompletion);
+    return data_;
+  }
+}
+
 class MavlinkDialectAltamus implements MavlinkDialect {
   static const int mavlinkVersion = 1;
 
@@ -3457,6 +3568,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return PowerInformation.parse(data);
       case 13:
         return WifiInformation.parse(data);
+      case 14:
+        return UploadStatus.parse(data);
       default:
         return null;
     }
@@ -3513,6 +3626,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return PowerInformation._mavlinkCrcExtra;
       case 13:
         return WifiInformation._mavlinkCrcExtra;
+      case 14:
+        return UploadStatus._mavlinkCrcExtra;
       default:
         return -1;
     }
