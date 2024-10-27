@@ -18,11 +18,53 @@ class DialectEnums extends IterableMixin<DialectEnum> {
   void addAll(DialectEnums iterable) {
     for (var e in iterable) {
       if (_hasName(e.name)) {
+        var eExtended = _getEnumFromName(e.name);
+        if(eExtended != null){
+          mergeEnums(e, eExtended);
+        }
         continue;
       }
 
       _enums.add(e);
     }
+  }
+
+  /// Merge two enums from different dialects. Allows inclusion of common.xml in vendor 
+  /// dialects so that they may extend shared enums like MAV_CMD. Names and values must be
+  /// unique or it won't add.
+  bool mergeEnums(DialectEnum e, DialectEnum eToExtend) {
+    print("Merging enum entry ${eToExtend.name}");
+
+    if(e.entries == null){
+      print("No entries exist in extending enum, continuing.");
+      return true;
+    }
+
+    for(DialectEntry newEntry in e.entries!){
+      for(DialectEntry entry in eToExtend.entries!){
+        if(entry.name == newEntry.name){
+          print("Enum name already exists, seems like an error, not adding.");
+          return false;
+        }
+        if(entry.value == newEntry.value){
+          print("Value for this enum already exisits, seems like an error, not adding");
+          return false;
+        }
+      }
+      print("Merging ${newEntry.name} to ${eToExtend.name}");
+      eToExtend.entries!.add(newEntry);
+    }
+    return true;
+  }
+
+  DialectEnum? _getEnumFromName(String name)
+  {
+    for (var e in _enums) {
+      if (e.name == name) {
+        return e;
+      }
+    }
+    return null;
   }
 
   bool _hasName(String name) {
