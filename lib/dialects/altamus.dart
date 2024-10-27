@@ -600,17 +600,17 @@ const EosComponentPowerBehavior eosComponentPowerBehaviorReboot = 4;
 ///
 /// HEARTBEAT
 class Heartbeat implements MavlinkMessage {
-  static const int _mavlinkMessageId = 0;
+  static const int msgId = 0;
 
-  static const int _mavlinkCrcExtra = 50;
+  static const int crcExtra = 50;
 
   static const int mavlinkEncodedLength = 9;
 
   @override
-  int get mavlinkMessageId => _mavlinkMessageId;
+  int get mavlinkMessageId => msgId;
 
   @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+  int get mavlinkCrcExtra => crcExtra;
 
   /// A bitfield for use for autopilot-specific flags
   ///
@@ -711,17 +711,17 @@ class Heartbeat implements MavlinkMessage {
 ///
 /// PROTOCOL_VERSION
 class ProtocolVersion implements MavlinkMessage {
-  static const int _mavlinkMessageId = 300;
+  static const int msgId = 300;
 
-  static const int _mavlinkCrcExtra = 217;
+  static const int crcExtra = 217;
 
   static const int mavlinkEncodedLength = 22;
 
   @override
-  int get mavlinkMessageId => _mavlinkMessageId;
+  int get mavlinkMessageId => msgId;
 
   @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+  int get mavlinkCrcExtra => crcExtra;
 
   /// Currently active MAVLink version number * 100: v1.0 is 100, v2.0 is 200, etc.
   ///
@@ -806,17 +806,17 @@ class ProtocolVersion implements MavlinkMessage {
 ///
 /// GPS_RAW_INT
 class GpsRawInt implements MavlinkMessage {
-  static const int _mavlinkMessageId = 24;
+  static const int msgId = 24;
 
-  static const int _mavlinkCrcExtra = 24;
+  static const int crcExtra = 24;
 
   static const int mavlinkEncodedLength = 52;
 
   @override
-  int get mavlinkMessageId => _mavlinkMessageId;
+  int get mavlinkMessageId => msgId;
 
   @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+  int get mavlinkCrcExtra => crcExtra;
 
   /// Timestamp (UNIX Epoch time or time
   /// since system boot). The receiving end can infer timestamp format (since 1.1.1970 or
@@ -1071,17 +1071,17 @@ class GpsRawInt implements MavlinkMessage {
 ///
 /// ATTITUDE
 class Attitude implements MavlinkMessage {
-  static const int _mavlinkMessageId = 30;
+  static const int msgId = 30;
 
-  static const int _mavlinkCrcExtra = 227;
+  static const int crcExtra = 227;
 
   static const int mavlinkEncodedLength = 32;
 
   @override
-  int get mavlinkMessageId => _mavlinkMessageId;
+  int get mavlinkMessageId => msgId;
 
   @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+  int get mavlinkCrcExtra => crcExtra;
 
   /// Timestamp (time since system boot).
   ///
@@ -1218,17 +1218,17 @@ class Attitude implements MavlinkMessage {
 ///
 /// MISSION_ITEM
 class MissionItem implements MavlinkMessage {
-  static const int _mavlinkMessageId = 39;
+  static const int msgId = 39;
 
-  static const int _mavlinkCrcExtra = 254;
+  static const int crcExtra = 254;
 
   static const int mavlinkEncodedLength = 38;
 
   @override
-  int get mavlinkMessageId => _mavlinkMessageId;
+  int get mavlinkMessageId => msgId;
 
   @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+  int get mavlinkCrcExtra => crcExtra;
 
   /// PARAM1, see MAV_CMD enum
   ///
@@ -1432,17 +1432,17 @@ class MissionItem implements MavlinkMessage {
 ///
 /// COMMAND_INT
 class CommandInt implements MavlinkMessage {
-  static const int _mavlinkMessageId = 75;
+  static const int msgId = 75;
 
-  static const int _mavlinkCrcExtra = 158;
+  static const int crcExtra = 158;
 
   static const int mavlinkEncodedLength = 35;
 
   @override
-  int get mavlinkMessageId => _mavlinkMessageId;
+  int get mavlinkMessageId => msgId;
 
   @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+  int get mavlinkCrcExtra => crcExtra;
 
   /// PARAM1, see MAV_CMD enum
   ///
@@ -1616,17 +1616,17 @@ class CommandInt implements MavlinkMessage {
 ///
 /// COMMAND_LONG
 class CommandLong implements MavlinkMessage {
-  static const int _mavlinkMessageId = 76;
+  static const int msgId = 76;
 
-  static const int _mavlinkCrcExtra = 152;
+  static const int crcExtra = 152;
 
   static const int mavlinkEncodedLength = 33;
 
   @override
-  int get mavlinkMessageId => _mavlinkMessageId;
+  int get mavlinkMessageId => msgId;
 
   @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+  int get mavlinkCrcExtra => crcExtra;
 
   /// Parameter 1 (for the specific command).
   ///
@@ -1778,17 +1778,17 @@ class CommandLong implements MavlinkMessage {
 ///
 /// COMMAND_ACK
 class CommandAck implements MavlinkMessage {
-  static const int _mavlinkMessageId = 77;
+  static const int msgId = 77;
 
-  static const int _mavlinkCrcExtra = 143;
+  static const int crcExtra = 143;
 
   static const int mavlinkEncodedLength = 10;
 
   @override
-  int get mavlinkMessageId => _mavlinkMessageId;
+  int get mavlinkMessageId => msgId;
 
   @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+  int get mavlinkCrcExtra => crcExtra;
 
   /// Command ID (of acknowledged
   /// command).
@@ -1911,17 +1911,17 @@ class CommandAck implements MavlinkMessage {
 ///
 /// COMMAND_CANCEL
 class CommandCancel implements MavlinkMessage {
-  static const int _mavlinkMessageId = 80;
+  static const int msgId = 80;
 
-  static const int _mavlinkCrcExtra = 14;
+  static const int crcExtra = 14;
 
   static const int mavlinkEncodedLength = 4;
 
   @override
-  int get mavlinkMessageId => _mavlinkMessageId;
+  int get mavlinkMessageId => msgId;
 
   @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+  int get mavlinkCrcExtra => crcExtra;
 
   /// Command ID (of command to cancel).
   ///
@@ -1988,17 +1988,17 @@ class CommandCancel implements MavlinkMessage {
 ///
 /// MESSAGE_INTERVAL
 class MessageInterval implements MavlinkMessage {
-  static const int _mavlinkMessageId = 244;
+  static const int msgId = 244;
 
-  static const int _mavlinkCrcExtra = 95;
+  static const int crcExtra = 95;
 
   static const int mavlinkEncodedLength = 6;
 
   @override
-  int get mavlinkMessageId => _mavlinkMessageId;
+  int get mavlinkMessageId => msgId;
 
   @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+  int get mavlinkCrcExtra => crcExtra;
 
   /// The interval between two messages. A value of -1 indicates this stream is disabled, 0 indicates it is not available, > 0 indicates the interval at which it is sent.
   ///
@@ -2047,17 +2047,17 @@ class MessageInterval implements MavlinkMessage {
 ///
 /// STATUSTEXT
 class Statustext implements MavlinkMessage {
-  static const int _mavlinkMessageId = 253;
+  static const int msgId = 253;
 
-  static const int _mavlinkCrcExtra = 83;
+  static const int crcExtra = 83;
 
   static const int mavlinkEncodedLength = 54;
 
   @override
-  int get mavlinkMessageId => _mavlinkMessageId;
+  int get mavlinkMessageId => msgId;
 
   @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+  int get mavlinkCrcExtra => crcExtra;
 
   /// Severity of status. Relies on the definitions within RFC-5424.
   ///
@@ -2131,17 +2131,17 @@ class Statustext implements MavlinkMessage {
 ///
 /// LIDAR_READING
 class LidarReading implements MavlinkMessage {
-  static const int _mavlinkMessageId = 1;
+  static const int msgId = 1;
 
-  static const int _mavlinkCrcExtra = 125;
+  static const int crcExtra = 125;
 
   static const int mavlinkEncodedLength = 248;
 
   @override
-  int get mavlinkMessageId => _mavlinkMessageId;
+  int get mavlinkMessageId => msgId;
 
   @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+  int get mavlinkCrcExtra => crcExtra;
 
   ///
   ///
@@ -2178,17 +2178,17 @@ class LidarReading implements MavlinkMessage {
 ///
 /// COMPONENT_POWER_CONTROL
 class ComponentPowerControl implements MavlinkMessage {
-  static const int _mavlinkMessageId = 2;
+  static const int msgId = 2;
 
-  static const int _mavlinkCrcExtra = 246;
+  static const int crcExtra = 246;
 
   static const int mavlinkEncodedLength = 3;
 
   @override
-  int get mavlinkMessageId => _mavlinkMessageId;
+  int get mavlinkMessageId => msgId;
 
   @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+  int get mavlinkCrcExtra => crcExtra;
 
   /// Device to target
   ///
@@ -2240,17 +2240,17 @@ class ComponentPowerControl implements MavlinkMessage {
 ///
 /// SYSTEM_STATUS
 class SystemStatus implements MavlinkMessage {
-  static const int _mavlinkMessageId = 3;
+  static const int msgId = 3;
 
-  static const int _mavlinkCrcExtra = 212;
+  static const int crcExtra = 212;
 
   static const int mavlinkEncodedLength = 7;
 
   @override
-  int get mavlinkMessageId => _mavlinkMessageId;
+  int get mavlinkMessageId => msgId;
 
   @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+  int get mavlinkCrcExtra => crcExtra;
 
   /// Bitmask of devices and their power status: 1 = on 0 = off
   ///
@@ -2329,17 +2329,17 @@ class SystemStatus implements MavlinkMessage {
 ///
 /// MOTOR_CONTROL
 class MotorControl implements MavlinkMessage {
-  static const int _mavlinkMessageId = 4;
+  static const int msgId = 4;
 
-  static const int _mavlinkCrcExtra = 37;
+  static const int crcExtra = 37;
 
   static const int mavlinkEncodedLength = 18;
 
   @override
-  int get mavlinkMessageId => _mavlinkMessageId;
+  int get mavlinkMessageId => msgId;
 
   @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+  int get mavlinkCrcExtra => crcExtra;
 
   /// RPM to set motor shaft too. Ignores gearing. Only used if MOTOR_BEHAVIOR_MOTOR_RPM is selected.
   ///
@@ -2447,17 +2447,17 @@ class MotorControl implements MavlinkMessage {
 ///
 /// MOTOR_SETTINGS
 class MotorSettings implements MavlinkMessage {
-  static const int _mavlinkMessageId = 5;
+  static const int msgId = 5;
 
-  static const int _mavlinkCrcExtra = 42;
+  static const int crcExtra = 42;
 
   static const int mavlinkEncodedLength = 24;
 
   @override
-  int get mavlinkMessageId => _mavlinkMessageId;
+  int get mavlinkMessageId => msgId;
 
   @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+  int get mavlinkCrcExtra => crcExtra;
 
   /// Gearing ratio to apply, specified as Motor Teeth:Device Teeth; Send as float i.e. 20.0/72.0 becomes 0.2777777
   ///
@@ -2622,17 +2622,17 @@ class MotorSettings implements MavlinkMessage {
 ///
 /// MOTOR_STATUS
 class MotorStatus implements MavlinkMessage {
-  static const int _mavlinkMessageId = 6;
+  static const int msgId = 6;
 
-  static const int _mavlinkCrcExtra = 61;
+  static const int crcExtra = 61;
 
   static const int mavlinkEncodedLength = 23;
 
   @override
-  int get mavlinkMessageId => _mavlinkMessageId;
+  int get mavlinkMessageId => msgId;
 
   @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+  int get mavlinkCrcExtra => crcExtra;
 
   /// Current RPM of the motor.
   ///
@@ -2760,17 +2760,17 @@ class MotorStatus implements MavlinkMessage {
 ///
 /// IDENTIFIER
 class Identifier implements MavlinkMessage {
-  static const int _mavlinkMessageId = 7;
+  static const int msgId = 7;
 
-  static const int _mavlinkCrcExtra = 110;
+  static const int crcExtra = 110;
 
   static const int mavlinkEncodedLength = 50;
 
   @override
-  int get mavlinkMessageId => _mavlinkMessageId;
+  int get mavlinkMessageId => msgId;
 
   @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+  int get mavlinkCrcExtra => crcExtra;
 
   /// Particle ID of device. Unique and unchangable
   ///
@@ -2838,17 +2838,17 @@ class Identifier implements MavlinkMessage {
 ///
 /// COMPONENT_HEALTH_TEST
 class ComponentHealthTest implements MavlinkMessage {
-  static const int _mavlinkMessageId = 8;
+  static const int msgId = 8;
 
-  static const int _mavlinkCrcExtra = 179;
+  static const int crcExtra = 179;
 
   static const int mavlinkEncodedLength = 4;
 
   @override
-  int get mavlinkMessageId => _mavlinkMessageId;
+  int get mavlinkMessageId => msgId;
 
   @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+  int get mavlinkCrcExtra => crcExtra;
 
   /// Which component(s) to request retest for
   ///
@@ -2887,17 +2887,17 @@ class ComponentHealthTest implements MavlinkMessage {
 ///
 /// SCAN_SETTINGS
 class ScanSettings implements MavlinkMessage {
-  static const int _mavlinkMessageId = 9;
+  static const int msgId = 9;
 
-  static const int _mavlinkCrcExtra = 155;
+  static const int crcExtra = 155;
 
   static const int mavlinkEncodedLength = 24;
 
   @override
-  int get mavlinkMessageId => _mavlinkMessageId;
+  int get mavlinkMessageId => msgId;
 
   @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+  int get mavlinkCrcExtra => crcExtra;
 
   /// Starting yaw angle, relative to the homed position
   ///
@@ -3002,17 +3002,17 @@ class ScanSettings implements MavlinkMessage {
 ///
 /// SCAN_STATUS
 class ScanStatus implements MavlinkMessage {
-  static const int _mavlinkMessageId = 10;
+  static const int msgId = 10;
 
-  static const int _mavlinkCrcExtra = 17;
+  static const int crcExtra = 17;
 
   static const int mavlinkEncodedLength = 7;
 
   @override
-  int get mavlinkMessageId => _mavlinkMessageId;
+  int get mavlinkMessageId => msgId;
 
   @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+  int get mavlinkCrcExtra => crcExtra;
 
   /// Time that scan started
   ///
@@ -3076,17 +3076,17 @@ class ScanStatus implements MavlinkMessage {
 ///
 /// REMOTE_SERVER_SETTINGS
 class RemoteServerSettings implements MavlinkMessage {
-  static const int _mavlinkMessageId = 11;
+  static const int msgId = 11;
 
-  static const int _mavlinkCrcExtra = 79;
+  static const int crcExtra = 79;
 
   static const int mavlinkEncodedLength = 230;
 
   @override
-  int get mavlinkMessageId => _mavlinkMessageId;
+  int get mavlinkMessageId => msgId;
 
   @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+  int get mavlinkCrcExtra => crcExtra;
 
   /// Port to send checkin info to. Defaults to 80
   ///
@@ -3212,17 +3212,17 @@ class RemoteServerSettings implements MavlinkMessage {
 ///
 /// POWER_INFORMATION
 class PowerInformation implements MavlinkMessage {
-  static const int _mavlinkMessageId = 12;
+  static const int msgId = 12;
 
-  static const int _mavlinkCrcExtra = 89;
+  static const int crcExtra = 89;
 
   static const int mavlinkEncodedLength = 10;
 
   @override
-  int get mavlinkMessageId => _mavlinkMessageId;
+  int get mavlinkMessageId => msgId;
 
   @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+  int get mavlinkCrcExtra => crcExtra;
 
   /// Accumulated power since last reset in Joules
   ///
@@ -3301,17 +3301,17 @@ class PowerInformation implements MavlinkMessage {
 ///
 /// WIFI_INFORMATION
 class WifiInformation implements MavlinkMessage {
-  static const int _mavlinkMessageId = 13;
+  static const int msgId = 13;
 
-  static const int _mavlinkCrcExtra = 121;
+  static const int crcExtra = 121;
 
   static const int mavlinkEncodedLength = 42;
 
   @override
-  int get mavlinkMessageId => _mavlinkMessageId;
+  int get mavlinkMessageId => msgId;
 
   @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+  int get mavlinkCrcExtra => crcExtra;
 
   /// Name of the SSID
   ///
@@ -3404,17 +3404,17 @@ class WifiInformation implements MavlinkMessage {
 ///
 /// UPLOAD_STATUS
 class UploadStatus implements MavlinkMessage {
-  static const int _mavlinkMessageId = 14;
+  static const int msgId = 14;
 
-  static const int _mavlinkCrcExtra = 141;
+  static const int crcExtra = 141;
 
   static const int mavlinkEncodedLength = 17;
 
   @override
-  int get mavlinkMessageId => _mavlinkMessageId;
+  int get mavlinkMessageId => msgId;
 
   @override
-  int get mavlinkCrcExtra => _mavlinkCrcExtra;
+  int get mavlinkCrcExtra => crcExtra;
 
   /// Time that scan started
   ///
@@ -3579,55 +3579,55 @@ class MavlinkDialectAltamus implements MavlinkDialect {
   int crcExtra(int messageID) {
     switch (messageID) {
       case 0:
-        return Heartbeat._mavlinkCrcExtra;
+        return Heartbeat.crcExtra;
       case 300:
-        return ProtocolVersion._mavlinkCrcExtra;
+        return ProtocolVersion.crcExtra;
       case 24:
-        return GpsRawInt._mavlinkCrcExtra;
+        return GpsRawInt.crcExtra;
       case 30:
-        return Attitude._mavlinkCrcExtra;
+        return Attitude.crcExtra;
       case 39:
-        return MissionItem._mavlinkCrcExtra;
+        return MissionItem.crcExtra;
       case 75:
-        return CommandInt._mavlinkCrcExtra;
+        return CommandInt.crcExtra;
       case 76:
-        return CommandLong._mavlinkCrcExtra;
+        return CommandLong.crcExtra;
       case 77:
-        return CommandAck._mavlinkCrcExtra;
+        return CommandAck.crcExtra;
       case 80:
-        return CommandCancel._mavlinkCrcExtra;
+        return CommandCancel.crcExtra;
       case 244:
-        return MessageInterval._mavlinkCrcExtra;
+        return MessageInterval.crcExtra;
       case 253:
-        return Statustext._mavlinkCrcExtra;
+        return Statustext.crcExtra;
       case 1:
-        return LidarReading._mavlinkCrcExtra;
+        return LidarReading.crcExtra;
       case 2:
-        return ComponentPowerControl._mavlinkCrcExtra;
+        return ComponentPowerControl.crcExtra;
       case 3:
-        return SystemStatus._mavlinkCrcExtra;
+        return SystemStatus.crcExtra;
       case 4:
-        return MotorControl._mavlinkCrcExtra;
+        return MotorControl.crcExtra;
       case 5:
-        return MotorSettings._mavlinkCrcExtra;
+        return MotorSettings.crcExtra;
       case 6:
-        return MotorStatus._mavlinkCrcExtra;
+        return MotorStatus.crcExtra;
       case 7:
-        return Identifier._mavlinkCrcExtra;
+        return Identifier.crcExtra;
       case 8:
-        return ComponentHealthTest._mavlinkCrcExtra;
+        return ComponentHealthTest.crcExtra;
       case 9:
-        return ScanSettings._mavlinkCrcExtra;
+        return ScanSettings.crcExtra;
       case 10:
-        return ScanStatus._mavlinkCrcExtra;
+        return ScanStatus.crcExtra;
       case 11:
-        return RemoteServerSettings._mavlinkCrcExtra;
+        return RemoteServerSettings.crcExtra;
       case 12:
-        return PowerInformation._mavlinkCrcExtra;
+        return PowerInformation.crcExtra;
       case 13:
-        return WifiInformation._mavlinkCrcExtra;
+        return WifiInformation.crcExtra;
       case 14:
-        return UploadStatus._mavlinkCrcExtra;
+        return UploadStatus.crcExtra;
       default:
         return -1;
     }
