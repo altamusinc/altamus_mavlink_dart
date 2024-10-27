@@ -112,6 +112,16 @@ const MavSeverity mavSeverityDebug = 7;
 /// MAV_CMD
 typedef MavCmd = int;
 
+/// Set the interval between messages for a particular MAVLink message ID. This interface replaces REQUEST_DATA_STREAM.
+///
+/// MAV_CMD_SET_MESSAGE_INTERVAL
+const MavCmd mavCmdSetMessageInterval = 511;
+
+/// Request the target system(s) emit a single instance of a specified message (i.e. a "one-shot" version of MAV_CMD_SET_MESSAGE_INTERVAL).
+///
+/// MAV_CMD_REQUEST_MESSAGE
+const MavCmd mavCmdRequestMessage = 512;
+
 /// Starts a scan on the targeted scanner. Takes no arguments
 ///
 /// MAV_CMD_START_EOS_SCAN
@@ -136,16 +146,6 @@ const MavCmd mavCmdSendSettingsToServer = 4;
 ///
 /// MAV_CMD_CLEAR_EEPROM
 const MavCmd mavCmdClearEeprom = 5;
-
-/// Set the interval between messages for a particular MAVLink message ID. This interface replaces REQUEST_DATA_STREAM.
-///
-/// MAV_CMD_SET_MESSAGE_INTERVAL
-const MavCmd mavCmdSetMessageInterval = 511;
-
-/// Request the target system(s) emit a single instance of a specified message (i.e. a "one-shot" version of MAV_CMD_SET_MESSAGE_INTERVAL).
-///
-/// MAV_CMD_REQUEST_MESSAGE
-const MavCmd mavCmdRequestMessage = 512;
 
 /// These flags encode the MAV mode.
 ///
