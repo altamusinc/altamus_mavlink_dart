@@ -685,7 +685,7 @@ Future<bool> generateCode(String dstPath, String srcDialectPath) async {
     content += '\n';
     content += 'static const int crcExtra = ${msg.calculateCrcExtra()};\n';
     content += '\n';
-    content += 'static const int encodedLength = ${msg.calculateEncodedLength()};\n';
+    content += 'static const int mavlinkEncodedLength = ${msg.calculateEncodedLength()};\n';
     content +='\n';
     content +='@override int get mavlinkMessageId => msgId;\n';
     content +='\n';
@@ -856,7 +856,7 @@ switch (messageID) {
   ''';
   for (var msg in doc.messages) {
     content += '''case ${msg.id}:
-return ${msg.nameForDart}._mavlinkCrcExtra;
+return ${msg.nameForDart}.crcExtra;
 ''';
   }
 

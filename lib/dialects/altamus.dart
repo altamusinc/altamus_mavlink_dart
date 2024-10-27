@@ -604,7 +604,7 @@ class Heartbeat implements MavlinkMessage {
 
   static const int crcExtra = 50;
 
-  static const int encodedLength = 9;
+  static const int mavlinkEncodedLength = 9;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -715,7 +715,7 @@ class ProtocolVersion implements MavlinkMessage {
 
   static const int crcExtra = 217;
 
-  static const int encodedLength = 22;
+  static const int mavlinkEncodedLength = 22;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -810,7 +810,7 @@ class GpsRawInt implements MavlinkMessage {
 
   static const int crcExtra = 24;
 
-  static const int encodedLength = 52;
+  static const int mavlinkEncodedLength = 52;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -1075,7 +1075,7 @@ class Attitude implements MavlinkMessage {
 
   static const int crcExtra = 227;
 
-  static const int encodedLength = 32;
+  static const int mavlinkEncodedLength = 32;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -1222,7 +1222,7 @@ class MissionItem implements MavlinkMessage {
 
   static const int crcExtra = 254;
 
-  static const int encodedLength = 38;
+  static const int mavlinkEncodedLength = 38;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -1436,7 +1436,7 @@ class CommandInt implements MavlinkMessage {
 
   static const int crcExtra = 158;
 
-  static const int encodedLength = 35;
+  static const int mavlinkEncodedLength = 35;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -1620,7 +1620,7 @@ class CommandLong implements MavlinkMessage {
 
   static const int crcExtra = 152;
 
-  static const int encodedLength = 33;
+  static const int mavlinkEncodedLength = 33;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -1782,7 +1782,7 @@ class CommandAck implements MavlinkMessage {
 
   static const int crcExtra = 143;
 
-  static const int encodedLength = 10;
+  static const int mavlinkEncodedLength = 10;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -1915,7 +1915,7 @@ class CommandCancel implements MavlinkMessage {
 
   static const int crcExtra = 14;
 
-  static const int encodedLength = 4;
+  static const int mavlinkEncodedLength = 4;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -1992,7 +1992,7 @@ class MessageInterval implements MavlinkMessage {
 
   static const int crcExtra = 95;
 
-  static const int encodedLength = 6;
+  static const int mavlinkEncodedLength = 6;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -2051,7 +2051,7 @@ class Statustext implements MavlinkMessage {
 
   static const int crcExtra = 83;
 
-  static const int encodedLength = 54;
+  static const int mavlinkEncodedLength = 54;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -2135,7 +2135,7 @@ class LidarReading implements MavlinkMessage {
 
   static const int crcExtra = 125;
 
-  static const int encodedLength = 248;
+  static const int mavlinkEncodedLength = 248;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -2182,7 +2182,7 @@ class ComponentPowerControl implements MavlinkMessage {
 
   static const int crcExtra = 246;
 
-  static const int encodedLength = 3;
+  static const int mavlinkEncodedLength = 3;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -2244,7 +2244,7 @@ class SystemStatus implements MavlinkMessage {
 
   static const int crcExtra = 212;
 
-  static const int encodedLength = 7;
+  static const int mavlinkEncodedLength = 7;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -2333,7 +2333,7 @@ class MotorControl implements MavlinkMessage {
 
   static const int crcExtra = 37;
 
-  static const int encodedLength = 18;
+  static const int mavlinkEncodedLength = 18;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -2451,7 +2451,7 @@ class MotorSettings implements MavlinkMessage {
 
   static const int crcExtra = 42;
 
-  static const int encodedLength = 24;
+  static const int mavlinkEncodedLength = 24;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -2626,7 +2626,7 @@ class MotorStatus implements MavlinkMessage {
 
   static const int crcExtra = 61;
 
-  static const int encodedLength = 23;
+  static const int mavlinkEncodedLength = 23;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -2764,7 +2764,7 @@ class Identifier implements MavlinkMessage {
 
   static const int crcExtra = 110;
 
-  static const int encodedLength = 50;
+  static const int mavlinkEncodedLength = 50;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -2842,7 +2842,7 @@ class ComponentHealthTest implements MavlinkMessage {
 
   static const int crcExtra = 179;
 
-  static const int encodedLength = 4;
+  static const int mavlinkEncodedLength = 4;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -2891,7 +2891,7 @@ class ScanSettings implements MavlinkMessage {
 
   static const int crcExtra = 155;
 
-  static const int encodedLength = 24;
+  static const int mavlinkEncodedLength = 24;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -3006,7 +3006,7 @@ class ScanStatus implements MavlinkMessage {
 
   static const int crcExtra = 17;
 
-  static const int encodedLength = 7;
+  static const int mavlinkEncodedLength = 7;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -3080,7 +3080,7 @@ class RemoteServerSettings implements MavlinkMessage {
 
   static const int crcExtra = 79;
 
-  static const int encodedLength = 230;
+  static const int mavlinkEncodedLength = 230;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -3216,7 +3216,7 @@ class PowerInformation implements MavlinkMessage {
 
   static const int crcExtra = 89;
 
-  static const int encodedLength = 10;
+  static const int mavlinkEncodedLength = 10;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -3305,7 +3305,7 @@ class WifiInformation implements MavlinkMessage {
 
   static const int crcExtra = 121;
 
-  static const int encodedLength = 42;
+  static const int mavlinkEncodedLength = 42;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -3408,7 +3408,7 @@ class UploadStatus implements MavlinkMessage {
 
   static const int crcExtra = 141;
 
-  static const int encodedLength = 17;
+  static const int mavlinkEncodedLength = 17;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -3579,55 +3579,55 @@ class MavlinkDialectAltamus implements MavlinkDialect {
   int crcExtra(int messageID) {
     switch (messageID) {
       case 0:
-        return Heartbeat._mavlinkCrcExtra;
+        return Heartbeat.crcExtra;
       case 300:
-        return ProtocolVersion._mavlinkCrcExtra;
+        return ProtocolVersion.crcExtra;
       case 24:
-        return GpsRawInt._mavlinkCrcExtra;
+        return GpsRawInt.crcExtra;
       case 30:
-        return Attitude._mavlinkCrcExtra;
+        return Attitude.crcExtra;
       case 39:
-        return MissionItem._mavlinkCrcExtra;
+        return MissionItem.crcExtra;
       case 75:
-        return CommandInt._mavlinkCrcExtra;
+        return CommandInt.crcExtra;
       case 76:
-        return CommandLong._mavlinkCrcExtra;
+        return CommandLong.crcExtra;
       case 77:
-        return CommandAck._mavlinkCrcExtra;
+        return CommandAck.crcExtra;
       case 80:
-        return CommandCancel._mavlinkCrcExtra;
+        return CommandCancel.crcExtra;
       case 244:
-        return MessageInterval._mavlinkCrcExtra;
+        return MessageInterval.crcExtra;
       case 253:
-        return Statustext._mavlinkCrcExtra;
+        return Statustext.crcExtra;
       case 1:
-        return LidarReading._mavlinkCrcExtra;
+        return LidarReading.crcExtra;
       case 2:
-        return ComponentPowerControl._mavlinkCrcExtra;
+        return ComponentPowerControl.crcExtra;
       case 3:
-        return SystemStatus._mavlinkCrcExtra;
+        return SystemStatus.crcExtra;
       case 4:
-        return MotorControl._mavlinkCrcExtra;
+        return MotorControl.crcExtra;
       case 5:
-        return MotorSettings._mavlinkCrcExtra;
+        return MotorSettings.crcExtra;
       case 6:
-        return MotorStatus._mavlinkCrcExtra;
+        return MotorStatus.crcExtra;
       case 7:
-        return Identifier._mavlinkCrcExtra;
+        return Identifier.crcExtra;
       case 8:
-        return ComponentHealthTest._mavlinkCrcExtra;
+        return ComponentHealthTest.crcExtra;
       case 9:
-        return ScanSettings._mavlinkCrcExtra;
+        return ScanSettings.crcExtra;
       case 10:
-        return ScanStatus._mavlinkCrcExtra;
+        return ScanStatus.crcExtra;
       case 11:
-        return RemoteServerSettings._mavlinkCrcExtra;
+        return RemoteServerSettings.crcExtra;
       case 12:
-        return PowerInformation._mavlinkCrcExtra;
+        return PowerInformation.crcExtra;
       case 13:
-        return WifiInformation._mavlinkCrcExtra;
+        return WifiInformation.crcExtra;
       case 14:
-        return UploadStatus._mavlinkCrcExtra;
+        return UploadStatus.crcExtra;
       default:
         return -1;
     }
