@@ -707,6 +707,159 @@ class Heartbeat implements MavlinkMessage {
   }
 }
 
+/// Request to control this MAV
+///
+/// CHANGE_OPERATOR_CONTROL
+class ChangeOperatorControl implements MavlinkMessage {
+  static const int msgId = 5;
+
+  static const int crcExtra = 217;
+
+  static const int mavlinkEncodedLength = 28;
+
+  @override
+  int get mavlinkMessageId => msgId;
+
+  @override
+  int get mavlinkCrcExtra => crcExtra;
+
+  /// System the GCS requests control for
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// target_system
+  final uint8_t targetSystem;
+
+  /// 0: request control of this MAV, 1: Release control of this MAV
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// control_request
+  final uint8_t controlRequest;
+
+  /// 0: key as plaintext, 1-255: future, different hashing/encryption variants. The GCS should in general use the safest mode possible initially and then gradually move down the encryption level if it gets a NACK message indicating an encryption mismatch.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// units: rad
+  ///
+  /// version
+  final uint8_t version;
+
+  /// Password / Key, depending on version plaintext or encrypted. 25 or less characters, NULL terminated. The characters may involve A-Z, a-z, 0-9, and "!?,.-"
+  ///
+  /// MAVLink type: char[25]
+  ///
+  /// passkey
+  final List<char> passkey;
+
+  ChangeOperatorControl({
+    required this.targetSystem,
+    required this.controlRequest,
+    required this.version,
+    required this.passkey,
+  });
+
+  factory ChangeOperatorControl.parse(ByteData data_) {
+    if (data_.lengthInBytes < ChangeOperatorControl.mavlinkEncodedLength) {
+      var len =
+          ChangeOperatorControl.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var targetSystem = data_.getUint8(0);
+    var controlRequest = data_.getUint8(1);
+    var version = data_.getUint8(2);
+    var passkey = MavlinkMessage.asInt8List(data_, 3, 25);
+
+    return ChangeOperatorControl(
+        targetSystem: targetSystem,
+        controlRequest: controlRequest,
+        version: version,
+        passkey: passkey);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint8(0, targetSystem);
+    data_.setUint8(1, controlRequest);
+    data_.setUint8(2, version);
+    MavlinkMessage.setInt8List(data_, 3, passkey);
+    return data_;
+  }
+}
+
+/// Accept / deny control of this MAV
+///
+/// CHANGE_OPERATOR_CONTROL_ACK
+class ChangeOperatorControlAck implements MavlinkMessage {
+  static const int msgId = 6;
+
+  static const int crcExtra = 104;
+
+  static const int mavlinkEncodedLength = 3;
+
+  @override
+  int get mavlinkMessageId => msgId;
+
+  @override
+  int get mavlinkCrcExtra => crcExtra;
+
+  /// ID of the GCS this message
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// gcs_system_id
+  final uint8_t gcsSystemId;
+
+  /// 0: request control of this MAV, 1: Release control of this MAV
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// control_request
+  final uint8_t controlRequest;
+
+  /// 0: ACK, 1: NACK: Wrong passkey, 2: NACK: Unsupported passkey encryption method, 3: NACK: Already under control
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// ack
+  final uint8_t ack;
+
+  ChangeOperatorControlAck({
+    required this.gcsSystemId,
+    required this.controlRequest,
+    required this.ack,
+  });
+
+  factory ChangeOperatorControlAck.parse(ByteData data_) {
+    if (data_.lengthInBytes < ChangeOperatorControlAck.mavlinkEncodedLength) {
+      var len =
+          ChangeOperatorControlAck.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var gcsSystemId = data_.getUint8(0);
+    var controlRequest = data_.getUint8(1);
+    var ack = data_.getUint8(2);
+
+    return ChangeOperatorControlAck(
+        gcsSystemId: gcsSystemId, controlRequest: controlRequest, ack: ack);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint8(0, gcsSystemId);
+    data_.setUint8(1, controlRequest);
+    data_.setUint8(2, ack);
+    return data_;
+  }
+}
+
 /// Version and capability of protocol version. This message can be requested with MAV_CMD_REQUEST_MESSAGE and is used as part of the handshaking to establish which MAVLink version should be used on the network. Every node should respond to a request for PROTOCOL_VERSION to enable the handshaking. Library implementers should consider adding this into the default decoding state machine to allow the protocol core to respond directly.
 ///
 /// PROTOCOL_VERSION
@@ -2325,437 +2478,6 @@ class SystemStatus implements MavlinkMessage {
   }
 }
 
-/// Controls Motors
-///
-/// MOTOR_CONTROL
-class MotorControl implements MavlinkMessage {
-  static const int msgId = 4;
-
-  static const int crcExtra = 37;
-
-  static const int mavlinkEncodedLength = 18;
-
-  @override
-  int get mavlinkMessageId => msgId;
-
-  @override
-  int get mavlinkCrcExtra => crcExtra;
-
-  /// RPM to set motor shaft too. Ignores gearing. Only used if MOTOR_BEHAVIOR_MOTOR_RPM is selected.
-  ///
-  /// MAVLink type: float
-  ///
-  /// motor_rpm
-  final float motorRpm;
-
-  /// Angle to goto. Accounts for gearing. 0-360. Values above 360 will be wrapped around.
-  ///
-  /// MAVLink type: float
-  ///
-  /// target_angle
-  final float targetAngle;
-
-  /// RPM to set device too. Takes into account gearing. Only used if MOTOR_BEHAVIOR_DEVICE_RPM is selected
-  ///
-  /// MAVLink type: float
-  ///
-  /// device_rpm
-  final float deviceRpm;
-
-  /// Number of steps to execute. Negative values will step backwards. Only used if MOTOR_BEHAVIOR_STEP is selected
-  ///
-  /// MAVLink type: int16_t
-  ///
-  /// steps_count
-  final int16_t stepsCount;
-
-  /// VACTUAL value to send to stepper driver. Negative values will go backwards. Only used if MOTOR_BEHAVIOR_VACTUAL is selected
-  ///
-  /// MAVLink type: int16_t
-  ///
-  /// vactual
-  final int16_t vactual;
-
-  /// Which motor to target. Only responds to EOS_COMPONENT_YAW_MOTOR and EOS_COMPONENT_PITCH_MOTOR
-  ///
-  /// MAVLink type: uint8_t
-  ///
-  /// enum: [EosComponent]
-  ///
-  /// target
-  final EosComponent target;
-
-  /// Behavior to Execute
-  ///
-  /// MAVLink type: uint8_t
-  ///
-  /// enum: [MotorBehavior]
-  ///
-  /// behavior
-  final MotorBehavior behavior;
-
-  MotorControl({
-    required this.motorRpm,
-    required this.targetAngle,
-    required this.deviceRpm,
-    required this.stepsCount,
-    required this.vactual,
-    required this.target,
-    required this.behavior,
-  });
-
-  factory MotorControl.parse(ByteData data_) {
-    if (data_.lengthInBytes < MotorControl.mavlinkEncodedLength) {
-      var len = MotorControl.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
-          List<int>.filled(len, 0);
-      data_ = Uint8List.fromList(d).buffer.asByteData();
-    }
-    var motorRpm = data_.getFloat32(0, Endian.little);
-    var targetAngle = data_.getFloat32(4, Endian.little);
-    var deviceRpm = data_.getFloat32(8, Endian.little);
-    var stepsCount = data_.getInt16(12, Endian.little);
-    var vactual = data_.getInt16(14, Endian.little);
-    var target = data_.getUint8(16);
-    var behavior = data_.getUint8(17);
-
-    return MotorControl(
-        motorRpm: motorRpm,
-        targetAngle: targetAngle,
-        deviceRpm: deviceRpm,
-        stepsCount: stepsCount,
-        vactual: vactual,
-        target: target,
-        behavior: behavior);
-  }
-
-  @override
-  ByteData serialize() {
-    var data_ = ByteData(mavlinkEncodedLength);
-    data_.setFloat32(0, motorRpm, Endian.little);
-    data_.setFloat32(4, targetAngle, Endian.little);
-    data_.setFloat32(8, deviceRpm, Endian.little);
-    data_.setInt16(12, stepsCount, Endian.little);
-    data_.setInt16(14, vactual, Endian.little);
-    data_.setUint8(16, target);
-    data_.setUint8(17, behavior);
-    return data_;
-  }
-}
-
-/// Motor settings. If emitted by device, represents current settings. If emitted by control software, device will update accordingly
-///
-/// MOTOR_SETTINGS
-class MotorSettings implements MavlinkMessage {
-  static const int msgId = 5;
-
-  static const int crcExtra = 42;
-
-  static const int mavlinkEncodedLength = 24;
-
-  @override
-  int get mavlinkMessageId => msgId;
-
-  @override
-  int get mavlinkCrcExtra => crcExtra;
-
-  /// Gearing ratio to apply, specified as Motor Teeth:Device Teeth; Send as float i.e. 20.0/72.0 becomes 0.2777777
-  ///
-  /// MAVLink type: float
-  ///
-  /// gearing_ratio
-  final float gearingRatio;
-
-  /// Rate at which microsteps are being triggered by the driver internal oscillator. Read Only.
-  ///
-  /// MAVLink type: float
-  ///
-  /// units: Hz
-  ///
-  /// usteps_rate
-  final float ustepsRate;
-
-  /// Device angle travelled per microstep. Read Only.
-  ///
-  /// MAVLink type: float
-  ///
-  /// units: deg
-  ///
-  /// ustep_angle
-  final float ustepAngle;
-
-  /// Motor current 0-2500
-  ///
-  /// MAVLink type: uint16_t
-  ///
-  /// current
-  final uint16_t current;
-
-  /// Number of steps to move from home position after homing.
-  ///
-  /// MAVLink type: int16_t
-  ///
-  /// home_offset_steps
-  final int16_t homeOffsetSteps;
-
-  /// Number of steps from home switch triggering to repeatable index pulse. Read Only.
-  ///
-  /// MAVLink type: uint16_t
-  ///
-  /// steps_to_next_index
-  final uint16_t stepsToNextIndex;
-
-  /// Which motor we're referring to.
-  ///
-  /// MAVLink type: uint8_t
-  ///
-  /// enum: [EosComponent]
-  ///
-  /// motor
-  final EosComponent motor;
-
-  /// Microsteps used for stepping 1-256 in powers of 2
-  ///
-  /// MAVLink type: uint8_t
-  ///
-  /// microsteps
-  final uint8_t microsteps;
-
-  /// Boolean if spread cycle is enabled. 0 = disabled, 1 = enabled
-  ///
-  /// MAVLink type: uint8_t
-  ///
-  /// spread_cycle
-  final uint8_t spreadCycle;
-
-  /// Boolean if pwm_autoscale is enabled. 0 = disabled, 1 = enabled
-  ///
-  /// MAVLink type: uint8_t
-  ///
-  /// pwm_autoscale
-  final uint8_t pwmAutoscale;
-
-  /// Boolean if pwm_autograd is enabled. 0 = disabled, 1 = enabled
-  ///
-  /// MAVLink type: uint8_t
-  ///
-  /// pwm_autograd
-  final uint8_t pwmAutograd;
-
-  /// Mininimum steps between index pulse and home switch. Set to 0 to not enforce a minimum
-  ///
-  /// MAVLink type: uint8_t
-  ///
-  /// min_steps_to_next_index
-  final uint8_t minStepsToNextIndex;
-
-  MotorSettings({
-    required this.gearingRatio,
-    required this.ustepsRate,
-    required this.ustepAngle,
-    required this.current,
-    required this.homeOffsetSteps,
-    required this.stepsToNextIndex,
-    required this.motor,
-    required this.microsteps,
-    required this.spreadCycle,
-    required this.pwmAutoscale,
-    required this.pwmAutograd,
-    required this.minStepsToNextIndex,
-  });
-
-  factory MotorSettings.parse(ByteData data_) {
-    if (data_.lengthInBytes < MotorSettings.mavlinkEncodedLength) {
-      var len = MotorSettings.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
-          List<int>.filled(len, 0);
-      data_ = Uint8List.fromList(d).buffer.asByteData();
-    }
-    var gearingRatio = data_.getFloat32(0, Endian.little);
-    var ustepsRate = data_.getFloat32(4, Endian.little);
-    var ustepAngle = data_.getFloat32(8, Endian.little);
-    var current = data_.getUint16(12, Endian.little);
-    var homeOffsetSteps = data_.getInt16(14, Endian.little);
-    var stepsToNextIndex = data_.getUint16(16, Endian.little);
-    var motor = data_.getUint8(18);
-    var microsteps = data_.getUint8(19);
-    var spreadCycle = data_.getUint8(20);
-    var pwmAutoscale = data_.getUint8(21);
-    var pwmAutograd = data_.getUint8(22);
-    var minStepsToNextIndex = data_.getUint8(23);
-
-    return MotorSettings(
-        gearingRatio: gearingRatio,
-        ustepsRate: ustepsRate,
-        ustepAngle: ustepAngle,
-        current: current,
-        homeOffsetSteps: homeOffsetSteps,
-        stepsToNextIndex: stepsToNextIndex,
-        motor: motor,
-        microsteps: microsteps,
-        spreadCycle: spreadCycle,
-        pwmAutoscale: pwmAutoscale,
-        pwmAutograd: pwmAutograd,
-        minStepsToNextIndex: minStepsToNextIndex);
-  }
-
-  @override
-  ByteData serialize() {
-    var data_ = ByteData(mavlinkEncodedLength);
-    data_.setFloat32(0, gearingRatio, Endian.little);
-    data_.setFloat32(4, ustepsRate, Endian.little);
-    data_.setFloat32(8, ustepAngle, Endian.little);
-    data_.setUint16(12, current, Endian.little);
-    data_.setInt16(14, homeOffsetSteps, Endian.little);
-    data_.setUint16(16, stepsToNextIndex, Endian.little);
-    data_.setUint8(18, motor);
-    data_.setUint8(19, microsteps);
-    data_.setUint8(20, spreadCycle);
-    data_.setUint8(21, pwmAutoscale);
-    data_.setUint8(22, pwmAutograd);
-    data_.setUint8(23, minStepsToNextIndex);
-    return data_;
-  }
-}
-
-/// Current Status of the motor
-///
-/// MOTOR_STATUS
-class MotorStatus implements MavlinkMessage {
-  static const int msgId = 6;
-
-  static const int crcExtra = 61;
-
-  static const int mavlinkEncodedLength = 23;
-
-  @override
-  int get mavlinkMessageId => msgId;
-
-  @override
-  int get mavlinkCrcExtra => crcExtra;
-
-  /// Current RPM of the motor.
-  ///
-  /// MAVLink type: float
-  ///
-  /// motor_rpm
-  final float motorRpm;
-
-  /// Current RPM of the device, accounting for gearing.
-  ///
-  /// MAVLink type: float
-  ///
-  /// device_rpm
-  final float deviceRpm;
-
-  /// Measured RPM, if external sensor is available
-  ///
-  /// MAVLink type: float
-  ///
-  /// measured_rpm
-  final float measuredRpm;
-
-  /// Current angle: 0-360. INF if not homed.
-  ///
-  /// MAVLink type: float
-  ///
-  /// current_angle
-  final float currentAngle;
-
-  /// Current VACTUAL value.
-  ///
-  /// MAVLink type: uint16_t
-  ///
-  /// vactual
-  final uint16_t vactual;
-
-  /// Number of steps from home. UINT16_MAX if motor is in RPM mode.
-  ///
-  /// MAVLink type: int16_t
-  ///
-  /// steps_count
-  final int16_t stepsCount;
-
-  /// Which motor we're referring to.
-  ///
-  /// MAVLink type: uint8_t
-  ///
-  /// enum: [EosComponent]
-  ///
-  /// motor
-  final EosComponent motor;
-
-  /// Boolean if the motor is enabled or not. 0 = disabled, 1 = enabled.
-  ///
-  /// MAVLink type: uint8_t
-  ///
-  /// enabled
-  final uint8_t enabled;
-
-  /// Boolean if the motor is homed or not. 0 = not homed, 1 = homed.
-  ///
-  /// MAVLink type: uint8_t
-  ///
-  /// homed
-  final uint8_t homed;
-
-  MotorStatus({
-    required this.motorRpm,
-    required this.deviceRpm,
-    required this.measuredRpm,
-    required this.currentAngle,
-    required this.vactual,
-    required this.stepsCount,
-    required this.motor,
-    required this.enabled,
-    required this.homed,
-  });
-
-  factory MotorStatus.parse(ByteData data_) {
-    if (data_.lengthInBytes < MotorStatus.mavlinkEncodedLength) {
-      var len = MotorStatus.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
-          List<int>.filled(len, 0);
-      data_ = Uint8List.fromList(d).buffer.asByteData();
-    }
-    var motorRpm = data_.getFloat32(0, Endian.little);
-    var deviceRpm = data_.getFloat32(4, Endian.little);
-    var measuredRpm = data_.getFloat32(8, Endian.little);
-    var currentAngle = data_.getFloat32(12, Endian.little);
-    var vactual = data_.getUint16(16, Endian.little);
-    var stepsCount = data_.getInt16(18, Endian.little);
-    var motor = data_.getUint8(20);
-    var enabled = data_.getUint8(21);
-    var homed = data_.getUint8(22);
-
-    return MotorStatus(
-        motorRpm: motorRpm,
-        deviceRpm: deviceRpm,
-        measuredRpm: measuredRpm,
-        currentAngle: currentAngle,
-        vactual: vactual,
-        stepsCount: stepsCount,
-        motor: motor,
-        enabled: enabled,
-        homed: homed);
-  }
-
-  @override
-  ByteData serialize() {
-    var data_ = ByteData(mavlinkEncodedLength);
-    data_.setFloat32(0, motorRpm, Endian.little);
-    data_.setFloat32(4, deviceRpm, Endian.little);
-    data_.setFloat32(8, measuredRpm, Endian.little);
-    data_.setFloat32(12, currentAngle, Endian.little);
-    data_.setUint16(16, vactual, Endian.little);
-    data_.setInt16(18, stepsCount, Endian.little);
-    data_.setUint8(20, motor);
-    data_.setUint8(21, enabled);
-    data_.setUint8(22, homed);
-    return data_;
-  }
-}
-
 /// Indentifiying information about the EOS device
 ///
 /// IDENTIFIER
@@ -3511,6 +3233,437 @@ class UploadStatus implements MavlinkMessage {
   }
 }
 
+/// Controls Motors
+///
+/// MOTOR_CONTROL
+class MotorControl implements MavlinkMessage {
+  static const int msgId = 15;
+
+  static const int crcExtra = 37;
+
+  static const int mavlinkEncodedLength = 18;
+
+  @override
+  int get mavlinkMessageId => msgId;
+
+  @override
+  int get mavlinkCrcExtra => crcExtra;
+
+  /// RPM to set motor shaft too. Ignores gearing. Only used if MOTOR_BEHAVIOR_MOTOR_RPM is selected.
+  ///
+  /// MAVLink type: float
+  ///
+  /// motor_rpm
+  final float motorRpm;
+
+  /// Angle to goto. Accounts for gearing. 0-360. Values above 360 will be wrapped around.
+  ///
+  /// MAVLink type: float
+  ///
+  /// target_angle
+  final float targetAngle;
+
+  /// RPM to set device too. Takes into account gearing. Only used if MOTOR_BEHAVIOR_DEVICE_RPM is selected
+  ///
+  /// MAVLink type: float
+  ///
+  /// device_rpm
+  final float deviceRpm;
+
+  /// Number of steps to execute. Negative values will step backwards. Only used if MOTOR_BEHAVIOR_STEP is selected
+  ///
+  /// MAVLink type: int16_t
+  ///
+  /// steps_count
+  final int16_t stepsCount;
+
+  /// VACTUAL value to send to stepper driver. Negative values will go backwards. Only used if MOTOR_BEHAVIOR_VACTUAL is selected
+  ///
+  /// MAVLink type: int16_t
+  ///
+  /// vactual
+  final int16_t vactual;
+
+  /// Which motor to target. Only responds to EOS_COMPONENT_YAW_MOTOR and EOS_COMPONENT_PITCH_MOTOR
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// enum: [EosComponent]
+  ///
+  /// target
+  final EosComponent target;
+
+  /// Behavior to Execute
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// enum: [MotorBehavior]
+  ///
+  /// behavior
+  final MotorBehavior behavior;
+
+  MotorControl({
+    required this.motorRpm,
+    required this.targetAngle,
+    required this.deviceRpm,
+    required this.stepsCount,
+    required this.vactual,
+    required this.target,
+    required this.behavior,
+  });
+
+  factory MotorControl.parse(ByteData data_) {
+    if (data_.lengthInBytes < MotorControl.mavlinkEncodedLength) {
+      var len = MotorControl.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var motorRpm = data_.getFloat32(0, Endian.little);
+    var targetAngle = data_.getFloat32(4, Endian.little);
+    var deviceRpm = data_.getFloat32(8, Endian.little);
+    var stepsCount = data_.getInt16(12, Endian.little);
+    var vactual = data_.getInt16(14, Endian.little);
+    var target = data_.getUint8(16);
+    var behavior = data_.getUint8(17);
+
+    return MotorControl(
+        motorRpm: motorRpm,
+        targetAngle: targetAngle,
+        deviceRpm: deviceRpm,
+        stepsCount: stepsCount,
+        vactual: vactual,
+        target: target,
+        behavior: behavior);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setFloat32(0, motorRpm, Endian.little);
+    data_.setFloat32(4, targetAngle, Endian.little);
+    data_.setFloat32(8, deviceRpm, Endian.little);
+    data_.setInt16(12, stepsCount, Endian.little);
+    data_.setInt16(14, vactual, Endian.little);
+    data_.setUint8(16, target);
+    data_.setUint8(17, behavior);
+    return data_;
+  }
+}
+
+/// Motor settings. If emitted by device, represents current settings. If emitted by control software, device will update accordingly
+///
+/// MOTOR_SETTINGS
+class MotorSettings implements MavlinkMessage {
+  static const int msgId = 16;
+
+  static const int crcExtra = 42;
+
+  static const int mavlinkEncodedLength = 24;
+
+  @override
+  int get mavlinkMessageId => msgId;
+
+  @override
+  int get mavlinkCrcExtra => crcExtra;
+
+  /// Gearing ratio to apply, specified as Motor Teeth:Device Teeth; Send as float i.e. 20.0/72.0 becomes 0.2777777
+  ///
+  /// MAVLink type: float
+  ///
+  /// gearing_ratio
+  final float gearingRatio;
+
+  /// Rate at which microsteps are being triggered by the driver internal oscillator. Read Only.
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: Hz
+  ///
+  /// usteps_rate
+  final float ustepsRate;
+
+  /// Device angle travelled per microstep. Read Only.
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: deg
+  ///
+  /// ustep_angle
+  final float ustepAngle;
+
+  /// Motor current 0-2500
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// current
+  final uint16_t current;
+
+  /// Number of steps to move from home position after homing.
+  ///
+  /// MAVLink type: int16_t
+  ///
+  /// home_offset_steps
+  final int16_t homeOffsetSteps;
+
+  /// Number of steps from home switch triggering to repeatable index pulse. Read Only.
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// steps_to_next_index
+  final uint16_t stepsToNextIndex;
+
+  /// Which motor we're referring to.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// enum: [EosComponent]
+  ///
+  /// motor
+  final EosComponent motor;
+
+  /// Microsteps used for stepping 1-256 in powers of 2
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// microsteps
+  final uint8_t microsteps;
+
+  /// Boolean if spread cycle is enabled. 0 = disabled, 1 = enabled
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// spread_cycle
+  final uint8_t spreadCycle;
+
+  /// Boolean if pwm_autoscale is enabled. 0 = disabled, 1 = enabled
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// pwm_autoscale
+  final uint8_t pwmAutoscale;
+
+  /// Boolean if pwm_autograd is enabled. 0 = disabled, 1 = enabled
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// pwm_autograd
+  final uint8_t pwmAutograd;
+
+  /// Mininimum steps between index pulse and home switch. Set to 0 to not enforce a minimum
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// min_steps_to_next_index
+  final uint8_t minStepsToNextIndex;
+
+  MotorSettings({
+    required this.gearingRatio,
+    required this.ustepsRate,
+    required this.ustepAngle,
+    required this.current,
+    required this.homeOffsetSteps,
+    required this.stepsToNextIndex,
+    required this.motor,
+    required this.microsteps,
+    required this.spreadCycle,
+    required this.pwmAutoscale,
+    required this.pwmAutograd,
+    required this.minStepsToNextIndex,
+  });
+
+  factory MotorSettings.parse(ByteData data_) {
+    if (data_.lengthInBytes < MotorSettings.mavlinkEncodedLength) {
+      var len = MotorSettings.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var gearingRatio = data_.getFloat32(0, Endian.little);
+    var ustepsRate = data_.getFloat32(4, Endian.little);
+    var ustepAngle = data_.getFloat32(8, Endian.little);
+    var current = data_.getUint16(12, Endian.little);
+    var homeOffsetSteps = data_.getInt16(14, Endian.little);
+    var stepsToNextIndex = data_.getUint16(16, Endian.little);
+    var motor = data_.getUint8(18);
+    var microsteps = data_.getUint8(19);
+    var spreadCycle = data_.getUint8(20);
+    var pwmAutoscale = data_.getUint8(21);
+    var pwmAutograd = data_.getUint8(22);
+    var minStepsToNextIndex = data_.getUint8(23);
+
+    return MotorSettings(
+        gearingRatio: gearingRatio,
+        ustepsRate: ustepsRate,
+        ustepAngle: ustepAngle,
+        current: current,
+        homeOffsetSteps: homeOffsetSteps,
+        stepsToNextIndex: stepsToNextIndex,
+        motor: motor,
+        microsteps: microsteps,
+        spreadCycle: spreadCycle,
+        pwmAutoscale: pwmAutoscale,
+        pwmAutograd: pwmAutograd,
+        minStepsToNextIndex: minStepsToNextIndex);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setFloat32(0, gearingRatio, Endian.little);
+    data_.setFloat32(4, ustepsRate, Endian.little);
+    data_.setFloat32(8, ustepAngle, Endian.little);
+    data_.setUint16(12, current, Endian.little);
+    data_.setInt16(14, homeOffsetSteps, Endian.little);
+    data_.setUint16(16, stepsToNextIndex, Endian.little);
+    data_.setUint8(18, motor);
+    data_.setUint8(19, microsteps);
+    data_.setUint8(20, spreadCycle);
+    data_.setUint8(21, pwmAutoscale);
+    data_.setUint8(22, pwmAutograd);
+    data_.setUint8(23, minStepsToNextIndex);
+    return data_;
+  }
+}
+
+/// Current Status of the motor
+///
+/// MOTOR_STATUS
+class MotorStatus implements MavlinkMessage {
+  static const int msgId = 17;
+
+  static const int crcExtra = 61;
+
+  static const int mavlinkEncodedLength = 23;
+
+  @override
+  int get mavlinkMessageId => msgId;
+
+  @override
+  int get mavlinkCrcExtra => crcExtra;
+
+  /// Current RPM of the motor.
+  ///
+  /// MAVLink type: float
+  ///
+  /// motor_rpm
+  final float motorRpm;
+
+  /// Current RPM of the device, accounting for gearing.
+  ///
+  /// MAVLink type: float
+  ///
+  /// device_rpm
+  final float deviceRpm;
+
+  /// Measured RPM, if external sensor is available
+  ///
+  /// MAVLink type: float
+  ///
+  /// measured_rpm
+  final float measuredRpm;
+
+  /// Current angle: 0-360. INF if not homed.
+  ///
+  /// MAVLink type: float
+  ///
+  /// current_angle
+  final float currentAngle;
+
+  /// Current VACTUAL value.
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// vactual
+  final uint16_t vactual;
+
+  /// Number of steps from home. UINT16_MAX if motor is in RPM mode.
+  ///
+  /// MAVLink type: int16_t
+  ///
+  /// steps_count
+  final int16_t stepsCount;
+
+  /// Which motor we're referring to.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// enum: [EosComponent]
+  ///
+  /// motor
+  final EosComponent motor;
+
+  /// Boolean if the motor is enabled or not. 0 = disabled, 1 = enabled.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// enabled
+  final uint8_t enabled;
+
+  /// Boolean if the motor is homed or not. 0 = not homed, 1 = homed.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// homed
+  final uint8_t homed;
+
+  MotorStatus({
+    required this.motorRpm,
+    required this.deviceRpm,
+    required this.measuredRpm,
+    required this.currentAngle,
+    required this.vactual,
+    required this.stepsCount,
+    required this.motor,
+    required this.enabled,
+    required this.homed,
+  });
+
+  factory MotorStatus.parse(ByteData data_) {
+    if (data_.lengthInBytes < MotorStatus.mavlinkEncodedLength) {
+      var len = MotorStatus.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var motorRpm = data_.getFloat32(0, Endian.little);
+    var deviceRpm = data_.getFloat32(4, Endian.little);
+    var measuredRpm = data_.getFloat32(8, Endian.little);
+    var currentAngle = data_.getFloat32(12, Endian.little);
+    var vactual = data_.getUint16(16, Endian.little);
+    var stepsCount = data_.getInt16(18, Endian.little);
+    var motor = data_.getUint8(20);
+    var enabled = data_.getUint8(21);
+    var homed = data_.getUint8(22);
+
+    return MotorStatus(
+        motorRpm: motorRpm,
+        deviceRpm: deviceRpm,
+        measuredRpm: measuredRpm,
+        currentAngle: currentAngle,
+        vactual: vactual,
+        stepsCount: stepsCount,
+        motor: motor,
+        enabled: enabled,
+        homed: homed);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setFloat32(0, motorRpm, Endian.little);
+    data_.setFloat32(4, deviceRpm, Endian.little);
+    data_.setFloat32(8, measuredRpm, Endian.little);
+    data_.setFloat32(12, currentAngle, Endian.little);
+    data_.setUint16(16, vactual, Endian.little);
+    data_.setInt16(18, stepsCount, Endian.little);
+    data_.setUint8(20, motor);
+    data_.setUint8(21, enabled);
+    data_.setUint8(22, homed);
+    return data_;
+  }
+}
+
 class MavlinkDialectAltamus implements MavlinkDialect {
   static const int mavlinkVersion = 1;
 
@@ -3522,6 +3675,10 @@ class MavlinkDialectAltamus implements MavlinkDialect {
     switch (messageID) {
       case 0:
         return Heartbeat.parse(data);
+      case 5:
+        return ChangeOperatorControl.parse(data);
+      case 6:
+        return ChangeOperatorControlAck.parse(data);
       case 300:
         return ProtocolVersion.parse(data);
       case 24:
@@ -3548,12 +3705,6 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return ComponentPowerControl.parse(data);
       case 3:
         return SystemStatus.parse(data);
-      case 4:
-        return MotorControl.parse(data);
-      case 5:
-        return MotorSettings.parse(data);
-      case 6:
-        return MotorStatus.parse(data);
       case 7:
         return Identifier.parse(data);
       case 8:
@@ -3570,6 +3721,12 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return WifiInformation.parse(data);
       case 14:
         return UploadStatus.parse(data);
+      case 15:
+        return MotorControl.parse(data);
+      case 16:
+        return MotorSettings.parse(data);
+      case 17:
+        return MotorStatus.parse(data);
       default:
         return null;
     }
@@ -3580,6 +3737,10 @@ class MavlinkDialectAltamus implements MavlinkDialect {
     switch (messageID) {
       case 0:
         return Heartbeat.crcExtra;
+      case 5:
+        return ChangeOperatorControl.crcExtra;
+      case 6:
+        return ChangeOperatorControlAck.crcExtra;
       case 300:
         return ProtocolVersion.crcExtra;
       case 24:
@@ -3606,12 +3767,6 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return ComponentPowerControl.crcExtra;
       case 3:
         return SystemStatus.crcExtra;
-      case 4:
-        return MotorControl.crcExtra;
-      case 5:
-        return MotorSettings.crcExtra;
-      case 6:
-        return MotorStatus.crcExtra;
       case 7:
         return Identifier.crcExtra;
       case 8:
@@ -3628,6 +3783,12 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return WifiInformation.crcExtra;
       case 14:
         return UploadStatus.crcExtra;
+      case 15:
+        return MotorControl.crcExtra;
+      case 16:
+        return MotorSettings.crcExtra;
+      case 17:
+        return MotorStatus.crcExtra;
       default:
         return -1;
     }
