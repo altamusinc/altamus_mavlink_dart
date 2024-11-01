@@ -671,6 +671,24 @@ class Heartbeat implements MavlinkMessage {
     required this.mavlinkVersion,
   });
 
+  Heartbeat copyWith({
+    int? customMode,
+    int? type,
+    int? autopilot,
+    int? baseMode,
+    int? systemStatus,
+    int? mavlinkVersion,
+  }) {
+    return Heartbeat(
+      customMode: customMode ?? this.customMode,
+      type: type ?? this.type,
+      autopilot: autopilot ?? this.autopilot,
+      baseMode: baseMode ?? this.baseMode,
+      systemStatus: systemStatus ?? this.systemStatus,
+      mavlinkVersion: mavlinkVersion ?? this.mavlinkVersion,
+    );
+  }
+
   factory Heartbeat.parse(ByteData data_) {
     if (data_.lengthInBytes < Heartbeat.mavlinkEncodedLength) {
       var len = Heartbeat.mavlinkEncodedLength - data_.lengthInBytes;
@@ -760,6 +778,20 @@ class ChangeOperatorControl implements MavlinkMessage {
     required this.passkey,
   });
 
+  ChangeOperatorControl copyWith({
+    int? targetSystem,
+    int? controlRequest,
+    int? version,
+    List<int>? passkey,
+  }) {
+    return ChangeOperatorControl(
+      targetSystem: targetSystem ?? this.targetSystem,
+      controlRequest: controlRequest ?? this.controlRequest,
+      version: version ?? this.version,
+      passkey: passkey ?? this.passkey,
+    );
+  }
+
   factory ChangeOperatorControl.parse(ByteData data_) {
     if (data_.lengthInBytes < ChangeOperatorControl.mavlinkEncodedLength) {
       var len =
@@ -833,6 +865,18 @@ class ChangeOperatorControlAck implements MavlinkMessage {
     required this.controlRequest,
     required this.ack,
   });
+
+  ChangeOperatorControlAck copyWith({
+    int? gcsSystemId,
+    int? controlRequest,
+    int? ack,
+  }) {
+    return ChangeOperatorControlAck(
+      gcsSystemId: gcsSystemId ?? this.gcsSystemId,
+      controlRequest: controlRequest ?? this.controlRequest,
+      ack: ack ?? this.ack,
+    );
+  }
 
   factory ChangeOperatorControlAck.parse(ByteData data_) {
     if (data_.lengthInBytes < ChangeOperatorControlAck.mavlinkEncodedLength) {
@@ -918,6 +962,22 @@ class ProtocolVersion implements MavlinkMessage {
     required this.specVersionHash,
     required this.libraryVersionHash,
   });
+
+  ProtocolVersion copyWith({
+    int? version,
+    int? minVersion,
+    int? maxVersion,
+    List<int>? specVersionHash,
+    List<int>? libraryVersionHash,
+  }) {
+    return ProtocolVersion(
+      version: version ?? this.version,
+      minVersion: minVersion ?? this.minVersion,
+      maxVersion: maxVersion ?? this.maxVersion,
+      specVersionHash: specVersionHash ?? this.specVersionHash,
+      libraryVersionHash: libraryVersionHash ?? this.libraryVersionHash,
+    );
+  }
 
   factory ProtocolVersion.parse(ByteData data_) {
     if (data_.lengthInBytes < ProtocolVersion.mavlinkEncodedLength) {
@@ -1154,6 +1214,44 @@ class GpsRawInt implements MavlinkMessage {
     required this.yaw,
   });
 
+  GpsRawInt copyWith({
+    int? timeUsec,
+    int? lat,
+    int? lon,
+    int? alt,
+    int? eph,
+    int? epv,
+    int? vel,
+    int? cog,
+    int? fixType,
+    int? satellitesVisible,
+    int? altEllipsoid,
+    int? hAcc,
+    int? vAcc,
+    int? velAcc,
+    int? hdgAcc,
+    int? yaw,
+  }) {
+    return GpsRawInt(
+      timeUsec: timeUsec ?? this.timeUsec,
+      lat: lat ?? this.lat,
+      lon: lon ?? this.lon,
+      alt: alt ?? this.alt,
+      eph: eph ?? this.eph,
+      epv: epv ?? this.epv,
+      vel: vel ?? this.vel,
+      cog: cog ?? this.cog,
+      fixType: fixType ?? this.fixType,
+      satellitesVisible: satellitesVisible ?? this.satellitesVisible,
+      altEllipsoid: altEllipsoid ?? this.altEllipsoid,
+      hAcc: hAcc ?? this.hAcc,
+      vAcc: vAcc ?? this.vAcc,
+      velAcc: velAcc ?? this.velAcc,
+      hdgAcc: hdgAcc ?? this.hdgAcc,
+      yaw: yaw ?? this.yaw,
+    );
+  }
+
   factory GpsRawInt.parse(ByteData data_) {
     if (data_.lengthInBytes < GpsRawInt.mavlinkEncodedLength) {
       var len = GpsRawInt.mavlinkEncodedLength - data_.lengthInBytes;
@@ -1318,6 +1416,28 @@ class Attitude implements MavlinkMessage {
     required this.yawspeed,
     required this.temp,
   });
+
+  Attitude copyWith({
+    int? timeBootMs,
+    double? roll,
+    double? pitch,
+    double? yaw,
+    double? rollspeed,
+    double? pitchspeed,
+    double? yawspeed,
+    double? temp,
+  }) {
+    return Attitude(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      roll: roll ?? this.roll,
+      pitch: pitch ?? this.pitch,
+      yaw: yaw ?? this.yaw,
+      rollspeed: rollspeed ?? this.rollspeed,
+      pitchspeed: pitchspeed ?? this.pitchspeed,
+      yawspeed: yawspeed ?? this.yawspeed,
+      temp: temp ?? this.temp,
+    );
+  }
 
   factory Attitude.parse(ByteData data_) {
     if (data_.lengthInBytes < Attitude.mavlinkEncodedLength) {
@@ -1518,6 +1638,42 @@ class MissionItem implements MavlinkMessage {
     required this.missionType,
   });
 
+  MissionItem copyWith({
+    double? param1,
+    double? param2,
+    double? param3,
+    double? param4,
+    double? x,
+    double? y,
+    double? z,
+    int? seq,
+    int? command,
+    int? targetSystem,
+    int? targetComponent,
+    int? frame,
+    int? current,
+    int? autocontinue,
+    int? missionType,
+  }) {
+    return MissionItem(
+      param1: param1 ?? this.param1,
+      param2: param2 ?? this.param2,
+      param3: param3 ?? this.param3,
+      param4: param4 ?? this.param4,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      z: z ?? this.z,
+      seq: seq ?? this.seq,
+      command: command ?? this.command,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      frame: frame ?? this.frame,
+      current: current ?? this.current,
+      autocontinue: autocontinue ?? this.autocontinue,
+      missionType: missionType ?? this.missionType,
+    );
+  }
+
   factory MissionItem.parse(ByteData data_) {
     if (data_.lengthInBytes < MissionItem.mavlinkEncodedLength) {
       var len = MissionItem.mavlinkEncodedLength - data_.lengthInBytes;
@@ -1708,6 +1864,38 @@ class CommandInt implements MavlinkMessage {
     required this.autocontinue,
   });
 
+  CommandInt copyWith({
+    double? param1,
+    double? param2,
+    double? param3,
+    double? param4,
+    int? x,
+    int? y,
+    double? z,
+    int? command,
+    int? targetSystem,
+    int? targetComponent,
+    int? frame,
+    int? current,
+    int? autocontinue,
+  }) {
+    return CommandInt(
+      param1: param1 ?? this.param1,
+      param2: param2 ?? this.param2,
+      param3: param3 ?? this.param3,
+      param4: param4 ?? this.param4,
+      x: x ?? this.x,
+      y: y ?? this.y,
+      z: z ?? this.z,
+      command: command ?? this.command,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      frame: frame ?? this.frame,
+      current: current ?? this.current,
+      autocontinue: autocontinue ?? this.autocontinue,
+    );
+  }
+
   factory CommandInt.parse(ByteData data_) {
     if (data_.lengthInBytes < CommandInt.mavlinkEncodedLength) {
       var len = CommandInt.mavlinkEncodedLength - data_.lengthInBytes;
@@ -1874,6 +2062,34 @@ class CommandLong implements MavlinkMessage {
     required this.confirmation,
   });
 
+  CommandLong copyWith({
+    double? param1,
+    double? param2,
+    double? param3,
+    double? param4,
+    double? param5,
+    double? param6,
+    double? param7,
+    int? command,
+    int? targetSystem,
+    int? targetComponent,
+    int? confirmation,
+  }) {
+    return CommandLong(
+      param1: param1 ?? this.param1,
+      param2: param2 ?? this.param2,
+      param3: param3 ?? this.param3,
+      param4: param4 ?? this.param4,
+      param5: param5 ?? this.param5,
+      param6: param6 ?? this.param6,
+      param7: param7 ?? this.param7,
+      command: command ?? this.command,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      confirmation: confirmation ?? this.confirmation,
+    );
+  }
+
   factory CommandLong.parse(ByteData data_) {
     if (data_.lengthInBytes < CommandLong.mavlinkEncodedLength) {
       var len = CommandLong.mavlinkEncodedLength - data_.lengthInBytes;
@@ -2019,6 +2235,24 @@ class CommandAck implements MavlinkMessage {
     required this.targetComponent,
   });
 
+  CommandAck copyWith({
+    int? command,
+    int? result,
+    int? progress,
+    int? resultParam2,
+    int? targetSystem,
+    int? targetComponent,
+  }) {
+    return CommandAck(
+      command: command ?? this.command,
+      result: result ?? this.result,
+      progress: progress ?? this.progress,
+      resultParam2: resultParam2 ?? this.resultParam2,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+    );
+  }
+
   factory CommandAck.parse(ByteData data_) {
     if (data_.lengthInBytes < CommandAck.mavlinkEncodedLength) {
       var len = CommandAck.mavlinkEncodedLength - data_.lengthInBytes;
@@ -2106,6 +2340,18 @@ class CommandCancel implements MavlinkMessage {
     required this.targetComponent,
   });
 
+  CommandCancel copyWith({
+    int? command,
+    int? targetSystem,
+    int? targetComponent,
+  }) {
+    return CommandCancel(
+      command: command ?? this.command,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+    );
+  }
+
   factory CommandCancel.parse(ByteData data_) {
     if (data_.lengthInBytes < CommandCancel.mavlinkEncodedLength) {
       var len = CommandCancel.mavlinkEncodedLength - data_.lengthInBytes;
@@ -2173,6 +2419,16 @@ class MessageInterval implements MavlinkMessage {
     required this.intervalUs,
     required this.messageId,
   });
+
+  MessageInterval copyWith({
+    int? intervalUs,
+    int? messageId,
+  }) {
+    return MessageInterval(
+      intervalUs: intervalUs ?? this.intervalUs,
+      messageId: messageId ?? this.messageId,
+    );
+  }
 
   factory MessageInterval.parse(ByteData data_) {
     if (data_.lengthInBytes < MessageInterval.mavlinkEncodedLength) {
@@ -2253,6 +2509,20 @@ class Statustext implements MavlinkMessage {
     required this.chunkSeq,
   });
 
+  Statustext copyWith({
+    int? severity,
+    List<int>? text,
+    int? id,
+    int? chunkSeq,
+  }) {
+    return Statustext(
+      severity: severity ?? this.severity,
+      text: text ?? this.text,
+      id: id ?? this.id,
+      chunkSeq: chunkSeq ?? this.chunkSeq,
+    );
+  }
+
   factory Statustext.parse(ByteData data_) {
     if (data_.lengthInBytes < Statustext.mavlinkEncodedLength) {
       var len = Statustext.mavlinkEncodedLength - data_.lengthInBytes;
@@ -2306,6 +2576,14 @@ class LidarReading implements MavlinkMessage {
   LidarReading({
     required this.readings,
   });
+
+  LidarReading copyWith({
+    List<int>? readings,
+  }) {
+    return LidarReading(
+      readings: readings ?? this.readings,
+    );
+  }
 
   factory LidarReading.parse(ByteData data_) {
     if (data_.lengthInBytes < LidarReading.mavlinkEncodedLength) {
@@ -2365,6 +2643,16 @@ class ComponentPowerControl implements MavlinkMessage {
     required this.device,
     required this.behavior,
   });
+
+  ComponentPowerControl copyWith({
+    int? device,
+    int? behavior,
+  }) {
+    return ComponentPowerControl(
+      device: device ?? this.device,
+      behavior: behavior ?? this.behavior,
+    );
+  }
 
   factory ComponentPowerControl.parse(ByteData data_) {
     if (data_.lengthInBytes < ComponentPowerControl.mavlinkEncodedLength) {
@@ -2448,6 +2736,20 @@ class SystemStatus implements MavlinkMessage {
     required this.state,
   });
 
+  SystemStatus copyWith({
+    int? powerStatusBitmask,
+    int? healthStatusBitmask,
+    int? uptime,
+    int? state,
+  }) {
+    return SystemStatus(
+      powerStatusBitmask: powerStatusBitmask ?? this.powerStatusBitmask,
+      healthStatusBitmask: healthStatusBitmask ?? this.healthStatusBitmask,
+      uptime: uptime ?? this.uptime,
+      state: state ?? this.state,
+    );
+  }
+
   factory SystemStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < SystemStatus.mavlinkEncodedLength) {
       var len = SystemStatus.mavlinkEncodedLength - data_.lengthInBytes;
@@ -2529,6 +2831,20 @@ class Identifier implements MavlinkMessage {
     required this.name,
   });
 
+  Identifier copyWith({
+    List<int>? particleId,
+    List<int>? localIp,
+    List<int>? mac,
+    List<int>? name,
+  }) {
+    return Identifier(
+      particleId: particleId ?? this.particleId,
+      localIp: localIp ?? this.localIp,
+      mac: mac ?? this.mac,
+      name: name ?? this.name,
+    );
+  }
+
   factory Identifier.parse(ByteData data_) {
     if (data_.lengthInBytes < Identifier.mavlinkEncodedLength) {
       var len = Identifier.mavlinkEncodedLength - data_.lengthInBytes;
@@ -2584,6 +2900,14 @@ class ComponentHealthTest implements MavlinkMessage {
   ComponentHealthTest({
     required this.component,
   });
+
+  ComponentHealthTest copyWith({
+    int? component,
+  }) {
+    return ComponentHealthTest(
+      component: component ?? this.component,
+    );
+  }
 
   factory ComponentHealthTest.parse(ByteData data_) {
     if (data_.lengthInBytes < ComponentHealthTest.mavlinkEncodedLength) {
@@ -2684,6 +3008,24 @@ class ScanSettings implements MavlinkMessage {
     required this.scanSpeed,
   });
 
+  ScanSettings copyWith({
+    double? yawStart,
+    double? yawStop,
+    double? pitchStart,
+    double? pitchStop,
+    double? pointSpacing,
+    double? scanSpeed,
+  }) {
+    return ScanSettings(
+      yawStart: yawStart ?? this.yawStart,
+      yawStop: yawStop ?? this.yawStop,
+      pitchStart: pitchStart ?? this.pitchStart,
+      pitchStop: pitchStop ?? this.pitchStop,
+      pointSpacing: pointSpacing ?? this.pointSpacing,
+      scanSpeed: scanSpeed ?? this.scanSpeed,
+    );
+  }
+
   factory ScanSettings.parse(ByteData data_) {
     if (data_.lengthInBytes < ScanSettings.mavlinkEncodedLength) {
       var len = ScanSettings.mavlinkEncodedLength - data_.lengthInBytes;
@@ -2766,6 +3108,18 @@ class ScanStatus implements MavlinkMessage {
     required this.timeRemaining,
     required this.scanCompletion,
   });
+
+  ScanStatus copyWith({
+    int? startTimeUnix,
+    int? timeRemaining,
+    int? scanCompletion,
+  }) {
+    return ScanStatus(
+      startTimeUnix: startTimeUnix ?? this.startTimeUnix,
+      timeRemaining: timeRemaining ?? this.timeRemaining,
+      scanCompletion: scanCompletion ?? this.scanCompletion,
+    );
+  }
 
   factory ScanStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < ScanStatus.mavlinkEncodedLength) {
@@ -2885,6 +3239,30 @@ class RemoteServerSettings implements MavlinkMessage {
     required this.ftpPassword,
   });
 
+  RemoteServerSettings copyWith({
+    int? postPort,
+    int? ftpPort,
+    int? serverEnable,
+    List<int>? postServer,
+    List<int>? postUri,
+    int? ftpEnable,
+    List<int>? ftpServer,
+    List<int>? ftpUsername,
+    List<int>? ftpPassword,
+  }) {
+    return RemoteServerSettings(
+      postPort: postPort ?? this.postPort,
+      ftpPort: ftpPort ?? this.ftpPort,
+      serverEnable: serverEnable ?? this.serverEnable,
+      postServer: postServer ?? this.postServer,
+      postUri: postUri ?? this.postUri,
+      ftpEnable: ftpEnable ?? this.ftpEnable,
+      ftpServer: ftpServer ?? this.ftpServer,
+      ftpUsername: ftpUsername ?? this.ftpUsername,
+      ftpPassword: ftpPassword ?? this.ftpPassword,
+    );
+  }
+
   factory RemoteServerSettings.parse(ByteData data_) {
     if (data_.lengthInBytes < RemoteServerSettings.mavlinkEncodedLength) {
       var len = RemoteServerSettings.mavlinkEncodedLength - data_.lengthInBytes;
@@ -2989,6 +3367,20 @@ class PowerInformation implements MavlinkMessage {
     required this.instantPower,
   });
 
+  PowerInformation copyWith({
+    int? energyConsumed,
+    int? instantCurrent,
+    int? instantVoltage,
+    int? instantPower,
+  }) {
+    return PowerInformation(
+      energyConsumed: energyConsumed ?? this.energyConsumed,
+      instantCurrent: instantCurrent ?? this.instantCurrent,
+      instantVoltage: instantVoltage ?? this.instantVoltage,
+      instantPower: instantPower ?? this.instantPower,
+    );
+  }
+
   factory PowerInformation.parse(ByteData data_) {
     if (data_.lengthInBytes < PowerInformation.mavlinkEncodedLength) {
       var len = PowerInformation.mavlinkEncodedLength - data_.lengthInBytes;
@@ -3085,6 +3477,24 @@ class WifiInformation implements MavlinkMessage {
     required this.snr,
     required this.snrPercent,
   });
+
+  WifiInformation copyWith({
+    List<int>? ssid,
+    List<int>? bssid,
+    int? rssi,
+    int? rssiPercent,
+    int? snr,
+    int? snrPercent,
+  }) {
+    return WifiInformation(
+      ssid: ssid ?? this.ssid,
+      bssid: bssid ?? this.bssid,
+      rssi: rssi ?? this.rssi,
+      rssiPercent: rssiPercent ?? this.rssiPercent,
+      snr: snr ?? this.snr,
+      snrPercent: snrPercent ?? this.snrPercent,
+    );
+  }
 
   factory WifiInformation.parse(ByteData data_) {
     if (data_.lengthInBytes < WifiInformation.mavlinkEncodedLength) {
@@ -3196,6 +3606,24 @@ class UploadStatus implements MavlinkMessage {
     required this.timeRemaining,
     required this.uploadCompletion,
   });
+
+  UploadStatus copyWith({
+    int? startTimeUnix,
+    int? bytesUploaded,
+    int? uploadSize,
+    int? uploadRate,
+    int? timeRemaining,
+    int? uploadCompletion,
+  }) {
+    return UploadStatus(
+      startTimeUnix: startTimeUnix ?? this.startTimeUnix,
+      bytesUploaded: bytesUploaded ?? this.bytesUploaded,
+      uploadSize: uploadSize ?? this.uploadSize,
+      uploadRate: uploadRate ?? this.uploadRate,
+      timeRemaining: timeRemaining ?? this.timeRemaining,
+      uploadCompletion: uploadCompletion ?? this.uploadCompletion,
+    );
+  }
 
   factory UploadStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < UploadStatus.mavlinkEncodedLength) {
@@ -3311,6 +3739,26 @@ class MotorControl implements MavlinkMessage {
     required this.target,
     required this.behavior,
   });
+
+  MotorControl copyWith({
+    double? motorRpm,
+    double? targetAngle,
+    double? deviceRpm,
+    int? stepsCount,
+    int? vactual,
+    int? target,
+    int? behavior,
+  }) {
+    return MotorControl(
+      motorRpm: motorRpm ?? this.motorRpm,
+      targetAngle: targetAngle ?? this.targetAngle,
+      deviceRpm: deviceRpm ?? this.deviceRpm,
+      stepsCount: stepsCount ?? this.stepsCount,
+      vactual: vactual ?? this.vactual,
+      target: target ?? this.target,
+      behavior: behavior ?? this.behavior,
+    );
+  }
 
   factory MotorControl.parse(ByteData data_) {
     if (data_.lengthInBytes < MotorControl.mavlinkEncodedLength) {
@@ -3472,6 +3920,36 @@ class MotorSettings implements MavlinkMessage {
     required this.minStepsToNextIndex,
   });
 
+  MotorSettings copyWith({
+    double? gearingRatio,
+    double? ustepsRate,
+    double? ustepAngle,
+    int? current,
+    int? homeOffsetSteps,
+    int? stepsToNextIndex,
+    int? motor,
+    int? microsteps,
+    int? spreadCycle,
+    int? pwmAutoscale,
+    int? pwmAutograd,
+    int? minStepsToNextIndex,
+  }) {
+    return MotorSettings(
+      gearingRatio: gearingRatio ?? this.gearingRatio,
+      ustepsRate: ustepsRate ?? this.ustepsRate,
+      ustepAngle: ustepAngle ?? this.ustepAngle,
+      current: current ?? this.current,
+      homeOffsetSteps: homeOffsetSteps ?? this.homeOffsetSteps,
+      stepsToNextIndex: stepsToNextIndex ?? this.stepsToNextIndex,
+      motor: motor ?? this.motor,
+      microsteps: microsteps ?? this.microsteps,
+      spreadCycle: spreadCycle ?? this.spreadCycle,
+      pwmAutoscale: pwmAutoscale ?? this.pwmAutoscale,
+      pwmAutograd: pwmAutograd ?? this.pwmAutograd,
+      minStepsToNextIndex: minStepsToNextIndex ?? this.minStepsToNextIndex,
+    );
+  }
+
   factory MotorSettings.parse(ByteData data_) {
     if (data_.lengthInBytes < MotorSettings.mavlinkEncodedLength) {
       var len = MotorSettings.mavlinkEncodedLength - data_.lengthInBytes;
@@ -3618,6 +4096,30 @@ class MotorStatus implements MavlinkMessage {
     required this.enabled,
     required this.homed,
   });
+
+  MotorStatus copyWith({
+    double? motorRpm,
+    double? deviceRpm,
+    double? measuredRpm,
+    double? currentAngle,
+    int? vactual,
+    int? stepsCount,
+    int? motor,
+    int? enabled,
+    int? homed,
+  }) {
+    return MotorStatus(
+      motorRpm: motorRpm ?? this.motorRpm,
+      deviceRpm: deviceRpm ?? this.deviceRpm,
+      measuredRpm: measuredRpm ?? this.measuredRpm,
+      currentAngle: currentAngle ?? this.currentAngle,
+      vactual: vactual ?? this.vactual,
+      stepsCount: stepsCount ?? this.stepsCount,
+      motor: motor ?? this.motor,
+      enabled: enabled ?? this.enabled,
+      homed: homed ?? this.homed,
+    );
+  }
 
   factory MotorStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < MotorStatus.mavlinkEncodedLength) {
