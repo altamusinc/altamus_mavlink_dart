@@ -532,15 +532,19 @@ const EosState eosStateUploading = 2;
 
 ///
 /// EOS_STATE_SCANNING
-const EosState eosStateScanning = 4;
+const EosState eosStateScanning = 3;
 
 ///
 /// EOS_STATE_INIT
-const EosState eosStateInit = 8;
+const EosState eosStateInit = 4;
 
 ///
 /// EOS_STATE_ERROR
-const EosState eosStateError = 16;
+const EosState eosStateError = 5;
+
+///
+/// EOS_STATE_HOMING
+const EosState eosStateHoming = 6;
 
 /// Behaviors a motor can execute
 ///
@@ -557,27 +561,27 @@ const MotorBehavior motorBehaviorMotorDisable = 2;
 
 ///
 /// MOTOR_BEHAVIOR_MOTOR_RPM
-const MotorBehavior motorBehaviorMotorRpm = 4;
+const MotorBehavior motorBehaviorMotorRpm = 3;
 
 ///
 /// MOTOR_BEHAVIOR_DEVICE_RPM
-const MotorBehavior motorBehaviorDeviceRpm = 8;
+const MotorBehavior motorBehaviorDeviceRpm = 4;
 
 ///
 /// MOTOR_BEHAVIOR_VACTUAL
-const MotorBehavior motorBehaviorVactual = 16;
+const MotorBehavior motorBehaviorVactual = 5;
 
 ///
 /// MOTOR_BEHAVIOR_GOTO_ANGLE
-const MotorBehavior motorBehaviorGotoAngle = 32;
+const MotorBehavior motorBehaviorGotoAngle = 6;
 
 ///
 /// MOTOR_BEHAVIOR_STEP
-const MotorBehavior motorBehaviorStep = 64;
+const MotorBehavior motorBehaviorStep = 7;
 
 ///
 /// MOTOR_BEHAVIOR_HOME
-const MotorBehavior motorBehaviorHome = 128;
+const MotorBehavior motorBehaviorHome = 8;
 
 /// Power behavior to execute
 ///
@@ -594,7 +598,7 @@ const EosComponentPowerBehavior eosComponentPowerBehaviorDisable = 2;
 
 ///
 /// EOS_COMPONENT_POWER_BEHAVIOR_REBOOT
-const EosComponentPowerBehavior eosComponentPowerBehaviorReboot = 4;
+const EosComponentPowerBehavior eosComponentPowerBehaviorReboot = 3;
 
 /// The heartbeat message shows that a system or component is present and responding. The type and autopilot fields (along with the message component id), allow the receiving system to treat further messages from this system appropriately (e.g. by laying out the user interface based on the autopilot). This microservice is documented at https://mavlink.io/en/services/heartbeat.html
 ///
