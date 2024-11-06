@@ -672,12 +672,12 @@ class Heartbeat implements MavlinkMessage {
   });
 
   Heartbeat copyWith({
-    int? customMode,
-    int? type,
-    int? autopilot,
-    int? baseMode,
-    int? systemStatus,
-    int? mavlinkVersion,
+    uint32_t? customMode,
+    MavType? type,
+    MavAutopilot? autopilot,
+    MavModeFlag? baseMode,
+    MavState? systemStatus,
+    uint8_t? mavlinkVersion,
   }) {
     return Heartbeat(
       customMode: customMode ?? this.customMode,
@@ -779,10 +779,10 @@ class ChangeOperatorControl implements MavlinkMessage {
   });
 
   ChangeOperatorControl copyWith({
-    int? targetSystem,
-    int? controlRequest,
-    int? version,
-    List<int>? passkey,
+    uint8_t? targetSystem,
+    uint8_t? controlRequest,
+    uint8_t? version,
+    List<char>? passkey,
   }) {
     return ChangeOperatorControl(
       targetSystem: targetSystem ?? this.targetSystem,
@@ -867,9 +867,9 @@ class ChangeOperatorControlAck implements MavlinkMessage {
   });
 
   ChangeOperatorControlAck copyWith({
-    int? gcsSystemId,
-    int? controlRequest,
-    int? ack,
+    uint8_t? gcsSystemId,
+    uint8_t? controlRequest,
+    uint8_t? ack,
   }) {
     return ChangeOperatorControlAck(
       gcsSystemId: gcsSystemId ?? this.gcsSystemId,
@@ -964,11 +964,11 @@ class ProtocolVersion implements MavlinkMessage {
   });
 
   ProtocolVersion copyWith({
-    int? version,
-    int? minVersion,
-    int? maxVersion,
-    List<int>? specVersionHash,
-    List<int>? libraryVersionHash,
+    uint16_t? version,
+    uint16_t? minVersion,
+    uint16_t? maxVersion,
+    List<int8_t>? specVersionHash,
+    List<int8_t>? libraryVersionHash,
   }) {
     return ProtocolVersion(
       version: version ?? this.version,
@@ -1215,22 +1215,22 @@ class GpsRawInt implements MavlinkMessage {
   });
 
   GpsRawInt copyWith({
-    int? timeUsec,
-    int? lat,
-    int? lon,
-    int? alt,
-    int? eph,
-    int? epv,
-    int? vel,
-    int? cog,
-    int? fixType,
-    int? satellitesVisible,
-    int? altEllipsoid,
-    int? hAcc,
-    int? vAcc,
-    int? velAcc,
-    int? hdgAcc,
-    int? yaw,
+    uint64_t? timeUsec,
+    int32_t? lat,
+    int32_t? lon,
+    int32_t? alt,
+    uint16_t? eph,
+    uint16_t? epv,
+    uint16_t? vel,
+    uint16_t? cog,
+    GpsFixType? fixType,
+    uint8_t? satellitesVisible,
+    int32_t? altEllipsoid,
+    uint32_t? hAcc,
+    uint32_t? vAcc,
+    uint32_t? velAcc,
+    uint32_t? hdgAcc,
+    uint16_t? yaw,
   }) {
     return GpsRawInt(
       timeUsec: timeUsec ?? this.timeUsec,
@@ -1418,14 +1418,14 @@ class Attitude implements MavlinkMessage {
   });
 
   Attitude copyWith({
-    int? timeBootMs,
-    double? roll,
-    double? pitch,
-    double? yaw,
-    double? rollspeed,
-    double? pitchspeed,
-    double? yawspeed,
-    double? temp,
+    uint32_t? timeBootMs,
+    float? roll,
+    float? pitch,
+    float? yaw,
+    float? rollspeed,
+    float? pitchspeed,
+    float? yawspeed,
+    float? temp,
   }) {
     return Attitude(
       timeBootMs: timeBootMs ?? this.timeBootMs,
@@ -1639,21 +1639,21 @@ class MissionItem implements MavlinkMessage {
   });
 
   MissionItem copyWith({
-    double? param1,
-    double? param2,
-    double? param3,
-    double? param4,
-    double? x,
-    double? y,
-    double? z,
-    int? seq,
-    int? command,
-    int? targetSystem,
-    int? targetComponent,
-    int? frame,
-    int? current,
-    int? autocontinue,
-    int? missionType,
+    float? param1,
+    float? param2,
+    float? param3,
+    float? param4,
+    float? x,
+    float? y,
+    float? z,
+    uint16_t? seq,
+    MavCmd? command,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    MavFrame? frame,
+    uint8_t? current,
+    uint8_t? autocontinue,
+    MavMissionType? missionType,
   }) {
     return MissionItem(
       param1: param1 ?? this.param1,
@@ -1865,19 +1865,19 @@ class CommandInt implements MavlinkMessage {
   });
 
   CommandInt copyWith({
-    double? param1,
-    double? param2,
-    double? param3,
-    double? param4,
-    int? x,
-    int? y,
-    double? z,
-    int? command,
-    int? targetSystem,
-    int? targetComponent,
-    int? frame,
-    int? current,
-    int? autocontinue,
+    float? param1,
+    float? param2,
+    float? param3,
+    float? param4,
+    int32_t? x,
+    int32_t? y,
+    float? z,
+    MavCmd? command,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    MavFrame? frame,
+    uint8_t? current,
+    uint8_t? autocontinue,
   }) {
     return CommandInt(
       param1: param1 ?? this.param1,
@@ -2063,17 +2063,17 @@ class CommandLong implements MavlinkMessage {
   });
 
   CommandLong copyWith({
-    double? param1,
-    double? param2,
-    double? param3,
-    double? param4,
-    double? param5,
-    double? param6,
-    double? param7,
-    int? command,
-    int? targetSystem,
-    int? targetComponent,
-    int? confirmation,
+    float? param1,
+    float? param2,
+    float? param3,
+    float? param4,
+    float? param5,
+    float? param6,
+    float? param7,
+    MavCmd? command,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    uint8_t? confirmation,
   }) {
     return CommandLong(
       param1: param1 ?? this.param1,
@@ -2236,12 +2236,12 @@ class CommandAck implements MavlinkMessage {
   });
 
   CommandAck copyWith({
-    int? command,
-    int? result,
-    int? progress,
-    int? resultParam2,
-    int? targetSystem,
-    int? targetComponent,
+    MavCmd? command,
+    MavResult? result,
+    uint8_t? progress,
+    int32_t? resultParam2,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
   }) {
     return CommandAck(
       command: command ?? this.command,
@@ -2341,9 +2341,9 @@ class CommandCancel implements MavlinkMessage {
   });
 
   CommandCancel copyWith({
-    int? command,
-    int? targetSystem,
-    int? targetComponent,
+    MavCmd? command,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
   }) {
     return CommandCancel(
       command: command ?? this.command,
@@ -2421,8 +2421,8 @@ class MessageInterval implements MavlinkMessage {
   });
 
   MessageInterval copyWith({
-    int? intervalUs,
-    int? messageId,
+    int32_t? intervalUs,
+    uint16_t? messageId,
   }) {
     return MessageInterval(
       intervalUs: intervalUs ?? this.intervalUs,
@@ -2510,10 +2510,10 @@ class Statustext implements MavlinkMessage {
   });
 
   Statustext copyWith({
-    int? severity,
-    List<int>? text,
-    int? id,
-    int? chunkSeq,
+    MavSeverity? severity,
+    List<char>? text,
+    uint16_t? id,
+    uint8_t? chunkSeq,
   }) {
     return Statustext(
       severity: severity ?? this.severity,
@@ -2578,7 +2578,7 @@ class LidarReading implements MavlinkMessage {
   });
 
   LidarReading copyWith({
-    List<int>? readings,
+    List<int64_t>? readings,
   }) {
     return LidarReading(
       readings: readings ?? this.readings,
@@ -2645,8 +2645,8 @@ class ComponentPowerControl implements MavlinkMessage {
   });
 
   ComponentPowerControl copyWith({
-    int? device,
-    int? behavior,
+    EosComponent? device,
+    EosComponentPowerBehavior? behavior,
   }) {
     return ComponentPowerControl(
       device: device ?? this.device,
@@ -2737,10 +2737,10 @@ class SystemStatus implements MavlinkMessage {
   });
 
   SystemStatus copyWith({
-    int? powerStatusBitmask,
-    int? healthStatusBitmask,
-    int? uptime,
-    int? state,
+    EosComponent? powerStatusBitmask,
+    EosComponent? healthStatusBitmask,
+    uint16_t? uptime,
+    EosState? state,
   }) {
     return SystemStatus(
       powerStatusBitmask: powerStatusBitmask ?? this.powerStatusBitmask,
@@ -2832,10 +2832,10 @@ class Identifier implements MavlinkMessage {
   });
 
   Identifier copyWith({
-    List<int>? particleId,
-    List<int>? localIp,
-    List<int>? mac,
-    List<int>? name,
+    List<char>? particleId,
+    List<int8_t>? localIp,
+    List<int8_t>? mac,
+    List<char>? name,
   }) {
     return Identifier(
       particleId: particleId ?? this.particleId,
@@ -2902,7 +2902,7 @@ class ComponentHealthTest implements MavlinkMessage {
   });
 
   ComponentHealthTest copyWith({
-    int? component,
+    EosComponent? component,
   }) {
     return ComponentHealthTest(
       component: component ?? this.component,
@@ -3009,12 +3009,12 @@ class ScanSettings implements MavlinkMessage {
   });
 
   ScanSettings copyWith({
-    double? yawStart,
-    double? yawStop,
-    double? pitchStart,
-    double? pitchStop,
-    double? pointSpacing,
-    double? scanSpeed,
+    float? yawStart,
+    float? yawStop,
+    float? pitchStart,
+    float? pitchStop,
+    float? pointSpacing,
+    float? scanSpeed,
   }) {
     return ScanSettings(
       yawStart: yawStart ?? this.yawStart,
@@ -3110,9 +3110,9 @@ class ScanStatus implements MavlinkMessage {
   });
 
   ScanStatus copyWith({
-    int? startTimeUnix,
-    int? timeRemaining,
-    int? scanCompletion,
+    uint32_t? startTimeUnix,
+    uint16_t? timeRemaining,
+    uint8_t? scanCompletion,
   }) {
     return ScanStatus(
       startTimeUnix: startTimeUnix ?? this.startTimeUnix,
@@ -3240,15 +3240,15 @@ class RemoteServerSettings implements MavlinkMessage {
   });
 
   RemoteServerSettings copyWith({
-    int? postPort,
-    int? ftpPort,
-    int? serverEnable,
-    List<int>? postServer,
-    List<int>? postUri,
-    int? ftpEnable,
-    List<int>? ftpServer,
-    List<int>? ftpUsername,
-    List<int>? ftpPassword,
+    uint16_t? postPort,
+    uint16_t? ftpPort,
+    uint8_t? serverEnable,
+    List<char>? postServer,
+    List<char>? postUri,
+    uint8_t? ftpEnable,
+    List<char>? ftpServer,
+    List<char>? ftpUsername,
+    List<char>? ftpPassword,
   }) {
     return RemoteServerSettings(
       postPort: postPort ?? this.postPort,
@@ -3368,10 +3368,10 @@ class PowerInformation implements MavlinkMessage {
   });
 
   PowerInformation copyWith({
-    int? energyConsumed,
-    int? instantCurrent,
-    int? instantVoltage,
-    int? instantPower,
+    uint32_t? energyConsumed,
+    uint16_t? instantCurrent,
+    uint16_t? instantVoltage,
+    uint16_t? instantPower,
   }) {
     return PowerInformation(
       energyConsumed: energyConsumed ?? this.energyConsumed,
@@ -3479,12 +3479,12 @@ class WifiInformation implements MavlinkMessage {
   });
 
   WifiInformation copyWith({
-    List<int>? ssid,
-    List<int>? bssid,
-    int? rssi,
-    int? rssiPercent,
-    int? snr,
-    int? snrPercent,
+    List<char>? ssid,
+    List<int8_t>? bssid,
+    uint8_t? rssi,
+    uint8_t? rssiPercent,
+    uint8_t? snr,
+    uint8_t? snrPercent,
   }) {
     return WifiInformation(
       ssid: ssid ?? this.ssid,
@@ -3608,12 +3608,12 @@ class UploadStatus implements MavlinkMessage {
   });
 
   UploadStatus copyWith({
-    int? startTimeUnix,
-    int? bytesUploaded,
-    int? uploadSize,
-    int? uploadRate,
-    int? timeRemaining,
-    int? uploadCompletion,
+    uint32_t? startTimeUnix,
+    uint32_t? bytesUploaded,
+    uint32_t? uploadSize,
+    uint16_t? uploadRate,
+    uint16_t? timeRemaining,
+    uint8_t? uploadCompletion,
   }) {
     return UploadStatus(
       startTimeUnix: startTimeUnix ?? this.startTimeUnix,
@@ -3741,13 +3741,13 @@ class MotorControl implements MavlinkMessage {
   });
 
   MotorControl copyWith({
-    double? motorRpm,
-    double? targetAngle,
-    double? deviceRpm,
-    int? stepsCount,
-    int? vactual,
-    int? target,
-    int? behavior,
+    float? motorRpm,
+    float? targetAngle,
+    float? deviceRpm,
+    int16_t? stepsCount,
+    int16_t? vactual,
+    EosComponent? target,
+    MotorBehavior? behavior,
   }) {
     return MotorControl(
       motorRpm: motorRpm ?? this.motorRpm,
@@ -3921,18 +3921,18 @@ class MotorSettings implements MavlinkMessage {
   });
 
   MotorSettings copyWith({
-    double? gearingRatio,
-    double? ustepsRate,
-    double? ustepAngle,
-    int? current,
-    int? homeOffsetSteps,
-    int? stepsToNextIndex,
-    int? motor,
-    int? microsteps,
-    int? spreadCycle,
-    int? pwmAutoscale,
-    int? pwmAutograd,
-    int? minStepsToNextIndex,
+    float? gearingRatio,
+    float? ustepsRate,
+    float? ustepAngle,
+    uint16_t? current,
+    int16_t? homeOffsetSteps,
+    uint16_t? stepsToNextIndex,
+    EosComponent? motor,
+    uint8_t? microsteps,
+    uint8_t? spreadCycle,
+    uint8_t? pwmAutoscale,
+    uint8_t? pwmAutograd,
+    uint8_t? minStepsToNextIndex,
   }) {
     return MotorSettings(
       gearingRatio: gearingRatio ?? this.gearingRatio,
@@ -4098,15 +4098,15 @@ class MotorStatus implements MavlinkMessage {
   });
 
   MotorStatus copyWith({
-    double? motorRpm,
-    double? deviceRpm,
-    double? measuredRpm,
-    double? currentAngle,
-    int? vactual,
-    int? stepsCount,
-    int? motor,
-    int? enabled,
-    int? homed,
+    float? motorRpm,
+    float? deviceRpm,
+    float? measuredRpm,
+    float? currentAngle,
+    uint16_t? vactual,
+    int16_t? stepsCount,
+    EosComponent? motor,
+    uint8_t? enabled,
+    uint8_t? homed,
   }) {
     return MotorStatus(
       motorRpm: motorRpm ?? this.motorRpm,
