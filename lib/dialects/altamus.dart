@@ -2456,6 +2456,168 @@ class MessageInterval implements MavlinkMessage {
   }
 }
 
+/// Send a key-value pair as float. The use of this message is discouraged for normal packets, but a quite efficient way for testing new messages and getting experimental debug output.
+///
+/// NAMED_VALUE_FLOAT
+class NamedValueFloat implements MavlinkMessage {
+  static const int msgId = 251;
+
+  static const int crcExtra = 170;
+
+  static const int mavlinkEncodedLength = 18;
+
+  @override
+  int get mavlinkMessageId => msgId;
+
+  @override
+  int get mavlinkCrcExtra => crcExtra;
+
+  /// Timestamp (time since system boot).
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// units: ms
+  ///
+  /// time_boot_ms
+  final uint32_t timeBootMs;
+
+  /// Floating point value
+  ///
+  /// MAVLink type: float
+  ///
+  /// value
+  final float value;
+
+  /// Name of the debug variable
+  ///
+  /// MAVLink type: char[10]
+  ///
+  /// name
+  final List<char> name;
+
+  NamedValueFloat({
+    required this.timeBootMs,
+    required this.value,
+    required this.name,
+  });
+
+  NamedValueFloat copyWith({
+    uint32_t? timeBootMs,
+    float? value,
+    List<char>? name,
+  }) {
+    return NamedValueFloat(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      value: value ?? this.value,
+      name: name ?? this.name,
+    );
+  }
+
+  factory NamedValueFloat.parse(ByteData data_) {
+    if (data_.lengthInBytes < NamedValueFloat.mavlinkEncodedLength) {
+      var len = NamedValueFloat.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var timeBootMs = data_.getUint32(0, Endian.little);
+    var value = data_.getFloat32(4, Endian.little);
+    var name = MavlinkMessage.asInt8List(data_, 8, 10);
+
+    return NamedValueFloat(timeBootMs: timeBootMs, value: value, name: name);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint32(0, timeBootMs, Endian.little);
+    data_.setFloat32(4, value, Endian.little);
+    MavlinkMessage.setInt8List(data_, 8, name);
+    return data_;
+  }
+}
+
+/// Send a key-value pair as integer. The use of this message is discouraged for normal packets, but a quite efficient way for testing new messages and getting experimental debug output.
+///
+/// NAMED_VALUE_INT
+class NamedValueInt implements MavlinkMessage {
+  static const int msgId = 252;
+
+  static const int crcExtra = 44;
+
+  static const int mavlinkEncodedLength = 18;
+
+  @override
+  int get mavlinkMessageId => msgId;
+
+  @override
+  int get mavlinkCrcExtra => crcExtra;
+
+  /// Timestamp (time since system boot).
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// units: ms
+  ///
+  /// time_boot_ms
+  final uint32_t timeBootMs;
+
+  /// Signed integer value
+  ///
+  /// MAVLink type: int32_t
+  ///
+  /// value
+  final int32_t value;
+
+  /// Name of the debug variable
+  ///
+  /// MAVLink type: char[10]
+  ///
+  /// name
+  final List<char> name;
+
+  NamedValueInt({
+    required this.timeBootMs,
+    required this.value,
+    required this.name,
+  });
+
+  NamedValueInt copyWith({
+    uint32_t? timeBootMs,
+    int32_t? value,
+    List<char>? name,
+  }) {
+    return NamedValueInt(
+      timeBootMs: timeBootMs ?? this.timeBootMs,
+      value: value ?? this.value,
+      name: name ?? this.name,
+    );
+  }
+
+  factory NamedValueInt.parse(ByteData data_) {
+    if (data_.lengthInBytes < NamedValueInt.mavlinkEncodedLength) {
+      var len = NamedValueInt.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var timeBootMs = data_.getUint32(0, Endian.little);
+    var value = data_.getInt32(4, Endian.little);
+    var name = MavlinkMessage.asInt8List(data_, 8, 10);
+
+    return NamedValueInt(timeBootMs: timeBootMs, value: value, name: name);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint32(0, timeBootMs, Endian.little);
+    data_.setInt32(4, value, Endian.little);
+    MavlinkMessage.setInt8List(data_, 8, name);
+    return data_;
+  }
+}
+
 /// Status text message. These messages are printed in yellow in the COMM console of QGroundControl. WARNING: They consume quite some bandwidth, so use only for important status and error messages. If implemented wisely, these messages are buffered on the MCU and sent only at a limited rate (e.g. 10 Hz).
 ///
 /// STATUSTEXT
@@ -4203,6 +4365,10 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return CommandCancel.parse(data);
       case 244:
         return MessageInterval.parse(data);
+      case 251:
+        return NamedValueFloat.parse(data);
+      case 252:
+        return NamedValueInt.parse(data);
       case 253:
         return Statustext.parse(data);
       case 1:
@@ -4265,6 +4431,10 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return CommandCancel.crcExtra;
       case 244:
         return MessageInterval.crcExtra;
+      case 251:
+        return NamedValueFloat.crcExtra;
+      case 252:
+        return NamedValueInt.crcExtra;
       case 253:
         return Statustext.crcExtra;
       case 1:
