@@ -1322,169 +1322,6 @@ class GpsRawInt implements MavlinkMessage {
   }
 }
 
-/// The attitude in the aeronautical frame (right-handed, Z-down, Y-right, X-front, ZYX, intrinsic).
-///
-/// ATTITUDE
-class Attitude implements MavlinkMessage {
-  static const int msgId = 30;
-
-  static const int crcExtra = 227;
-
-  static const int mavlinkEncodedLength = 32;
-
-  @override
-  int get mavlinkMessageId => msgId;
-
-  @override
-  int get mavlinkCrcExtra => crcExtra;
-
-  /// Timestamp (time since system boot).
-  ///
-  /// MAVLink type: uint32_t
-  ///
-  /// units: ms
-  ///
-  /// time_boot_ms
-  final uint32_t timeBootMs;
-
-  /// Roll angle (-pi..+pi)
-  ///
-  /// MAVLink type: float
-  ///
-  /// units: rad
-  ///
-  /// roll
-  final float roll;
-
-  /// Pitch angle (-pi..+pi)
-  ///
-  /// MAVLink type: float
-  ///
-  /// units: rad
-  ///
-  /// pitch
-  final float pitch;
-
-  /// Yaw angle (-pi..+pi)
-  ///
-  /// MAVLink type: float
-  ///
-  /// units: rad
-  ///
-  /// yaw
-  final float yaw;
-
-  /// Roll angular speed
-  ///
-  /// MAVLink type: float
-  ///
-  /// units: rad/s
-  ///
-  /// rollspeed
-  final float rollspeed;
-
-  /// Pitch angular speed
-  ///
-  /// MAVLink type: float
-  ///
-  /// units: rad/s
-  ///
-  /// pitchspeed
-  final float pitchspeed;
-
-  /// Yaw angular speed
-  ///
-  /// MAVLink type: float
-  ///
-  /// units: rad/s
-  ///
-  /// yawspeed
-  final float yawspeed;
-
-  /// Temperature of the accel,
-  ///
-  /// MAVLink type: float
-  ///
-  /// units: degreesC
-  ///
-  /// temp
-  final float temp;
-
-  Attitude({
-    required this.timeBootMs,
-    required this.roll,
-    required this.pitch,
-    required this.yaw,
-    required this.rollspeed,
-    required this.pitchspeed,
-    required this.yawspeed,
-    required this.temp,
-  });
-
-  Attitude copyWith({
-    uint32_t? timeBootMs,
-    float? roll,
-    float? pitch,
-    float? yaw,
-    float? rollspeed,
-    float? pitchspeed,
-    float? yawspeed,
-    float? temp,
-  }) {
-    return Attitude(
-      timeBootMs: timeBootMs ?? this.timeBootMs,
-      roll: roll ?? this.roll,
-      pitch: pitch ?? this.pitch,
-      yaw: yaw ?? this.yaw,
-      rollspeed: rollspeed ?? this.rollspeed,
-      pitchspeed: pitchspeed ?? this.pitchspeed,
-      yawspeed: yawspeed ?? this.yawspeed,
-      temp: temp ?? this.temp,
-    );
-  }
-
-  factory Attitude.parse(ByteData data_) {
-    if (data_.lengthInBytes < Attitude.mavlinkEncodedLength) {
-      var len = Attitude.mavlinkEncodedLength - data_.lengthInBytes;
-      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
-          List<int>.filled(len, 0);
-      data_ = Uint8List.fromList(d).buffer.asByteData();
-    }
-    var timeBootMs = data_.getUint32(0, Endian.little);
-    var roll = data_.getFloat32(4, Endian.little);
-    var pitch = data_.getFloat32(8, Endian.little);
-    var yaw = data_.getFloat32(12, Endian.little);
-    var rollspeed = data_.getFloat32(16, Endian.little);
-    var pitchspeed = data_.getFloat32(20, Endian.little);
-    var yawspeed = data_.getFloat32(24, Endian.little);
-    var temp = data_.getFloat32(28, Endian.little);
-
-    return Attitude(
-        timeBootMs: timeBootMs,
-        roll: roll,
-        pitch: pitch,
-        yaw: yaw,
-        rollspeed: rollspeed,
-        pitchspeed: pitchspeed,
-        yawspeed: yawspeed,
-        temp: temp);
-  }
-
-  @override
-  ByteData serialize() {
-    var data_ = ByteData(mavlinkEncodedLength);
-    data_.setUint32(0, timeBootMs, Endian.little);
-    data_.setFloat32(4, roll, Endian.little);
-    data_.setFloat32(8, pitch, Endian.little);
-    data_.setFloat32(12, yaw, Endian.little);
-    data_.setFloat32(16, rollspeed, Endian.little);
-    data_.setFloat32(20, pitchspeed, Endian.little);
-    data_.setFloat32(24, yawspeed, Endian.little);
-    data_.setFloat32(28, temp, Endian.little);
-    return data_;
-  }
-}
-
 /// Message encoding a mission item. This message is emitted to announce
 /// the presence of a mission item and to set a mission item on the system. The mission
 /// item can be either in x, y, z meters (type: LOCAL) or x:lat, y:lon, z:altitude.
@@ -4332,6 +4169,199 @@ class MotorStatus implements MavlinkMessage {
   }
 }
 
+/// Combined Orientation message, including GPS, compass, and accelerometer. If components are off, their respective fields will use the "INVALID" values provided.
+///
+/// ORIENTATION
+class Orientation implements MavlinkMessage {
+  static const int msgId = 18;
+
+  static const int crcExtra = 78;
+
+  static const int mavlinkEncodedLength = 34;
+
+  @override
+  int get mavlinkMessageId => msgId;
+
+  @override
+  int get mavlinkCrcExtra => crcExtra;
+
+  /// Roll angle (-pi..+pi). Comes from Accelerometer
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: rad
+  ///
+  /// roll
+  final float roll;
+
+  /// Pitch angle (-pi..+pi). Comes from Accelerometer
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: rad
+  ///
+  /// pitch
+  final float pitch;
+
+  /// Temperature. Comes from Accelerometer
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: degreesC
+  ///
+  /// temp
+  final float temp;
+
+  /// heading angle (-pi..+pi). Comes from Compass
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: rad
+  ///
+  /// heading
+  final float heading;
+
+  /// Latitude (WGS84, EGM96 ellipsoid)
+  ///
+  /// MAVLink type: int32_t
+  ///
+  /// units: degE7
+  ///
+  /// lat
+  final int32_t lat;
+
+  /// Longitude (WGS84, EGM96 ellipsoid)
+  ///
+  /// MAVLink type: int32_t
+  ///
+  /// units: degE7
+  ///
+  /// lon
+  final int32_t lon;
+
+  /// Altitude (MSL). Positive for up.
+  ///
+  /// MAVLink type: int32_t
+  ///
+  /// units: mm
+  ///
+  /// alt
+  final int32_t alt;
+
+  /// X magnetic field strength. Comes from compass
+  ///
+  /// MAVLink type: int16_t
+  ///
+  /// units: mgauss
+  ///
+  /// xmag
+  final int16_t xmag;
+
+  /// Y magnetic field strength. Comes from compass
+  ///
+  /// MAVLink type: int16_t
+  ///
+  /// units: mgauss
+  ///
+  /// ymag
+  final int16_t ymag;
+
+  /// Z magnetic field strength. Comes from compass
+  ///
+  /// MAVLink type: int16_t
+  ///
+  /// units: mgauss
+  ///
+  /// zmag
+  final int16_t zmag;
+
+  Orientation({
+    required this.roll,
+    required this.pitch,
+    required this.temp,
+    required this.heading,
+    required this.lat,
+    required this.lon,
+    required this.alt,
+    required this.xmag,
+    required this.ymag,
+    required this.zmag,
+  });
+
+  Orientation copyWith({
+    float? roll,
+    float? pitch,
+    float? temp,
+    float? heading,
+    int32_t? lat,
+    int32_t? lon,
+    int32_t? alt,
+    int16_t? xmag,
+    int16_t? ymag,
+    int16_t? zmag,
+  }) {
+    return Orientation(
+      roll: roll ?? this.roll,
+      pitch: pitch ?? this.pitch,
+      temp: temp ?? this.temp,
+      heading: heading ?? this.heading,
+      lat: lat ?? this.lat,
+      lon: lon ?? this.lon,
+      alt: alt ?? this.alt,
+      xmag: xmag ?? this.xmag,
+      ymag: ymag ?? this.ymag,
+      zmag: zmag ?? this.zmag,
+    );
+  }
+
+  factory Orientation.parse(ByteData data_) {
+    if (data_.lengthInBytes < Orientation.mavlinkEncodedLength) {
+      var len = Orientation.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var roll = data_.getFloat32(0, Endian.little);
+    var pitch = data_.getFloat32(4, Endian.little);
+    var temp = data_.getFloat32(8, Endian.little);
+    var heading = data_.getFloat32(12, Endian.little);
+    var lat = data_.getInt32(16, Endian.little);
+    var lon = data_.getInt32(20, Endian.little);
+    var alt = data_.getInt32(24, Endian.little);
+    var xmag = data_.getInt16(28, Endian.little);
+    var ymag = data_.getInt16(30, Endian.little);
+    var zmag = data_.getInt16(32, Endian.little);
+
+    return Orientation(
+        roll: roll,
+        pitch: pitch,
+        temp: temp,
+        heading: heading,
+        lat: lat,
+        lon: lon,
+        alt: alt,
+        xmag: xmag,
+        ymag: ymag,
+        zmag: zmag);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setFloat32(0, roll, Endian.little);
+    data_.setFloat32(4, pitch, Endian.little);
+    data_.setFloat32(8, temp, Endian.little);
+    data_.setFloat32(12, heading, Endian.little);
+    data_.setInt32(16, lat, Endian.little);
+    data_.setInt32(20, lon, Endian.little);
+    data_.setInt32(24, alt, Endian.little);
+    data_.setInt16(28, xmag, Endian.little);
+    data_.setInt16(30, ymag, Endian.little);
+    data_.setInt16(32, zmag, Endian.little);
+    return data_;
+  }
+}
+
 class MavlinkDialectAltamus implements MavlinkDialect {
   static const int mavlinkVersion = 1;
 
@@ -4351,8 +4381,6 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return ProtocolVersion.parse(data);
       case 24:
         return GpsRawInt.parse(data);
-      case 30:
-        return Attitude.parse(data);
       case 39:
         return MissionItem.parse(data);
       case 75:
@@ -4399,6 +4427,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return MotorSettings.parse(data);
       case 17:
         return MotorStatus.parse(data);
+      case 18:
+        return Orientation.parse(data);
       default:
         return null;
     }
@@ -4417,8 +4447,6 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return ProtocolVersion.crcExtra;
       case 24:
         return GpsRawInt.crcExtra;
-      case 30:
-        return Attitude.crcExtra;
       case 39:
         return MissionItem.crcExtra;
       case 75:
@@ -4465,6 +4493,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return MotorSettings.crcExtra;
       case 17:
         return MotorStatus.crcExtra;
+      case 18:
+        return Orientation.crcExtra;
       default:
         return -1;
     }
