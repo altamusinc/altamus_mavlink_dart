@@ -28,7 +28,7 @@ class MavlinkParser {
   static const _mavlinkMaximumPayloadSize = 255;
   static const _mavlinkIflagSigned = 0x01;
 
-  final _streamController = StreamController<MavlinkFrame>();
+  final _streamController = StreamController<MavlinkFrame>.broadcast();
 
   _ParserState _state = _ParserState.init;
 
