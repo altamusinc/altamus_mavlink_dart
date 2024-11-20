@@ -2789,9 +2789,9 @@ class SystemStatus implements MavlinkMessage {
 class Identifier implements MavlinkMessage {
   static const int msgId = 7;
 
-  static const int crcExtra = 110;
+  static const int crcExtra = 88;
 
-  static const int mavlinkEncodedLength = 50;
+  static const int mavlinkEncodedLength = 114;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -2822,16 +2822,32 @@ class Identifier implements MavlinkMessage {
 
   /// Friendly name of device i.e. P2-123456
   ///
-  /// MAVLink type: char[16]
+  /// MAVLink type: char[20]
   ///
   /// name
   final List<char> name;
+
+  /// Friendly name for the site it's at, i.e. "57 Rock West"
+  ///
+  /// MAVLink type: char[30]
+  ///
+  /// site_friendly_name
+  final List<char> siteFriendlyName;
+
+  /// Name of the site where the scanner is located, i.e. "Gainesville Plant"
+  ///
+  /// MAVLink type: char[30]
+  ///
+  /// site_name
+  final List<char> siteName;
 
   Identifier({
     required this.particleId,
     required this.localIp,
     required this.mac,
     required this.name,
+    required this.siteFriendlyName,
+    required this.siteName,
   });
 
   Identifier copyWith({
@@ -2839,12 +2855,16 @@ class Identifier implements MavlinkMessage {
     List<int8_t>? localIp,
     List<int8_t>? mac,
     List<char>? name,
+    List<char>? siteFriendlyName,
+    List<char>? siteName,
   }) {
     return Identifier(
       particleId: particleId ?? this.particleId,
       localIp: localIp ?? this.localIp,
       mac: mac ?? this.mac,
       name: name ?? this.name,
+      siteFriendlyName: siteFriendlyName ?? this.siteFriendlyName,
+      siteName: siteName ?? this.siteName,
     );
   }
 
@@ -2858,10 +2878,17 @@ class Identifier implements MavlinkMessage {
     var particleId = MavlinkMessage.asInt8List(data_, 0, 24);
     var localIp = MavlinkMessage.asUint8List(data_, 24, 4);
     var mac = MavlinkMessage.asUint8List(data_, 28, 6);
-    var name = MavlinkMessage.asInt8List(data_, 34, 16);
+    var name = MavlinkMessage.asInt8List(data_, 34, 20);
+    var siteFriendlyName = MavlinkMessage.asInt8List(data_, 54, 30);
+    var siteName = MavlinkMessage.asInt8List(data_, 84, 30);
 
     return Identifier(
-        particleId: particleId, localIp: localIp, mac: mac, name: name);
+        particleId: particleId,
+        localIp: localIp,
+        mac: mac,
+        name: name,
+        siteFriendlyName: siteFriendlyName,
+        siteName: siteName);
   }
 
   @override
@@ -2871,6 +2898,8 @@ class Identifier implements MavlinkMessage {
     MavlinkMessage.setUint8List(data_, 24, localIp);
     MavlinkMessage.setUint8List(data_, 28, mac);
     MavlinkMessage.setInt8List(data_, 34, name);
+    MavlinkMessage.setInt8List(data_, 54, siteFriendlyName);
+    MavlinkMessage.setInt8List(data_, 84, siteName);
     return data_;
   }
 }
