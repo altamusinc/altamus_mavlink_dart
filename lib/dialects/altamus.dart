@@ -2221,6 +2221,118 @@ class CommandCancel implements MavlinkMessage {
 }
 
 ///
+/// Time synchronization message.
+/// The message is used for both timesync requests and responses.
+/// The request is sent with `ts1=syncing component timestamp` and `tc1=0`, and may be broadcast or targeted to a specific system/component.
+/// The response is sent with `ts1=syncing component timestamp` (mirror back unchanged), and `tc1=responding component timestamp`, with the `target_system` and `target_component` set to ids of the original request.
+/// Systems can determine if they are receiving a request or response based on the value of `tc`.
+/// If the response has `target_system==target_component==0` the remote system has not been updated to use the component IDs and cannot reliably timesync; the requestor may report an error.
+/// Timestamps are UNIX Epoch time or time since system boot in nanoseconds (the timestamp format can be inferred by checking for the magnitude of the number; generally it doesn't matter as only the offset is used).
+/// The message sequence is repeated numerous times with results being filtered/averaged to estimate the offset.
+///
+///
+/// TIMESYNC
+class Timesync implements MavlinkMessage {
+  static const int msgId = 111;
+
+  static const int crcExtra = 34;
+
+  static const int mavlinkEncodedLength = 18;
+
+  @override
+  int get mavlinkMessageId => msgId;
+
+  @override
+  int get mavlinkCrcExtra => crcExtra;
+
+  /// Time sync timestamp 1. Syncing: 0. Responding: Timestamp of responding component.
+  ///
+  /// MAVLink type: int64_t
+  ///
+  /// units: ns
+  ///
+  /// tc1
+  final int64_t tc1;
+
+  /// Time sync timestamp 2. Timestamp of syncing component (mirrored in response).
+  ///
+  /// MAVLink type: int64_t
+  ///
+  /// units: ns
+  ///
+  /// ts1
+  final int64_t ts1;
+
+  /// Target system id. Request: 0 (broadcast) or id of specific system. Response must contain system id of the requesting component.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// target_system
+  final uint8_t targetSystem;
+
+  /// Target component id. Request: 0 (broadcast) or id of specific component. Response must contain component id of the requesting component.
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// Extensions field for MAVLink 2.
+  ///
+  /// target_component
+  final uint8_t targetComponent;
+
+  Timesync({
+    required this.tc1,
+    required this.ts1,
+    required this.targetSystem,
+    required this.targetComponent,
+  });
+
+  Timesync copyWith({
+    int64_t? tc1,
+    int64_t? ts1,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+  }) {
+    return Timesync(
+      tc1: tc1 ?? this.tc1,
+      ts1: ts1 ?? this.ts1,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+    );
+  }
+
+  factory Timesync.parse(ByteData data_) {
+    if (data_.lengthInBytes < Timesync.mavlinkEncodedLength) {
+      var len = Timesync.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var tc1 = data_.getInt64(0, Endian.little);
+    var ts1 = data_.getInt64(8, Endian.little);
+    var targetSystem = data_.getUint8(16);
+    var targetComponent = data_.getUint8(17);
+
+    return Timesync(
+        tc1: tc1,
+        ts1: ts1,
+        targetSystem: targetSystem,
+        targetComponent: targetComponent);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setInt64(0, tc1, Endian.little);
+    data_.setInt64(8, ts1, Endian.little);
+    data_.setUint8(16, targetSystem);
+    data_.setUint8(17, targetComponent);
+    return data_;
+  }
+}
+
+///
 /// The interval between messages for a particular MAVLink message ID.
 /// This message is sent in response to the MAV_CMD_REQUEST_MESSAGE command with param1=244 (this message) and param2=message_id (the id of the message for which the interval is required).
 /// It may also be sent in response to MAV_CMD_GET_MESSAGE_INTERVAL.
@@ -4420,6 +4532,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return CommandAck.parse(data);
       case 80:
         return CommandCancel.parse(data);
+      case 111:
+        return Timesync.parse(data);
       case 244:
         return MessageInterval.parse(data);
       case 251:
@@ -4486,6 +4600,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return CommandAck.crcExtra;
       case 80:
         return CommandCancel.crcExtra;
+      case 111:
+        return Timesync.crcExtra;
       case 244:
         return MessageInterval.crcExtra;
       case 251:
