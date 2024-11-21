@@ -600,6 +600,48 @@ const EosComponentPowerBehavior eosComponentPowerBehaviorDisable = 2;
 /// EOS_COMPONENT_POWER_BEHAVIOR_REBOOT
 const EosComponentPowerBehavior eosComponentPowerBehaviorReboot = 3;
 
+/// Behavior to execute related to wifi network
+///
+/// WIFI_CREDIENTIALS_BEHAVIOR
+typedef WifiCredientialsBehavior = int;
+
+///
+/// WIFI_CREDIENTIALS_BEHAVIOR_ADD
+const WifiCredientialsBehavior wifiCredientialsBehaviorAdd = 1;
+
+///
+/// WIFI_CREDIENTIALS_BEHAVIOR_CLEAR
+const WifiCredientialsBehavior wifiCredientialsBehaviorClear = 2;
+
+///
+/// WIFI_CREDIENTIALS_BEHAVIOR_LIST
+const WifiCredientialsBehavior wifiCredientialsBehaviorList = 3;
+
+///
+/// WIFI_CREDIENTIALS_BEHAVIOR_LIST_RESPONSE
+const WifiCredientialsBehavior wifiCredientialsBehaviorListResponse = 4;
+
+/// Auth type of the wifi
+///
+/// WIFI_AUTH_TYPE
+typedef WifiAuthType = int;
+
+///
+/// WIFI_AUTH_TYPE_UNSECURED
+const WifiAuthType wifiAuthTypeUnsecured = 1;
+
+///
+/// WIFI_AUTH_TYPE_WEP
+const WifiAuthType wifiAuthTypeWep = 2;
+
+///
+/// WIFI_AUTH_TYPE_WPA
+const WifiAuthType wifiAuthTypeWpa = 3;
+
+///
+/// WIFI_AUTH_TYPE_WPA2
+const WifiAuthType wifiAuthTypeWpa2 = 4;
+
 /// The heartbeat message shows that a system or component is present and responding. The type and autopilot fields (along with the message component id), allow the receiving system to treat further messages from this system appropriately (e.g. by laying out the user interface based on the autopilot). This microservice is documented at https://mavlink.io/en/services/heartbeat.html
 ///
 /// HEARTBEAT
@@ -4503,6 +4545,102 @@ class Orientation implements MavlinkMessage {
   }
 }
 
+/// Used to query/set the wifi credientials of the device
+///
+/// WIFI_CREDENTIALS
+class WifiCredentials implements MavlinkMessage {
+  static const int msgId = 19;
+
+  static const int crcExtra = 100;
+
+  static const int mavlinkEncodedLength = 130;
+
+  @override
+  int get mavlinkMessageId => msgId;
+
+  @override
+  int get mavlinkCrcExtra => crcExtra;
+
+  /// What behavior to execute, eg, clear, add, list
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// enum: [WifiCredientialsBehavior]
+  ///
+  /// behavior
+  final WifiCredientialsBehavior behavior;
+
+  /// Name of the SSID
+  ///
+  /// MAVLink type: char[64]
+  ///
+  /// ssid
+  final List<char> ssid;
+
+  /// Password of the SSID. leave blank for open networks. Will be left blank if reporting
+  ///
+  /// MAVLink type: char[64]
+  ///
+  /// password
+  final List<char> password;
+
+  /// Auth type of the network; eg; WPA2
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// enum: [WifiAuthType]
+  ///
+  /// auth_type
+  final WifiAuthType authType;
+
+  WifiCredentials({
+    required this.behavior,
+    required this.ssid,
+    required this.password,
+    required this.authType,
+  });
+
+  WifiCredentials copyWith({
+    WifiCredientialsBehavior? behavior,
+    List<char>? ssid,
+    List<char>? password,
+    WifiAuthType? authType,
+  }) {
+    return WifiCredentials(
+      behavior: behavior ?? this.behavior,
+      ssid: ssid ?? this.ssid,
+      password: password ?? this.password,
+      authType: authType ?? this.authType,
+    );
+  }
+
+  factory WifiCredentials.parse(ByteData data_) {
+    if (data_.lengthInBytes < WifiCredentials.mavlinkEncodedLength) {
+      var len = WifiCredentials.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var behavior = data_.getUint8(0);
+    var ssid = MavlinkMessage.asInt8List(data_, 1, 64);
+    var password = MavlinkMessage.asInt8List(data_, 65, 64);
+    var authType = data_.getUint8(129);
+
+    return WifiCredentials(
+        behavior: behavior, ssid: ssid, password: password, authType: authType);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint8(0, behavior);
+    MavlinkMessage.setInt8List(data_, 1, ssid);
+    MavlinkMessage.setInt8List(data_, 65, password);
+    data_.setUint8(129, authType);
+    return data_;
+  }
+}
+
 class MavlinkDialectAltamus implements MavlinkDialect {
   static const int mavlinkVersion = 1;
 
@@ -4572,6 +4710,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return MotorStatus.parse(data);
       case 18:
         return Orientation.parse(data);
+      case 19:
+        return WifiCredentials.parse(data);
       default:
         return null;
     }
@@ -4640,6 +4780,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return MotorStatus.crcExtra;
       case 18:
         return Orientation.crcExtra;
+      case 19:
+        return WifiCredentials.crcExtra;
       default:
         return -1;
     }
