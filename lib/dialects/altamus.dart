@@ -642,6 +642,115 @@ const WifiAuthType wifiAuthTypeWpa = 3;
 /// WIFI_AUTH_TYPE_WPA2
 const WifiAuthType wifiAuthTypeWpa2 = 4;
 
+/// Reasons to stop a scan
+///
+/// SCAN_STOP_REASON
+typedef ScanStopReason = int;
+
+///
+/// SCAN_STOP_REASON_INCOMPLETE
+const ScanStopReason scanStopReasonIncomplete = 1;
+
+///
+/// SCAN_STOP_REASON_PITCH_HOME_ERROR
+const ScanStopReason scanStopReasonPitchHomeError = 2;
+
+///
+/// SCAN_STOP_REASON_PITCH_INDEX_ERROR
+const ScanStopReason scanStopReasonPitchIndexError = 4;
+
+///
+/// SCAN_STOP_REASON_PITCH_MAGNET_ERROR
+const ScanStopReason scanStopReasonPitchMagnetError = 8;
+
+///
+/// SCAN_STOP_REASON_YAW_HOME_ERROR
+const ScanStopReason scanStopReasonYawHomeError = 16;
+
+///
+/// SCAN_STOP_REASON_YAW_INDEX_ERROR
+const ScanStopReason scanStopReasonYawIndexError = 32;
+
+///
+/// SCAN_STOP_REASON_RANGEFINDER_ERROR_DISABLE_OUTPUT
+const ScanStopReason scanStopReasonRangefinderErrorDisableOutput = 64;
+
+///
+/// SCAN_STOP_REASON_RANGEFINDER_ERROR_ENABLE_OUTPUT
+const ScanStopReason scanStopReasonRangefinderErrorEnableOutput = 128;
+
+///
+/// SCAN_STOP_REASON_RANGEFINDER_ERROR_RATE
+const ScanStopReason scanStopReasonRangefinderErrorRate = 256;
+
+///
+/// SCAN_STOP_REASON_RANGEFINDER_ERROR_SAVE
+const ScanStopReason scanStopReasonRangefinderErrorSave = 512;
+
+///
+/// SCAN_STOP_REASON_RANGEFINDER_ERROR_FOG
+const ScanStopReason scanStopReasonRangefinderErrorFog = 1024;
+
+///
+/// SCAN_STOP_REASON_USER_CANCELED
+const ScanStopReason scanStopReasonUserCanceled = 2048;
+
+///
+/// SCAN_STOP_REASON_SCAN_TIMEOUT
+const ScanStopReason scanStopReasonScanTimeout = 4096;
+
+///
+/// SCAN_STOP_REASON_NORMAL_COMPLETE
+const ScanStopReason scanStopReasonNormalComplete = 8192;
+
+///
+/// SCAN_START_REASON
+typedef ScanStartReason = int;
+
+///
+/// SCAN_START_REASON_LOCAL_APP
+const ScanStartReason scanStartReasonLocalApp = 1;
+
+///
+/// SCAN_START_REASON_WEB
+const ScanStartReason scanStartReasonWeb = 2;
+
+///
+/// SCAN_START_REASON_SCHEDULE
+const ScanStartReason scanStartReasonSchedule = 4;
+
+///
+/// SCAN_RESULT_INFO_TYPE
+typedef ScanResultInfoType = int;
+
+///
+/// SCAN_RESULT_INFO_ACTUAL
+const ScanResultInfoType scanResultInfoActual = 1;
+
+///
+/// SCAN_RESULT_INFO_ESTIMATED
+const ScanResultInfoType scanResultInfoEstimated = 2;
+
+///
+/// POWER_INFORMATION_TYPE
+typedef PowerInformationType = int;
+
+///
+/// POWER_INFORMATION_TYPE_INSTANT
+const PowerInformationType powerInformationTypeInstant = 1;
+
+///
+/// POWER_INFORMATION_TYPE_AVERAGE
+const PowerInformationType powerInformationTypeAverage = 2;
+
+///
+/// POWER_INFORMATION_TYPE_MAXIMUM
+const PowerInformationType powerInformationTypeMaximum = 3;
+
+///
+/// POWER_INFORMATION_TYPE_MINIMUM
+const PowerInformationType powerInformationTypeMinimum = 4;
+
 /// The heartbeat message shows that a system or component is present and responding. The type and autopilot fields (along with the message component id), allow the receiving system to treat further messages from this system appropriately (e.g. by laying out the user interface based on the autopilot). This microservice is documented at https://mavlink.io/en/services/heartbeat.html
 ///
 /// HEARTBEAT
@@ -734,6 +843,17 @@ class Heartbeat implements MavlinkMessage {
       mavlinkVersion: mavlinkVersion ?? this.mavlinkVersion,
     );
   }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'customMode': customMode,
+        'type': type,
+        'autopilot': autopilot,
+        'baseMode': baseMode,
+        'systemStatus': systemStatus,
+        'mavlinkVersion': mavlinkVersion,
+      };
 
   factory Heartbeat.parse(ByteData data_) {
     if (data_.lengthInBytes < Heartbeat.mavlinkEncodedLength) {
@@ -838,6 +958,15 @@ class ChangeOperatorControl implements MavlinkMessage {
     );
   }
 
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'targetSystem': targetSystem,
+        'controlRequest': controlRequest,
+        'version': version,
+        'passkey': passkey,
+      };
+
   factory ChangeOperatorControl.parse(ByteData data_) {
     if (data_.lengthInBytes < ChangeOperatorControl.mavlinkEncodedLength) {
       var len =
@@ -923,6 +1052,14 @@ class ChangeOperatorControlAck implements MavlinkMessage {
       ack: ack ?? this.ack,
     );
   }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'gcsSystemId': gcsSystemId,
+        'controlRequest': controlRequest,
+        'ack': ack,
+      };
 
   factory ChangeOperatorControlAck.parse(ByteData data_) {
     if (data_.lengthInBytes < ChangeOperatorControlAck.mavlinkEncodedLength) {
@@ -1024,6 +1161,16 @@ class ProtocolVersion implements MavlinkMessage {
       libraryVersionHash: libraryVersionHash ?? this.libraryVersionHash,
     );
   }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'version': version,
+        'minVersion': minVersion,
+        'maxVersion': maxVersion,
+        'specVersionHash': specVersionHash,
+        'libraryVersionHash': libraryVersionHash,
+      };
 
   factory ProtocolVersion.parse(ByteData data_) {
     if (data_.lengthInBytes < ProtocolVersion.mavlinkEncodedLength) {
@@ -1298,6 +1445,27 @@ class GpsRawInt implements MavlinkMessage {
     );
   }
 
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'timeUsec': timeUsec,
+        'lat': lat,
+        'lon': lon,
+        'alt': alt,
+        'eph': eph,
+        'epv': epv,
+        'vel': vel,
+        'cog': cog,
+        'fixType': fixType,
+        'satellitesVisible': satellitesVisible,
+        'altEllipsoid': altEllipsoid,
+        'hAcc': hAcc,
+        'vAcc': vAcc,
+        'velAcc': velAcc,
+        'hdgAcc': hdgAcc,
+        'yaw': yaw,
+      };
+
   factory GpsRawInt.parse(ByteData data_) {
     if (data_.lengthInBytes < GpsRawInt.mavlinkEncodedLength) {
       var len = GpsRawInt.mavlinkEncodedLength - data_.lengthInBytes;
@@ -1557,6 +1725,26 @@ class MissionItem implements MavlinkMessage {
     );
   }
 
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'param1': param1,
+        'param2': param2,
+        'param3': param3,
+        'param4': param4,
+        'x': x,
+        'y': y,
+        'z': z,
+        'seq': seq,
+        'command': command,
+        'targetSystem': targetSystem,
+        'targetComponent': targetComponent,
+        'frame': frame,
+        'current': current,
+        'autocontinue': autocontinue,
+        'missionType': missionType,
+      };
+
   factory MissionItem.parse(ByteData data_) {
     if (data_.lengthInBytes < MissionItem.mavlinkEncodedLength) {
       var len = MissionItem.mavlinkEncodedLength - data_.lengthInBytes;
@@ -1779,6 +1967,24 @@ class CommandInt implements MavlinkMessage {
     );
   }
 
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'param1': param1,
+        'param2': param2,
+        'param3': param3,
+        'param4': param4,
+        'x': x,
+        'y': y,
+        'z': z,
+        'command': command,
+        'targetSystem': targetSystem,
+        'targetComponent': targetComponent,
+        'frame': frame,
+        'current': current,
+        'autocontinue': autocontinue,
+      };
+
   factory CommandInt.parse(ByteData data_) {
     if (data_.lengthInBytes < CommandInt.mavlinkEncodedLength) {
       var len = CommandInt.mavlinkEncodedLength - data_.lengthInBytes;
@@ -1973,6 +2179,22 @@ class CommandLong implements MavlinkMessage {
     );
   }
 
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'param1': param1,
+        'param2': param2,
+        'param3': param3,
+        'param4': param4,
+        'param5': param5,
+        'param6': param6,
+        'param7': param7,
+        'command': command,
+        'targetSystem': targetSystem,
+        'targetComponent': targetComponent,
+        'confirmation': confirmation,
+      };
+
   factory CommandLong.parse(ByteData data_) {
     if (data_.lengthInBytes < CommandLong.mavlinkEncodedLength) {
       var len = CommandLong.mavlinkEncodedLength - data_.lengthInBytes;
@@ -2136,6 +2358,17 @@ class CommandAck implements MavlinkMessage {
     );
   }
 
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'command': command,
+        'result': result,
+        'progress': progress,
+        'resultParam2': resultParam2,
+        'targetSystem': targetSystem,
+        'targetComponent': targetComponent,
+      };
+
   factory CommandAck.parse(ByteData data_) {
     if (data_.lengthInBytes < CommandAck.mavlinkEncodedLength) {
       var len = CommandAck.mavlinkEncodedLength - data_.lengthInBytes;
@@ -2234,6 +2467,14 @@ class CommandCancel implements MavlinkMessage {
       targetComponent: targetComponent ?? this.targetComponent,
     );
   }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'command': command,
+        'targetSystem': targetSystem,
+        'targetComponent': targetComponent,
+      };
 
   factory CommandCancel.parse(ByteData data_) {
     if (data_.lengthInBytes < CommandCancel.mavlinkEncodedLength) {
@@ -2344,6 +2585,15 @@ class Timesync implements MavlinkMessage {
     );
   }
 
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'tc1': tc1,
+        'ts1': ts1,
+        'targetSystem': targetSystem,
+        'targetComponent': targetComponent,
+      };
+
   factory Timesync.parse(ByteData data_) {
     if (data_.lengthInBytes < Timesync.mavlinkEncodedLength) {
       var len = Timesync.mavlinkEncodedLength - data_.lengthInBytes;
@@ -2425,6 +2675,13 @@ class MessageInterval implements MavlinkMessage {
     );
   }
 
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'intervalUs': intervalUs,
+        'messageId': messageId,
+      };
+
   factory MessageInterval.parse(ByteData data_) {
     if (data_.lengthInBytes < MessageInterval.mavlinkEncodedLength) {
       var len = MessageInterval.mavlinkEncodedLength - data_.lengthInBytes;
@@ -2503,6 +2760,14 @@ class NamedValueFloat implements MavlinkMessage {
       name: name ?? this.name,
     );
   }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'timeBootMs': timeBootMs,
+        'value': value,
+        'name': name,
+      };
 
   factory NamedValueFloat.parse(ByteData data_) {
     if (data_.lengthInBytes < NamedValueFloat.mavlinkEncodedLength) {
@@ -2584,6 +2849,14 @@ class NamedValueInt implements MavlinkMessage {
       name: name ?? this.name,
     );
   }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'timeBootMs': timeBootMs,
+        'value': value,
+        'name': name,
+      };
 
   factory NamedValueInt.parse(ByteData data_) {
     if (data_.lengthInBytes < NamedValueInt.mavlinkEncodedLength) {
@@ -2680,6 +2953,15 @@ class Statustext implements MavlinkMessage {
     );
   }
 
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'severity': severity,
+        'text': text,
+        'id': id,
+        'chunkSeq': chunkSeq,
+      };
+
   factory Statustext.parse(ByteData data_) {
     if (data_.lengthInBytes < Statustext.mavlinkEncodedLength) {
       var len = Statustext.mavlinkEncodedLength - data_.lengthInBytes;
@@ -2741,6 +3023,12 @@ class LidarReading implements MavlinkMessage {
       readings: readings ?? this.readings,
     );
   }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'readings': readings,
+      };
 
   factory LidarReading.parse(ByteData data_) {
     if (data_.lengthInBytes < LidarReading.mavlinkEncodedLength) {
@@ -2810,6 +3098,13 @@ class ComponentPowerControl implements MavlinkMessage {
       behavior: behavior ?? this.behavior,
     );
   }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'device': device,
+        'behavior': behavior,
+      };
 
   factory ComponentPowerControl.parse(ByteData data_) {
     if (data_.lengthInBytes < ComponentPowerControl.mavlinkEncodedLength) {
@@ -2906,6 +3201,15 @@ class SystemStatus implements MavlinkMessage {
       state: state ?? this.state,
     );
   }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'powerStatusBitmask': powerStatusBitmask,
+        'healthStatusBitmask': healthStatusBitmask,
+        'uptime': uptime,
+        'state': state,
+      };
 
   factory SystemStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < SystemStatus.mavlinkEncodedLength) {
@@ -3022,6 +3326,17 @@ class Identifier implements MavlinkMessage {
     );
   }
 
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'particleId': particleId,
+        'localIp': localIp,
+        'mac': mac,
+        'name': name,
+        'siteFriendlyName': siteFriendlyName,
+        'siteName': siteName,
+      };
+
   factory Identifier.parse(ByteData data_) {
     if (data_.lengthInBytes < Identifier.mavlinkEncodedLength) {
       var len = Identifier.mavlinkEncodedLength - data_.lengthInBytes;
@@ -3095,6 +3410,12 @@ class ComponentHealthTest implements MavlinkMessage {
     );
   }
 
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'component': component,
+      };
+
   factory ComponentHealthTest.parse(ByteData data_) {
     if (data_.lengthInBytes < ComponentHealthTest.mavlinkEncodedLength) {
       var len = ComponentHealthTest.mavlinkEncodedLength - data_.lengthInBytes;
@@ -3121,9 +3442,9 @@ class ComponentHealthTest implements MavlinkMessage {
 class ScanSettings implements MavlinkMessage {
   static const int msgId = 9;
 
-  static const int crcExtra = 155;
+  static const int crcExtra = 92;
 
-  static const int mavlinkEncodedLength = 24;
+  static const int mavlinkEncodedLength = 30;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -3167,6 +3488,15 @@ class ScanSettings implements MavlinkMessage {
   /// pitch_stop
   final float pitchStop;
 
+  /// Angle that the pitch to should go to at end of the scan
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: deg
+  ///
+  /// pitch_rest_angle
+  final float pitchRestAngle;
+
   /// Spacing between point samples. Smaller spacing leads to denser point clouds
   ///
   /// MAVLink type: float
@@ -3185,13 +3515,24 @@ class ScanSettings implements MavlinkMessage {
   /// scan_speed
   final float scanSpeed;
 
+  /// Bitmask of allowed reasons for the scan to stop. 0 means that no detected errors will stop the scan.
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// enum: [ScanStopReason]
+  ///
+  /// scan_stop_reasons
+  final ScanStopReason scanStopReasons;
+
   ScanSettings({
     required this.yawStart,
     required this.yawStop,
     required this.pitchStart,
     required this.pitchStop,
+    required this.pitchRestAngle,
     required this.pointSpacing,
     required this.scanSpeed,
+    required this.scanStopReasons,
   });
 
   ScanSettings copyWith({
@@ -3199,18 +3540,35 @@ class ScanSettings implements MavlinkMessage {
     float? yawStop,
     float? pitchStart,
     float? pitchStop,
+    float? pitchRestAngle,
     float? pointSpacing,
     float? scanSpeed,
+    ScanStopReason? scanStopReasons,
   }) {
     return ScanSettings(
       yawStart: yawStart ?? this.yawStart,
       yawStop: yawStop ?? this.yawStop,
       pitchStart: pitchStart ?? this.pitchStart,
       pitchStop: pitchStop ?? this.pitchStop,
+      pitchRestAngle: pitchRestAngle ?? this.pitchRestAngle,
       pointSpacing: pointSpacing ?? this.pointSpacing,
       scanSpeed: scanSpeed ?? this.scanSpeed,
+      scanStopReasons: scanStopReasons ?? this.scanStopReasons,
     );
   }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'yawStart': yawStart,
+        'yawStop': yawStop,
+        'pitchStart': pitchStart,
+        'pitchStop': pitchStop,
+        'pitchRestAngle': pitchRestAngle,
+        'pointSpacing': pointSpacing,
+        'scanSpeed': scanSpeed,
+        'scanStopReasons': scanStopReasons,
+      };
 
   factory ScanSettings.parse(ByteData data_) {
     if (data_.lengthInBytes < ScanSettings.mavlinkEncodedLength) {
@@ -3223,16 +3581,20 @@ class ScanSettings implements MavlinkMessage {
     var yawStop = data_.getFloat32(4, Endian.little);
     var pitchStart = data_.getFloat32(8, Endian.little);
     var pitchStop = data_.getFloat32(12, Endian.little);
-    var pointSpacing = data_.getFloat32(16, Endian.little);
-    var scanSpeed = data_.getFloat32(20, Endian.little);
+    var pitchRestAngle = data_.getFloat32(16, Endian.little);
+    var pointSpacing = data_.getFloat32(20, Endian.little);
+    var scanSpeed = data_.getFloat32(24, Endian.little);
+    var scanStopReasons = data_.getUint16(28, Endian.little);
 
     return ScanSettings(
         yawStart: yawStart,
         yawStop: yawStop,
         pitchStart: pitchStart,
         pitchStop: pitchStop,
+        pitchRestAngle: pitchRestAngle,
         pointSpacing: pointSpacing,
-        scanSpeed: scanSpeed);
+        scanSpeed: scanSpeed,
+        scanStopReasons: scanStopReasons);
   }
 
   @override
@@ -3242,8 +3604,10 @@ class ScanSettings implements MavlinkMessage {
     data_.setFloat32(4, yawStop, Endian.little);
     data_.setFloat32(8, pitchStart, Endian.little);
     data_.setFloat32(12, pitchStop, Endian.little);
-    data_.setFloat32(16, pointSpacing, Endian.little);
-    data_.setFloat32(20, scanSpeed, Endian.little);
+    data_.setFloat32(16, pitchRestAngle, Endian.little);
+    data_.setFloat32(20, pointSpacing, Endian.little);
+    data_.setFloat32(24, scanSpeed, Endian.little);
+    data_.setUint16(28, scanStopReasons, Endian.little);
     return data_;
   }
 }
@@ -3306,6 +3670,14 @@ class ScanStatus implements MavlinkMessage {
       scanCompletion: scanCompletion ?? this.scanCompletion,
     );
   }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'startTimeUnix': startTimeUnix,
+        'timeRemaining': timeRemaining,
+        'scanCompletion': scanCompletion,
+      };
 
   factory ScanStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < ScanStatus.mavlinkEncodedLength) {
@@ -3449,6 +3821,20 @@ class RemoteServerSettings implements MavlinkMessage {
     );
   }
 
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'postPort': postPort,
+        'ftpPort': ftpPort,
+        'serverEnable': serverEnable,
+        'postServer': postServer,
+        'postUri': postUri,
+        'ftpEnable': ftpEnable,
+        'ftpServer': ftpServer,
+        'ftpUsername': ftpUsername,
+        'ftpPassword': ftpPassword,
+      };
+
   factory RemoteServerSettings.parse(ByteData data_) {
     if (data_.lengthInBytes < RemoteServerSettings.mavlinkEncodedLength) {
       var len = RemoteServerSettings.mavlinkEncodedLength - data_.lengthInBytes;
@@ -3500,9 +3886,9 @@ class RemoteServerSettings implements MavlinkMessage {
 class PowerInformation implements MavlinkMessage {
   static const int msgId = 12;
 
-  static const int crcExtra = 89;
+  static const int crcExtra = 42;
 
-  static const int mavlinkEncodedLength = 10;
+  static const int mavlinkEncodedLength = 11;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -3519,53 +3905,75 @@ class PowerInformation implements MavlinkMessage {
   /// energy_consumed
   final uint32_t energyConsumed;
 
-  /// Instant current at sensor in Milliamps
+  /// current in Milliamps
   ///
   /// MAVLink type: uint16_t
   ///
   /// units: mA
   ///
-  /// instant_current
-  final uint16_t instantCurrent;
+  /// current
+  final uint16_t current;
 
-  /// Instant voltage at sensor in Millivolts
+  /// voltage in Millivolts
   ///
   /// MAVLink type: uint16_t
   ///
   /// units: mV
   ///
-  /// instant_voltage
-  final uint16_t instantVoltage;
+  /// voltage
+  final uint16_t voltage;
 
-  /// Instant power at sensor in Milliwatts
+  /// power in Milliwatts
   ///
   /// MAVLink type: uint16_t
   ///
   /// units: mW
   ///
-  /// instant_power
-  final uint16_t instantPower;
+  /// power
+  final uint16_t power;
+
+  /// Type of reading: instant, average, max, min
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// enum: [PowerInformationType]
+  ///
+  /// type
+  final PowerInformationType type;
 
   PowerInformation({
     required this.energyConsumed,
-    required this.instantCurrent,
-    required this.instantVoltage,
-    required this.instantPower,
+    required this.current,
+    required this.voltage,
+    required this.power,
+    required this.type,
   });
 
   PowerInformation copyWith({
     uint32_t? energyConsumed,
-    uint16_t? instantCurrent,
-    uint16_t? instantVoltage,
-    uint16_t? instantPower,
+    uint16_t? current,
+    uint16_t? voltage,
+    uint16_t? power,
+    PowerInformationType? type,
   }) {
     return PowerInformation(
       energyConsumed: energyConsumed ?? this.energyConsumed,
-      instantCurrent: instantCurrent ?? this.instantCurrent,
-      instantVoltage: instantVoltage ?? this.instantVoltage,
-      instantPower: instantPower ?? this.instantPower,
+      current: current ?? this.current,
+      voltage: voltage ?? this.voltage,
+      power: power ?? this.power,
+      type: type ?? this.type,
     );
   }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'energyConsumed': energyConsumed,
+        'current': current,
+        'voltage': voltage,
+        'power': power,
+        'type': type,
+      };
 
   factory PowerInformation.parse(ByteData data_) {
     if (data_.lengthInBytes < PowerInformation.mavlinkEncodedLength) {
@@ -3575,24 +3983,27 @@ class PowerInformation implements MavlinkMessage {
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var energyConsumed = data_.getUint32(0, Endian.little);
-    var instantCurrent = data_.getUint16(4, Endian.little);
-    var instantVoltage = data_.getUint16(6, Endian.little);
-    var instantPower = data_.getUint16(8, Endian.little);
+    var current = data_.getUint16(4, Endian.little);
+    var voltage = data_.getUint16(6, Endian.little);
+    var power = data_.getUint16(8, Endian.little);
+    var type = data_.getUint8(10);
 
     return PowerInformation(
         energyConsumed: energyConsumed,
-        instantCurrent: instantCurrent,
-        instantVoltage: instantVoltage,
-        instantPower: instantPower);
+        current: current,
+        voltage: voltage,
+        power: power,
+        type: type);
   }
 
   @override
   ByteData serialize() {
     var data_ = ByteData(mavlinkEncodedLength);
     data_.setUint32(0, energyConsumed, Endian.little);
-    data_.setUint16(4, instantCurrent, Endian.little);
-    data_.setUint16(6, instantVoltage, Endian.little);
-    data_.setUint16(8, instantPower, Endian.little);
+    data_.setUint16(4, current, Endian.little);
+    data_.setUint16(6, voltage, Endian.little);
+    data_.setUint16(8, power, Endian.little);
+    data_.setUint8(10, type);
     return data_;
   }
 }
@@ -3681,6 +4092,17 @@ class WifiInformation implements MavlinkMessage {
       snrPercent: snrPercent ?? this.snrPercent,
     );
   }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'ssid': ssid,
+        'bssid': bssid,
+        'rssi': rssi,
+        'rssiPercent': rssiPercent,
+        'snr': snr,
+        'snrPercent': snrPercent,
+      };
 
   factory WifiInformation.parse(ByteData data_) {
     if (data_.lengthInBytes < WifiInformation.mavlinkEncodedLength) {
@@ -3810,6 +4232,17 @@ class UploadStatus implements MavlinkMessage {
       uploadCompletion: uploadCompletion ?? this.uploadCompletion,
     );
   }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'startTimeUnix': startTimeUnix,
+        'bytesUploaded': bytesUploaded,
+        'uploadSize': uploadSize,
+        'uploadRate': uploadRate,
+        'timeRemaining': timeRemaining,
+        'uploadCompletion': uploadCompletion,
+      };
 
   factory UploadStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < UploadStatus.mavlinkEncodedLength) {
@@ -3945,6 +4378,18 @@ class MotorControl implements MavlinkMessage {
       behavior: behavior ?? this.behavior,
     );
   }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'motorRpm': motorRpm,
+        'targetAngle': targetAngle,
+        'deviceRpm': deviceRpm,
+        'stepsCount': stepsCount,
+        'vactual': vactual,
+        'target': target,
+        'behavior': behavior,
+      };
 
   factory MotorControl.parse(ByteData data_) {
     if (data_.lengthInBytes < MotorControl.mavlinkEncodedLength) {
@@ -4136,6 +4581,23 @@ class MotorSettings implements MavlinkMessage {
     );
   }
 
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'gearingRatio': gearingRatio,
+        'ustepsRate': ustepsRate,
+        'ustepAngle': ustepAngle,
+        'current': current,
+        'homeOffsetSteps': homeOffsetSteps,
+        'stepsToNextIndex': stepsToNextIndex,
+        'motor': motor,
+        'microsteps': microsteps,
+        'spreadCycle': spreadCycle,
+        'pwmAutoscale': pwmAutoscale,
+        'pwmAutograd': pwmAutograd,
+        'minStepsToNextIndex': minStepsToNextIndex,
+      };
+
   factory MotorSettings.parse(ByteData data_) {
     if (data_.lengthInBytes < MotorSettings.mavlinkEncodedLength) {
       var len = MotorSettings.mavlinkEncodedLength - data_.lengthInBytes;
@@ -4306,6 +4768,20 @@ class MotorStatus implements MavlinkMessage {
       homed: homed ?? this.homed,
     );
   }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'motorRpm': motorRpm,
+        'deviceRpm': deviceRpm,
+        'measuredRpm': measuredRpm,
+        'currentAngle': currentAngle,
+        'vactual': vactual,
+        'stepsCount': stepsCount,
+        'motor': motor,
+        'enabled': enabled,
+        'homed': homed,
+      };
 
   factory MotorStatus.parse(ByteData data_) {
     if (data_.lengthInBytes < MotorStatus.mavlinkEncodedLength) {
@@ -4497,6 +4973,21 @@ class Orientation implements MavlinkMessage {
     );
   }
 
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'roll': roll,
+        'pitch': pitch,
+        'temp': temp,
+        'heading': heading,
+        'lat': lat,
+        'lon': lon,
+        'alt': alt,
+        'xmag': xmag,
+        'ymag': ymag,
+        'zmag': zmag,
+      };
+
   factory Orientation.parse(ByteData data_) {
     if (data_.lengthInBytes < Orientation.mavlinkEncodedLength) {
       var len = Orientation.mavlinkEncodedLength - data_.lengthInBytes;
@@ -4614,6 +5105,15 @@ class WifiCredentials implements MavlinkMessage {
     );
   }
 
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'behavior': behavior,
+        'ssid': ssid,
+        'password': password,
+        'authType': authType,
+      };
+
   factory WifiCredentials.parse(ByteData data_) {
     if (data_.lengthInBytes < WifiCredentials.mavlinkEncodedLength) {
       var len = WifiCredentials.mavlinkEncodedLength - data_.lengthInBytes;
@@ -4637,6 +5137,378 @@ class WifiCredentials implements MavlinkMessage {
     MavlinkMessage.setInt8List(data_, 1, ssid);
     MavlinkMessage.setInt8List(data_, 65, password);
     data_.setUint8(129, authType);
+    return data_;
+  }
+}
+
+/// Settings for Benewake TF* lidar
+///
+/// LIDAR_SETTINGS
+class LidarSettings implements MavlinkMessage {
+  static const int msgId = 20;
+
+  static const int crcExtra = 236;
+
+  static const int mavlinkEncodedLength = 14;
+
+  @override
+  int get mavlinkMessageId => msgId;
+
+  @override
+  int get mavlinkCrcExtra => crcExtra;
+
+  /// Lidar update rate, in hz
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// units: hz
+  ///
+  /// update_rate
+  final uint16_t updateRate;
+
+  /// Boolean for if fog mode should be enabled. 0 = off, 1 = on
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// fog_mode_enable
+  final uint8_t fogModeEnable;
+
+  /// Boolean for if the lidar should be emitting readings when powered up, or if a separate "output enable" command must be sent after it's turned on. 0 = false , 1 = true
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// output_disabled_at_boot
+  final uint8_t outputDisabledAtBoot;
+
+  /// String representation of firmware version of the lidar eg: "2.1.8". Read-only
+  ///
+  /// MAVLink type: char[10]
+  ///
+  /// firmware_version
+  final List<char> firmwareVersion;
+
+  LidarSettings({
+    required this.updateRate,
+    required this.fogModeEnable,
+    required this.outputDisabledAtBoot,
+    required this.firmwareVersion,
+  });
+
+  LidarSettings copyWith({
+    uint16_t? updateRate,
+    uint8_t? fogModeEnable,
+    uint8_t? outputDisabledAtBoot,
+    List<char>? firmwareVersion,
+  }) {
+    return LidarSettings(
+      updateRate: updateRate ?? this.updateRate,
+      fogModeEnable: fogModeEnable ?? this.fogModeEnable,
+      outputDisabledAtBoot: outputDisabledAtBoot ?? this.outputDisabledAtBoot,
+      firmwareVersion: firmwareVersion ?? this.firmwareVersion,
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'updateRate': updateRate,
+        'fogModeEnable': fogModeEnable,
+        'outputDisabledAtBoot': outputDisabledAtBoot,
+        'firmwareVersion': firmwareVersion,
+      };
+
+  factory LidarSettings.parse(ByteData data_) {
+    if (data_.lengthInBytes < LidarSettings.mavlinkEncodedLength) {
+      var len = LidarSettings.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var updateRate = data_.getUint16(0, Endian.little);
+    var fogModeEnable = data_.getUint8(2);
+    var outputDisabledAtBoot = data_.getUint8(3);
+    var firmwareVersion = MavlinkMessage.asInt8List(data_, 4, 10);
+
+    return LidarSettings(
+        updateRate: updateRate,
+        fogModeEnable: fogModeEnable,
+        outputDisabledAtBoot: outputDisabledAtBoot,
+        firmwareVersion: firmwareVersion);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint16(0, updateRate, Endian.little);
+    data_.setUint8(2, fogModeEnable);
+    data_.setUint8(3, outputDisabledAtBoot);
+    MavlinkMessage.setInt8List(data_, 4, firmwareVersion);
+    return data_;
+  }
+}
+
+/// Information about a scan
+///
+/// SCAN_RESULT_INFO
+class ScanResultInfo implements MavlinkMessage {
+  static const int msgId = 21;
+
+  static const int crcExtra = 138;
+
+  static const int mavlinkEncodedLength = 29;
+
+  @override
+  int get mavlinkMessageId => msgId;
+
+  @override
+  int get mavlinkCrcExtra => crcExtra;
+
+  /// Unix start time
+  ///
+  /// MAVLink type: uint64_t
+  ///
+  /// start_time_unix
+  final uint64_t startTimeUnix;
+
+  /// Unix end time
+  ///
+  /// MAVLink type: uint64_t
+  ///
+  /// end_time_unix
+  final uint64_t endTimeUnix;
+
+  /// Number of points
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// num_points
+  final uint32_t numPoints;
+
+  /// Duration of the scan, in seconds
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// units: seconds
+  ///
+  /// scan_duration
+  final uint32_t scanDuration;
+
+  /// Reason for the scan stopping
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// enum: [ScanStopReason]
+  ///
+  /// scan_stop_reason
+  final ScanStopReason scanStopReason;
+
+  /// Reason for scan starting
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// enum: [ScanStartReason]
+  ///
+  /// scan_start_reason
+  final ScanStartReason scanStartReason;
+
+  /// What type of info this is, estimated or actual
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// enum: [ScanResultInfoType]
+  ///
+  /// type
+  final ScanResultInfoType type;
+
+  ScanResultInfo({
+    required this.startTimeUnix,
+    required this.endTimeUnix,
+    required this.numPoints,
+    required this.scanDuration,
+    required this.scanStopReason,
+    required this.scanStartReason,
+    required this.type,
+  });
+
+  ScanResultInfo copyWith({
+    uint64_t? startTimeUnix,
+    uint64_t? endTimeUnix,
+    uint32_t? numPoints,
+    uint32_t? scanDuration,
+    ScanStopReason? scanStopReason,
+    ScanStartReason? scanStartReason,
+    ScanResultInfoType? type,
+  }) {
+    return ScanResultInfo(
+      startTimeUnix: startTimeUnix ?? this.startTimeUnix,
+      endTimeUnix: endTimeUnix ?? this.endTimeUnix,
+      numPoints: numPoints ?? this.numPoints,
+      scanDuration: scanDuration ?? this.scanDuration,
+      scanStopReason: scanStopReason ?? this.scanStopReason,
+      scanStartReason: scanStartReason ?? this.scanStartReason,
+      type: type ?? this.type,
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'startTimeUnix': startTimeUnix,
+        'endTimeUnix': endTimeUnix,
+        'numPoints': numPoints,
+        'scanDuration': scanDuration,
+        'scanStopReason': scanStopReason,
+        'scanStartReason': scanStartReason,
+        'type': type,
+      };
+
+  factory ScanResultInfo.parse(ByteData data_) {
+    if (data_.lengthInBytes < ScanResultInfo.mavlinkEncodedLength) {
+      var len = ScanResultInfo.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var startTimeUnix = data_.getUint64(0, Endian.little);
+    var endTimeUnix = data_.getUint64(8, Endian.little);
+    var numPoints = data_.getUint32(16, Endian.little);
+    var scanDuration = data_.getUint32(20, Endian.little);
+    var scanStopReason = data_.getUint16(24, Endian.little);
+    var scanStartReason = data_.getUint16(26, Endian.little);
+    var type = data_.getUint8(28);
+
+    return ScanResultInfo(
+        startTimeUnix: startTimeUnix,
+        endTimeUnix: endTimeUnix,
+        numPoints: numPoints,
+        scanDuration: scanDuration,
+        scanStopReason: scanStopReason,
+        scanStartReason: scanStartReason,
+        type: type);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint64(0, startTimeUnix, Endian.little);
+    data_.setUint64(8, endTimeUnix, Endian.little);
+    data_.setUint32(16, numPoints, Endian.little);
+    data_.setUint32(20, scanDuration, Endian.little);
+    data_.setUint16(24, scanStopReason, Endian.little);
+    data_.setUint16(26, scanStartReason, Endian.little);
+    data_.setUint8(28, type);
+    return data_;
+  }
+}
+
+/// Transformation to apply to raw points.
+///
+/// SCAN_TRANSFORM
+class ScanTransform implements MavlinkMessage {
+  static const int msgId = 22;
+
+  static const int crcExtra = 205;
+
+  static const int mavlinkEncodedLength = 12;
+
+  @override
+  int get mavlinkMessageId => msgId;
+
+  @override
+  int get mavlinkCrcExtra => crcExtra;
+
+  ///
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: %
+  ///
+  /// pitch_scale
+  final float pitchScale;
+
+  ///
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: %
+  ///
+  /// yaw_scale
+  final float yawScale;
+
+  ///
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// units: RadE-4
+  ///
+  /// roll_offset
+  final uint16_t rollOffset;
+
+  ///
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// units: RadE-4
+  ///
+  /// pitch_offset
+  final uint16_t pitchOffset;
+
+  ScanTransform({
+    required this.pitchScale,
+    required this.yawScale,
+    required this.rollOffset,
+    required this.pitchOffset,
+  });
+
+  ScanTransform copyWith({
+    float? pitchScale,
+    float? yawScale,
+    uint16_t? rollOffset,
+    uint16_t? pitchOffset,
+  }) {
+    return ScanTransform(
+      pitchScale: pitchScale ?? this.pitchScale,
+      yawScale: yawScale ?? this.yawScale,
+      rollOffset: rollOffset ?? this.rollOffset,
+      pitchOffset: pitchOffset ?? this.pitchOffset,
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'pitchScale': pitchScale,
+        'yawScale': yawScale,
+        'rollOffset': rollOffset,
+        'pitchOffset': pitchOffset,
+      };
+
+  factory ScanTransform.parse(ByteData data_) {
+    if (data_.lengthInBytes < ScanTransform.mavlinkEncodedLength) {
+      var len = ScanTransform.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var pitchScale = data_.getFloat32(0, Endian.little);
+    var yawScale = data_.getFloat32(4, Endian.little);
+    var rollOffset = data_.getUint16(8, Endian.little);
+    var pitchOffset = data_.getUint16(10, Endian.little);
+
+    return ScanTransform(
+        pitchScale: pitchScale,
+        yawScale: yawScale,
+        rollOffset: rollOffset,
+        pitchOffset: pitchOffset);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setFloat32(0, pitchScale, Endian.little);
+    data_.setFloat32(4, yawScale, Endian.little);
+    data_.setUint16(8, rollOffset, Endian.little);
+    data_.setUint16(10, pitchOffset, Endian.little);
     return data_;
   }
 }
@@ -4712,6 +5584,12 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return Orientation.parse(data);
       case 19:
         return WifiCredentials.parse(data);
+      case 20:
+        return LidarSettings.parse(data);
+      case 21:
+        return ScanResultInfo.parse(data);
+      case 22:
+        return ScanTransform.parse(data);
       default:
         return null;
     }
@@ -4782,6 +5660,12 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return Orientation.crcExtra;
       case 19:
         return WifiCredentials.crcExtra;
+      case 20:
+        return LidarSettings.crcExtra;
+      case 21:
+        return ScanResultInfo.crcExtra;
+      case 22:
+        return ScanTransform.crcExtra;
       default:
         return -1;
     }
