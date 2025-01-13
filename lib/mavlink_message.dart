@@ -9,7 +9,7 @@ abstract class MavlinkMessage {
 
   int get mavlinkCrcExtra;
   int get mavlinkMessageId;
-
+  Map <String, dynamic> toJson();
   ByteData serialize();
 
   static Int8List asInt8List(ByteData data, int offsetInBytes, int length) {
