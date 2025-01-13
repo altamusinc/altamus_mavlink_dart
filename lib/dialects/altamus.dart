@@ -18,6 +18,162 @@ const MavAutopilot mavAutopilotGeneric = 0;
 /// MAV_AUTOPILOT_INVALID
 const MavAutopilot mavAutopilotInvalid = 8;
 
+/// MAV FTP error codes (https://mavlink.io/en/services/ftp.html)
+///
+/// MAV_FTP_ERR
+typedef MavFtpErr = int;
+
+/// None: No error
+///
+/// MAV_FTP_ERR_NONE
+const MavFtpErr mavFtpErrNone = 0;
+
+/// Fail: Unknown failure
+///
+/// MAV_FTP_ERR_FAIL
+const MavFtpErr mavFtpErrFail = 1;
+
+/// FailErrno: Command failed, Err number sent back in PayloadHeader.data[1].
+/// This is a file-system error number understood by the server operating system.
+///
+/// MAV_FTP_ERR_FAILERRNO
+const MavFtpErr mavFtpErrFailerrno = 2;
+
+/// InvalidDataSize: Payload size is invalid
+///
+/// MAV_FTP_ERR_INVALIDDATASIZE
+const MavFtpErr mavFtpErrInvaliddatasize = 3;
+
+/// InvalidSession: Session is not currently open
+///
+/// MAV_FTP_ERR_INVALIDSESSION
+const MavFtpErr mavFtpErrInvalidsession = 4;
+
+/// NoSessionsAvailable: All available sessions are already in use
+///
+/// MAV_FTP_ERR_NOSESSIONSAVAILABLE
+const MavFtpErr mavFtpErrNosessionsavailable = 5;
+
+/// EOF: Offset past end of file for ListDirectory and ReadFile commands
+///
+/// MAV_FTP_ERR_EOF
+const MavFtpErr mavFtpErrEof = 6;
+
+/// UnknownCommand: Unknown command / opcode
+///
+/// MAV_FTP_ERR_UNKNOWNCOMMAND
+const MavFtpErr mavFtpErrUnknowncommand = 7;
+
+/// FileExists: File/directory already exists
+///
+/// MAV_FTP_ERR_FILEEXISTS
+const MavFtpErr mavFtpErrFileexists = 8;
+
+/// FileProtected: File/directory is write protected
+///
+/// MAV_FTP_ERR_FILEPROTECTED
+const MavFtpErr mavFtpErrFileprotected = 9;
+
+/// FileNotFound: File/directory not found
+///
+/// MAV_FTP_ERR_FILENOTFOUND
+const MavFtpErr mavFtpErrFilenotfound = 10;
+
+/// MAV FTP opcodes: https://mavlink.io/en/services/ftp.html
+///
+/// MAV_FTP_OPCODE
+typedef MavFtpOpcode = int;
+
+/// None. Ignored, always ACKed
+///
+/// MAV_FTP_OPCODE_NONE
+const MavFtpOpcode mavFtpOpcodeNone = 0;
+
+/// TerminateSession: Terminates open Read session
+///
+/// MAV_FTP_OPCODE_TERMINATESESSION
+const MavFtpOpcode mavFtpOpcodeTerminatesession = 1;
+
+/// ResetSessions: Terminates all open read sessions
+///
+/// MAV_FTP_OPCODE_RESETSESSION
+const MavFtpOpcode mavFtpOpcodeResetsession = 2;
+
+/// ListDirectory. List files and directories in path from offset
+///
+/// MAV_FTP_OPCODE_LISTDIRECTORY
+const MavFtpOpcode mavFtpOpcodeListdirectory = 3;
+
+/// OpenFileRO: Opens file at path for reading, returns session
+///
+/// MAV_FTP_OPCODE_OPENFILERO
+const MavFtpOpcode mavFtpOpcodeOpenfilero = 4;
+
+/// ReadFile: Reads size bytes from offset in session
+///
+/// MAV_FTP_OPCODE_READFILE
+const MavFtpOpcode mavFtpOpcodeReadfile = 5;
+
+/// CreateFile: Creates file at path for writing, returns session
+///
+/// MAV_FTP_OPCODE_CREATEFILE
+const MavFtpOpcode mavFtpOpcodeCreatefile = 6;
+
+/// WriteFile: Writes size bytes to offset in session
+///
+/// MAV_FTP_OPCODE_WRITEFILE
+const MavFtpOpcode mavFtpOpcodeWritefile = 7;
+
+/// RemoveFile: Remove file at path
+///
+/// MAV_FTP_OPCODE_REMOVEFILE
+const MavFtpOpcode mavFtpOpcodeRemovefile = 8;
+
+/// CreateDirectory: Creates directory at path
+///
+/// MAV_FTP_OPCODE_CREATEDIRECTORY
+const MavFtpOpcode mavFtpOpcodeCreatedirectory = 9;
+
+/// RemoveDirectory: Removes directory at path. The directory must be empty.
+///
+/// MAV_FTP_OPCODE_REMOVEDIRECTORY
+const MavFtpOpcode mavFtpOpcodeRemovedirectory = 10;
+
+/// OpenFileWO: Opens file at path for writing, returns session
+///
+/// MAV_FTP_OPCODE_OPENFILEWO
+const MavFtpOpcode mavFtpOpcodeOpenfilewo = 11;
+
+/// TruncateFile: Truncate file at path to offset length
+///
+/// MAV_FTP_OPCODE_TRUNCATEFILE
+const MavFtpOpcode mavFtpOpcodeTruncatefile = 12;
+
+/// Rename: Rename path1 to path2
+///
+/// MAV_FTP_OPCODE_RENAME
+const MavFtpOpcode mavFtpOpcodeRename = 13;
+
+/// CalcFileCRC32: Calculate CRC32 for file at path
+///
+/// MAV_FTP_OPCODE_CALCFILECRC
+const MavFtpOpcode mavFtpOpcodeCalcfilecrc = 14;
+
+/// BurstReadFile: Burst download session file
+///
+/// MAV_FTP_OPCODE_BURSTREADFILE
+const MavFtpOpcode mavFtpOpcodeBurstreadfile = 15;
+
+/// ACK: ACK response
+///
+/// MAV_FTP_OPCODE_ACK
+const MavFtpOpcode mavFtpOpcodeAck = 128;
+
+/// NAK: NAK response
+///
+/// MAV_FTP_OPCODE_NAK
+const MavFtpOpcode mavFtpOpcodeNak = 129;
+
 /// MAVLINK component type reported in HEARTBEAT message. Flight controllers must report the type of the vehicle on which they are mounted (e.g. MAV_TYPE_OCTOROTOR). All other components must report a value appropriate for their type (e.g. a camera must use MAV_TYPE_CAMERA).
 ///
 /// MAV_TYPE
@@ -2499,6 +2655,110 @@ class CommandCancel implements MavlinkMessage {
     data_.setUint16(0, command, Endian.little);
     data_.setUint8(2, targetSystem);
     data_.setUint8(3, targetComponent);
+    return data_;
+  }
+}
+
+/// File transfer protocol message: https://mavlink.io/en/services/ftp.html.
+///
+/// FILE_TRANSFER_PROTOCOL
+class FileTransferProtocol implements MavlinkMessage {
+  static const int msgId = 110;
+
+  static const int crcExtra = 84;
+
+  static const int mavlinkEncodedLength = 254;
+
+  @override
+  int get mavlinkMessageId => msgId;
+
+  @override
+  int get mavlinkCrcExtra => crcExtra;
+
+  /// Network ID (0 for broadcast)
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// target_network
+  final uint8_t targetNetwork;
+
+  /// System ID (0 for broadcast)
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// target_system
+  final uint8_t targetSystem;
+
+  /// Component ID (0 for broadcast)
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// target_component
+  final uint8_t targetComponent;
+
+  /// Variable length payload. The length is defined by the remaining message length when subtracting the header and other fields. The content/format of this block is defined in https://mavlink.io/en/services/ftp.html.
+  ///
+  /// MAVLink type: uint8_t[251]
+  ///
+  /// payload
+  final List<int8_t> payload;
+
+  FileTransferProtocol({
+    required this.targetNetwork,
+    required this.targetSystem,
+    required this.targetComponent,
+    required this.payload,
+  });
+
+  FileTransferProtocol copyWith({
+    uint8_t? targetNetwork,
+    uint8_t? targetSystem,
+    uint8_t? targetComponent,
+    List<int8_t>? payload,
+  }) {
+    return FileTransferProtocol(
+      targetNetwork: targetNetwork ?? this.targetNetwork,
+      targetSystem: targetSystem ?? this.targetSystem,
+      targetComponent: targetComponent ?? this.targetComponent,
+      payload: payload ?? this.payload,
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'targetNetwork': targetNetwork,
+        'targetSystem': targetSystem,
+        'targetComponent': targetComponent,
+        'payload': payload,
+      };
+
+  factory FileTransferProtocol.parse(ByteData data_) {
+    if (data_.lengthInBytes < FileTransferProtocol.mavlinkEncodedLength) {
+      var len = FileTransferProtocol.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var targetNetwork = data_.getUint8(0);
+    var targetSystem = data_.getUint8(1);
+    var targetComponent = data_.getUint8(2);
+    var payload = MavlinkMessage.asUint8List(data_, 3, 251);
+
+    return FileTransferProtocol(
+        targetNetwork: targetNetwork,
+        targetSystem: targetSystem,
+        targetComponent: targetComponent,
+        payload: payload);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint8(0, targetNetwork);
+    data_.setUint8(1, targetSystem);
+    data_.setUint8(2, targetComponent);
+    MavlinkMessage.setUint8List(data_, 3, payload);
     return data_;
   }
 }
@@ -5253,9 +5513,9 @@ class LidarSettings implements MavlinkMessage {
 class ScanResultInfo implements MavlinkMessage {
   static const int msgId = 21;
 
-  static const int crcExtra = 138;
+  static const int crcExtra = 31;
 
-  static const int mavlinkEncodedLength = 29;
+  static const int mavlinkEncodedLength = 33;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -5283,6 +5543,13 @@ class ScanResultInfo implements MavlinkMessage {
   ///
   /// num_points
   final uint32_t numPoints;
+
+  /// Size of the resulting .bin file
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// file_size_bytes
+  final uint32_t fileSizeBytes;
 
   /// Duration of the scan, in seconds
   ///
@@ -5324,6 +5591,7 @@ class ScanResultInfo implements MavlinkMessage {
     required this.startTimeUnix,
     required this.endTimeUnix,
     required this.numPoints,
+    required this.fileSizeBytes,
     required this.scanDuration,
     required this.scanStopReason,
     required this.scanStartReason,
@@ -5334,6 +5602,7 @@ class ScanResultInfo implements MavlinkMessage {
     uint64_t? startTimeUnix,
     uint64_t? endTimeUnix,
     uint32_t? numPoints,
+    uint32_t? fileSizeBytes,
     uint32_t? scanDuration,
     ScanStopReason? scanStopReason,
     ScanStartReason? scanStartReason,
@@ -5343,6 +5612,7 @@ class ScanResultInfo implements MavlinkMessage {
       startTimeUnix: startTimeUnix ?? this.startTimeUnix,
       endTimeUnix: endTimeUnix ?? this.endTimeUnix,
       numPoints: numPoints ?? this.numPoints,
+      fileSizeBytes: fileSizeBytes ?? this.fileSizeBytes,
       scanDuration: scanDuration ?? this.scanDuration,
       scanStopReason: scanStopReason ?? this.scanStopReason,
       scanStartReason: scanStartReason ?? this.scanStartReason,
@@ -5356,6 +5626,7 @@ class ScanResultInfo implements MavlinkMessage {
         'startTimeUnix': startTimeUnix,
         'endTimeUnix': endTimeUnix,
         'numPoints': numPoints,
+        'fileSizeBytes': fileSizeBytes,
         'scanDuration': scanDuration,
         'scanStopReason': scanStopReason,
         'scanStartReason': scanStartReason,
@@ -5372,15 +5643,17 @@ class ScanResultInfo implements MavlinkMessage {
     var startTimeUnix = data_.getUint64(0, Endian.little);
     var endTimeUnix = data_.getUint64(8, Endian.little);
     var numPoints = data_.getUint32(16, Endian.little);
-    var scanDuration = data_.getUint32(20, Endian.little);
-    var scanStopReason = data_.getUint16(24, Endian.little);
-    var scanStartReason = data_.getUint16(26, Endian.little);
-    var type = data_.getUint8(28);
+    var fileSizeBytes = data_.getUint32(20, Endian.little);
+    var scanDuration = data_.getUint32(24, Endian.little);
+    var scanStopReason = data_.getUint16(28, Endian.little);
+    var scanStartReason = data_.getUint16(30, Endian.little);
+    var type = data_.getUint8(32);
 
     return ScanResultInfo(
         startTimeUnix: startTimeUnix,
         endTimeUnix: endTimeUnix,
         numPoints: numPoints,
+        fileSizeBytes: fileSizeBytes,
         scanDuration: scanDuration,
         scanStopReason: scanStopReason,
         scanStartReason: scanStartReason,
@@ -5393,10 +5666,11 @@ class ScanResultInfo implements MavlinkMessage {
     data_.setUint64(0, startTimeUnix, Endian.little);
     data_.setUint64(8, endTimeUnix, Endian.little);
     data_.setUint32(16, numPoints, Endian.little);
-    data_.setUint32(20, scanDuration, Endian.little);
-    data_.setUint16(24, scanStopReason, Endian.little);
-    data_.setUint16(26, scanStartReason, Endian.little);
-    data_.setUint8(28, type);
+    data_.setUint32(20, fileSizeBytes, Endian.little);
+    data_.setUint32(24, scanDuration, Endian.little);
+    data_.setUint16(28, scanStopReason, Endian.little);
+    data_.setUint16(30, scanStartReason, Endian.little);
+    data_.setUint8(32, type);
     return data_;
   }
 }
@@ -5542,6 +5816,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return CommandAck.parse(data);
       case 80:
         return CommandCancel.parse(data);
+      case 110:
+        return FileTransferProtocol.parse(data);
       case 111:
         return Timesync.parse(data);
       case 244:
@@ -5618,6 +5894,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return CommandAck.crcExtra;
       case 80:
         return CommandCancel.crcExtra;
+      case 110:
+        return FileTransferProtocol.crcExtra;
       case 111:
         return Timesync.crcExtra;
       case 244:
