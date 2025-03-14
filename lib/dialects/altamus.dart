@@ -5304,7 +5304,7 @@ class WifiCredentials implements MavlinkMessage {
 
   static const int crcExtra = 100;
 
-  static const int mavlinkEncodedLength = 130;
+  static const int mavlinkEncodedLength = 102;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -5321,20 +5321,6 @@ class WifiCredentials implements MavlinkMessage {
   /// behavior
   final WifiCredientialsBehavior behavior;
 
-  /// Name of the SSID
-  ///
-  /// MAVLink type: char[64]
-  ///
-  /// ssid
-  final List<char> ssid;
-
-  /// Password of the SSID. leave blank for open networks. Will be left blank if reporting
-  ///
-  /// MAVLink type: char[64]
-  ///
-  /// password
-  final List<char> password;
-
   /// Auth type of the network; eg; WPA2
   ///
   /// MAVLink type: uint8_t
@@ -5344,24 +5330,38 @@ class WifiCredentials implements MavlinkMessage {
   /// auth_type
   final WifiAuthType authType;
 
+  /// Name of the SSID
+  ///
+  /// MAVLink type: char[50]
+  ///
+  /// ssid
+  final List<char> ssid;
+
+  /// Password of the SSID. leave blank for open networks. Will be left blank if reporting
+  ///
+  /// MAVLink type: char[50]
+  ///
+  /// password
+  final List<char> password;
+
   WifiCredentials({
     required this.behavior,
+    required this.authType,
     required this.ssid,
     required this.password,
-    required this.authType,
   });
 
   WifiCredentials copyWith({
     WifiCredientialsBehavior? behavior,
+    WifiAuthType? authType,
     List<char>? ssid,
     List<char>? password,
-    WifiAuthType? authType,
   }) {
     return WifiCredentials(
       behavior: behavior ?? this.behavior,
+      authType: authType ?? this.authType,
       ssid: ssid ?? this.ssid,
       password: password ?? this.password,
-      authType: authType ?? this.authType,
     );
   }
 
@@ -5369,9 +5369,9 @@ class WifiCredentials implements MavlinkMessage {
   Map<String, dynamic> toJson() => {
         'msgId': msgId,
         'behavior': behavior,
+        'authType': authType,
         'ssid': ssid,
         'password': password,
-        'authType': authType,
       };
 
   factory WifiCredentials.parse(ByteData data_) {
@@ -5382,21 +5382,21 @@ class WifiCredentials implements MavlinkMessage {
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var behavior = data_.getUint8(0);
-    var ssid = MavlinkMessage.asInt8List(data_, 1, 64);
-    var password = MavlinkMessage.asInt8List(data_, 65, 64);
-    var authType = data_.getUint8(129);
+    var authType = data_.getUint8(1);
+    var ssid = MavlinkMessage.asInt8List(data_, 2, 50);
+    var password = MavlinkMessage.asInt8List(data_, 52, 50);
 
     return WifiCredentials(
-        behavior: behavior, ssid: ssid, password: password, authType: authType);
+        behavior: behavior, authType: authType, ssid: ssid, password: password);
   }
 
   @override
   ByteData serialize() {
     var data_ = ByteData(mavlinkEncodedLength);
     data_.setUint8(0, behavior);
-    MavlinkMessage.setInt8List(data_, 1, ssid);
-    MavlinkMessage.setInt8List(data_, 65, password);
-    data_.setUint8(129, authType);
+    data_.setUint8(1, authType);
+    MavlinkMessage.setInt8List(data_, 2, ssid);
+    MavlinkMessage.setInt8List(data_, 52, password);
     return data_;
   }
 }
