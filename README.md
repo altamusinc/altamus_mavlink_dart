@@ -1,6 +1,6 @@
 # dart_mavlink
 
-This is a Dart package for parsing and serializing MAVLink v1/v2 packets.
+This is a Dart package for parsing and serializing MAVLink v1/v2 packets. See `example/sitl_test.dart` for example usage. Some high level concepts are covered below.
 
 ## Basic Usage
 
@@ -23,6 +23,7 @@ The ```MavlinkParser``` has a Stream that emits ```MavlinkFrame``` objects when 
 
 ```dart
   parser.stream.listen((MavlinkFrame frame) {
+    print("Parsed a frame from Sysid:CompID ${frame.systemId}:${frame.componentId} containing a ${frame.message.runtimeType} message");
     MavlinkMessage message = frame.message;
     var messageType = frame.message.runtimeType;
     switch (messageType) {

@@ -35,6 +35,7 @@ void main() async {
   // Here we setup callbacks to do actions based on what type of MavlinkMessage is in the message field of the frame
   // See https://mavlink.io/en/guide/serialization.html#mavlink2_packet_format for more info on what info is in the frame vs. the message.
   parser.stream.listen((MavlinkFrame frame) {
+    // print("Parsed frame from Sysid:CompID ${frame.systemId}:${frame.componentId} containing a ${frame.message.runtimeType} message");
     MavlinkMessage message = frame.message;
     var messageType = frame.message.runtimeType;
     switch (messageType) {
