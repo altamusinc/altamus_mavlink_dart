@@ -45,7 +45,7 @@ The ```MavlinkParser``` has a Stream that emits ```MavlinkFrame``` objects when 
   }
 ```
 
-We can now feed data into the parser. It can come from anywhere, typically a TCP socket. In this example, a byte list is use:.
+We can now feed data into the parser. It can come from anywhere, typically a TCP socket. In this example, a byte list is used:
 
 ```dart
 var sampleBatteryStatus = Uint8List.fromList([

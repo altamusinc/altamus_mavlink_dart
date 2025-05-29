@@ -104,6 +104,7 @@ void main() async {
   setModeRTL();
 }
 
+// Requests that the autopilot sends all the "standard" data streams. 
 void requestDataStreamAll() {
   var msg = RequestDataStream(reqMessageRate: 1, targetSystem: 1, targetComponent: 1, reqStreamId: mavDataStreamAll, startStop: 1);
   sendMessage(msg);
@@ -196,31 +197,33 @@ void handleStatusText(Statustext msg) {
   }
 }
 
-void handleBatteryStatus(BatteryStatus msg){
-
+void handleBatteryStatus(BatteryStatus msg) {
+  print("Handling battery Status");
 }
 
 void handleCommandAck(CommandAck msg) {
   print("Command ack: Command ${msg.command} Result: ${msg.result}");
 }
 
+// Helper function that packs a supplied MavlinkMessage into a MavlinkFrame, and increments the sequence field
 void sendMessage(MavlinkMessage msg) {
   var frame = MavlinkFrame.v2(sequence, mySystemId, myComponentId, msg);
   sitlSocket?.add(frame.serialize());
-  sequence = (sequence == 255) ? 0 : sequence + 1;
+  sequence = (sequence + 1) % 255; // Sequence is a uint8_t, store the actual sequence count locally and truncate it to 1 byte when packing in the message
 }
 
+// Helper function that converts "char arrays" stored in mavlink messages that are sent as lists of ints into Strings, trimming out padding and such.
 String convertMavlinkCharListToString(List<int>? charList) {
   if (charList == null) {
     return "";
   }
-  List<int> trimmedName = [];
+  List<int> trimmedList = [];
   for (int character in charList) {
     if (character != 0x00 && character > 0) {
-      trimmedName.add(character);
+      trimmedList.add(character);
     }
   }
-  return ascii.decode(trimmedName);
+  return ascii.decode(trimmedList);
 }
 
 void printSystemState() {
