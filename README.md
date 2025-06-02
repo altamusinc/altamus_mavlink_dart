@@ -2,4 +2,5 @@
 
 ```flutter pub get``` to install depenencies
 
-```dart run ./tool/generate.dart``` to generate files. Currently hard coded to only generate altamus.xml.
+```dart run ./tool/generate.dart -d mavlink/message_definitions/v1.0/altamus.xml``` to generate files
+

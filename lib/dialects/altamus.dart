@@ -174,6 +174,11 @@ const MavFtpOpcode mavFtpOpcodeAck = 128;
 /// MAV_FTP_OPCODE_NAK
 const MavFtpOpcode mavFtpOpcodeNak = 129;
 
+/// Upload file at given path to the remote server configured in REMOTE_SERVER_SETTINGS
+///
+/// MAV_FTP_OPCODE_UPLOAD_TO_REMOTE
+const MavFtpOpcode mavFtpOpcodeUploadToRemote = 16;
+
 /// MAVLINK component type reported in HEARTBEAT message. Flight controllers must report the type of the vehicle on which they are mounted (e.g. MAV_TYPE_OCTOROTOR). All other components must report a value appropriate for their type (e.g. a camera must use MAV_TYPE_CAMERA).
 ///
 /// MAV_TYPE
