@@ -5686,7 +5686,7 @@ class ScanResultInfo implements MavlinkMessage {
 class ScanTransform implements MavlinkMessage {
   static const int msgId = 22;
 
-  static const int crcExtra = 205;
+  static const int crcExtra = 138;
 
   static const int mavlinkEncodedLength = 12;
 
@@ -5716,21 +5716,21 @@ class ScanTransform implements MavlinkMessage {
 
   ///
   ///
-  /// MAVLink type: uint16_t
+  /// MAVLink type: int16_t
   ///
-  /// units: RadE-4
+  /// units: mRad
   ///
   /// roll_offset
-  final uint16_t rollOffset;
+  final int16_t rollOffset;
 
   ///
   ///
-  /// MAVLink type: uint16_t
+  /// MAVLink type: int16_t
   ///
-  /// units: RadE-4
+  /// units: mRad
   ///
   /// pitch_offset
-  final uint16_t pitchOffset;
+  final int16_t pitchOffset;
 
   ScanTransform({
     required this.pitchScale,
@@ -5742,8 +5742,8 @@ class ScanTransform implements MavlinkMessage {
   ScanTransform copyWith({
     float? pitchScale,
     float? yawScale,
-    uint16_t? rollOffset,
-    uint16_t? pitchOffset,
+    int16_t? rollOffset,
+    int16_t? pitchOffset,
   }) {
     return ScanTransform(
       pitchScale: pitchScale ?? this.pitchScale,
@@ -5771,8 +5771,8 @@ class ScanTransform implements MavlinkMessage {
     }
     var pitchScale = data_.getFloat32(0, Endian.little);
     var yawScale = data_.getFloat32(4, Endian.little);
-    var rollOffset = data_.getUint16(8, Endian.little);
-    var pitchOffset = data_.getUint16(10, Endian.little);
+    var rollOffset = data_.getInt16(8, Endian.little);
+    var pitchOffset = data_.getInt16(10, Endian.little);
 
     return ScanTransform(
         pitchScale: pitchScale,
@@ -5786,8 +5786,8 @@ class ScanTransform implements MavlinkMessage {
     var data_ = ByteData(mavlinkEncodedLength);
     data_.setFloat32(0, pitchScale, Endian.little);
     data_.setFloat32(4, yawScale, Endian.little);
-    data_.setUint16(8, rollOffset, Endian.little);
-    data_.setUint16(10, pitchOffset, Endian.little);
+    data_.setInt16(8, rollOffset, Endian.little);
+    data_.setInt16(10, pitchOffset, Endian.little);
     return data_;
   }
 }
