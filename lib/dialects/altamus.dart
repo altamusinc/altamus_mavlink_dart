@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 import 'package:dart_mavlink/mavlink_dialect.dart';
 import 'package:dart_mavlink/mavlink_message.dart';
@@ -3527,7 +3528,7 @@ class Identifier implements MavlinkMessage {
   /// MAVLink type: char[24]
   ///
   /// particle_id
-  final List<char> particleId;
+  final List<char> _particleId;
 
   /// local IPV4 Address of the device
   ///
@@ -3548,38 +3549,50 @@ class Identifier implements MavlinkMessage {
   /// MAVLink type: char[20]
   ///
   /// name
-  final List<char> name;
+  final List<char> _name;
 
   /// Friendly name for the site it's at, i.e. "57 Rock West"
   ///
   /// MAVLink type: char[30]
   ///
   /// site_friendly_name
-  final List<char> siteFriendlyName;
+  final List<char> _siteFriendlyName;
 
   /// Name of the site where the scanner is located, i.e. "Gainesville Plant"
   ///
   /// MAVLink type: char[30]
   ///
   /// site_name
-  final List<char> siteName;
+  final List<char> _siteName;
 
   Identifier({
-    required this.particleId,
+    required particleId,
     required this.localIp,
     required this.mac,
-    required this.name,
-    required this.siteFriendlyName,
-    required this.siteName,
-  });
+    required name,
+    required siteFriendlyName,
+    required siteName,
+  })  : _particleId = particleId,
+        _name = name,
+        _siteFriendlyName = siteFriendlyName,
+        _siteName = siteName;
 
   Identifier.fromJson(Map<String, dynamic> json)
-      : particleId = List<int>.from(json['particleId']),
+      : _particleId = convertStringtoMavlinkCharList(json['particleId']),
         localIp = List<int>.from(json['localIp']),
         mac = List<int>.from(json['mac']),
-        name = List<int>.from(json['name']),
-        siteFriendlyName = List<int>.from(json['siteFriendlyName']),
-        siteName = List<int>.from(json['siteName']);
+        _name = convertStringtoMavlinkCharList(json['name']),
+        _siteFriendlyName = convertStringtoMavlinkCharList(json['siteFriendlyName']),
+        _siteName = convertStringtoMavlinkCharList(json['siteName']);
+  
+  get particleId => convertMavlinkCharListToString(_particleId);
+  get particleIdBytes => _particleId;
+  get name => convertMavlinkCharListToString(_name);
+  get nameBytes => _name;
+  get siteFriendlyName => convertMavlinkCharListToString(_siteFriendlyName);
+  get siteFriendlyNameBytes => _siteFriendlyName;
+  get siteName => convertMavlinkCharListToString(_siteName);
+  get siteNameBytes => _siteName;
 
   Identifier copyWith({
     List<char>? particleId,
@@ -3590,12 +3603,12 @@ class Identifier implements MavlinkMessage {
     List<char>? siteName,
   }) {
     return Identifier(
-      particleId: particleId ?? this.particleId,
+      particleId: particleId ?? _particleId,
       localIp: localIp ?? this.localIp,
       mac: mac ?? this.mac,
-      name: name ?? this.name,
-      siteFriendlyName: siteFriendlyName ?? this.siteFriendlyName,
-      siteName: siteName ?? this.siteName,
+      name: name ?? _name,
+      siteFriendlyName: siteFriendlyName ?? _siteFriendlyName,
+      siteName: siteName ?? _siteName,
     );
   }
 
@@ -3603,12 +3616,12 @@ class Identifier implements MavlinkMessage {
   @override
   Map<String, dynamic> toJson() => {
         'msgId': msgId,
-        'particleId': particleId,
+        'particleId': convertMavlinkCharListToString(_particleId),
         'localIp': localIp,
         'mac': mac,
-        'name': name,
-        'siteFriendlyName': siteFriendlyName,
-        'siteName': siteName,
+        'name': convertMavlinkCharListToString(_name),
+        'siteFriendlyName': convertMavlinkCharListToString(_siteFriendlyName),
+        'siteName': convertMavlinkCharListToString(_siteName),
       };
   
   factory Identifier.parse(ByteData data_) {
@@ -3637,12 +3650,12 @@ class Identifier implements MavlinkMessage {
   @override
   ByteData serialize() {
     var data_ = ByteData(mavlinkEncodedLength);
-    MavlinkMessage.setInt8List(data_, 0, particleId);
+    MavlinkMessage.setInt8List(data_, 0, _particleId);
     MavlinkMessage.setUint8List(data_, 24, localIp);
     MavlinkMessage.setUint8List(data_, 28, mac);
-    MavlinkMessage.setInt8List(data_, 34, name);
-    MavlinkMessage.setInt8List(data_, 54, siteFriendlyName);
-    MavlinkMessage.setInt8List(data_, 84, siteName);
+    MavlinkMessage.setInt8List(data_, 34, _name);
+    MavlinkMessage.setInt8List(data_, 54, _siteFriendlyName);
+    MavlinkMessage.setInt8List(data_, 84, _siteName);
     return data_;
   }
 }
@@ -5962,4 +5975,30 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return -1;
     }
   }
+}
+
+String convertMavlinkCharListToString(List<int>? charList) {
+  if (charList == null) {
+    return "";
+  }
+  List<int> trimmedName = [];
+  for (int character in charList) {
+    if (character != 0x00) {
+      trimmedName.add(character);
+    }
+  }
+  return ascii.decode(trimmedName);
+}
+
+Uint8List convertStringtoMavlinkCharList(String inputString, {int? length}) {
+  // Use passed length if it's there otherwise just use size of the input string
+  length = length ?? inputString.length;
+  Uint8List charList = Uint8List(length);
+  const asciiEncoder = AsciiEncoder();
+  Uint8List stringAsList = asciiEncoder.convert(inputString);
+
+  for (var i = 0; i < stringAsList.length; i++) {
+    charList[i] = stringAsList[i];
+  }
+  return charList;
 }

@@ -130,11 +130,25 @@ void main() {
   test('Serialize to json then feed back to fromJson constructor', () async {
     var json = id.toJson();
     var id2 = Identifier.fromJson(json);
+
     expect(id2.particleId, id.particleId);
     expect(id2.localIp, id.localIp);
     expect(id2.mac, id.mac);
     expect(id2.name, id.name);
     expect(id2.siteFriendlyName, id.siteFriendlyName);
     expect(id2.siteName, id.siteName);
+  });
+
+  test("Feed mangled data into fromJson constructor and check for exception", () async {
+    var mangled = id.toJson();
+    mangled["name"] = 50;
+    mangled["particleId"] = null;
+    expect(() {
+      try {
+        Identifier.fromJson(mangled);
+      } catch (e) {
+        throw Exception();
+      }
+    }, throwsA(isA<Exception>()));
   });
 }
