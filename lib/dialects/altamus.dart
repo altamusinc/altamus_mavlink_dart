@@ -3573,6 +3573,14 @@ class Identifier implements MavlinkMessage {
     required this.siteName,
   });
 
+  Identifier.fromJson(Map<String, dynamic> json)
+      : particleId = List<int>.from(json['particleId']),
+        localIp = List<int>.from(json['localIp']),
+        mac = List<int>.from(json['mac']),
+        name = List<int>.from(json['name']),
+        siteFriendlyName = List<int>.from(json['siteFriendlyName']),
+        siteName = List<int>.from(json['siteName']);
+
   Identifier copyWith({
     List<char>? particleId,
     List<int8_t>? localIp,
@@ -3591,6 +3599,7 @@ class Identifier implements MavlinkMessage {
     );
   }
 
+
   @override
   Map<String, dynamic> toJson() => {
         'msgId': msgId,
@@ -3601,7 +3610,7 @@ class Identifier implements MavlinkMessage {
         'siteFriendlyName': siteFriendlyName,
         'siteName': siteName,
       };
-
+  
   factory Identifier.parse(ByteData data_) {
     if (data_.lengthInBytes < Identifier.mavlinkEncodedLength) {
       var len = Identifier.mavlinkEncodedLength - data_.lengthInBytes;
