@@ -454,9 +454,10 @@ class DialectField {
   final String? enum_;
 
   final String nameForDart;
+  final bool isCharArray;
 
   DialectField(this.name, this.type, this.description, this.isExtension, this.units, this.enum_)
-    : nameForDart = lowerCamelCase(name);
+    : isCharArray = type.startsWith("char["), nameForDart = "${(type.startsWith("char[")) ? '_' : ''}${lowerCamelCase(name)}";
 
   ParsedMavlinkType get parsedType =>
     ParsedMavlinkType.parse(type);
@@ -731,8 +732,14 @@ Future<bool> generateCode(String dstPath, String srcDialectPath) async {
     // Constructor
     content += '${msg.nameForDart}({';
     String arrayInitializationCode = '';
-    for(var f in msg.orderedFields) {
-      content += 'required this.${f.nameForDart}, ';
+    
+    for (var f in msg.orderedFields) {
+      if (f.isCharArray) {
+        content += 'required ${f.nameForDart.replaceAll("_", "")}, ';
+        arrayInitializationCode += '${f.nameForDart} = ${f.nameForDart.replaceAll("_", "")},\n';
+      } else {
+        content += 'required this.${f.nameForDart}, ';
+      }
     }
     if (arrayInitializationCode.isEmpty) {
       content += '});\n';
