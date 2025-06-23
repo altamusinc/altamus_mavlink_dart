@@ -94,8 +94,37 @@ class MavlinkParser {
     return crc.crc == ((_crcHighByte) << 8) ^ (_crcLowByte);
   }
 
+  // Primary interface for this class. Pass byte(s) to this function and monitor the steam for completed frames.
+  // State is preserved between calls, so passing in fragmented data from network sources will work fine.
   void parse(Uint8List data) {
-    for (int d in data) {
+    for (final d in data) {
+      var frame = parseByte(d);
+      if (frame != null) {
+        _streamController.add(frame);
+      }
+    }
+  }
+
+  // Parses a blob of data, returning a list of MavlinkFrames that were parsed out of the blob, resets context at entry and exit of function.
+  // Useful for file reading or if you don't want to bother with stream monitoring. Won't work if you pass fragmented messages.
+  List<MavlinkFrame> parseBlob(Uint8List data) {
+    _resetContext();
+    _state = _ParserState.init;
+    List<MavlinkFrame> result = [];
+    for (final d in data) {
+      var frame = parseByte(d);
+      if (frame != null) {
+        result.add(frame);
+      }
+    }
+
+    _resetContext();
+    _state = _ParserState.init;
+    return result;
+  }
+
+  // Parses individual bytes and accumlates results in the objects state machine. If the final byte yields a mavlink message, it is returned. Otherwise null is returned. State is preserved
+  MavlinkFrame? parseByte(int d) {
       switch (_state) {
       case _ParserState.init:
         switch (d) {
@@ -197,32 +226,30 @@ class MavlinkParser {
           }
         }
 
-        _addMavlinkFrameToStream();
-
+        MavlinkFrame? frame = _finishFrame();
         _resetContext();
         _state = _ParserState.init;
-        break;
+        return frame;
       }
-    }
+      return null;
   }
 
-  bool _addMavlinkFrameToStream() {
+  MavlinkFrame? _finishFrame()
+  {
     // check CRC bytes.
     if (!_checkCRC()) {
       // The MAVLink packet is a bad CRC.
       // Ignore the MAVLink packet.
-      return false;
+      return null;
     }
 
     var message = _dialect.parse(_messageId, _payload.buffer.asByteData(0, _payloadLength));
     if (message == null) {
-      return false;
+      return null;
     }
 
     // Got a Mavlink Frame data.
-    var frame = MavlinkFrame(_version, _sequence, _systemId, _componentId, message);
-    _streamController.add(frame);
-    return true;
+    return MavlinkFrame(_version, _sequence, _systemId, _componentId, message);
   }
 
   Stream<MavlinkFrame> get stream => _streamController.stream;
