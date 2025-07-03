@@ -632,7 +632,7 @@ class ParsedMavlinkType {
       b = int.parse(m.group(2)!);
       break;
     case 'char':
-      t = BasicType.int;
+      t = BasicType.uint;
       b = 8;
       break;
     case 'float':
