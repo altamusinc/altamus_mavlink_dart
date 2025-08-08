@@ -175,8 +175,7 @@ const MavFtpOpcode mavFtpOpcodeAck = 128;
 /// MAV_FTP_OPCODE_NAK
 const MavFtpOpcode mavFtpOpcodeNak = 129;
 
-/// Upload file at given path to the remote server configured in
-/// REMOTE_SERVER_SETTINGS
+/// Upload file at given path to the remote server configured in REMOTE_SERVER_SETTINGS
 ///
 /// MAV_FTP_OPCODE_UPLOAD_TO_REMOTE
 const MavFtpOpcode mavFtpOpcodeUploadToRemote = 16;
@@ -295,14 +294,12 @@ const MavCmd mavCmdStartEosScan = 1;
 /// MAV_CMD_STOP_EOS_SCAN
 const MavCmd mavCmdStopEosScan = 2;
 
-/// Requests that device identify itself by flashing it's LED. Takes no
-/// arguments
+/// Requests that device identify itself by flashing it's LED. Takes no arguments
 ///
 /// MAV_CMD_IDENTIFY
 const MavCmd mavCmdIdentify = 3;
 
-/// Requests that device sends it's settings to the settings server
-/// configured in REMOTE_SERVER_SETTINGS. Takes no arguments
+/// Requests that device sends it's settings to the settings server configured in REMOTE_SERVER_SETTINGS. Takes no arguments
 ///
 /// MAV_CMD_SEND_SETTINGS_TO_SERVER
 const MavCmd mavCmdSendSettingsToServer = 4;
@@ -552,8 +549,7 @@ const MavResult mavResultInProgress = 5;
 /// MAV_RESULT_CANCELLED
 const MavResult mavResultCancelled = 6;
 
-/// Indicates that a command has timed out. Intended for use on GCS side to
-/// indicate that target hasn't replied back with an expected ACK/NACK
+/// Indicates that a command has timed out. Intended for use on GCS side to indicate that target hasn't replied back with an expected ACK/NACK
 ///
 /// MAV_RESULT_TIMED_OUT
 const MavResult mavResultTimedOut = 7;
@@ -3389,9 +3385,7 @@ class Statustext implements MavlinkMessage {
   }
 }
 
-/// Readings from the lidar. Compressed into an array of uint64 to take
-/// advantage of Mavlink2 truncating empty packets. Each field is 2 bytes.
-/// [distance][pitch][yaw][return strength]
+/// Readings from the lidar. Compressed into an array of uint64 to take advantage of Mavlink2 truncating empty packets. Each field is 2 bytes. [distance][pitch][yaw][return strength]
 ///
 /// LIDAR_READING
 class LidarReading implements MavlinkMessage {
@@ -3479,8 +3473,7 @@ class ComponentPowerControl implements MavlinkMessage {
   /// device
   final EosComponent device;
 
-  /// Behavior to
-  /// execute
+  /// Behavior to execute
   ///
   /// MAVLink type: uint8_t
   ///
@@ -3553,8 +3546,7 @@ class SystemStatus implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => crcExtra;
 
-  /// Bitmask of
-  /// devices and their power status: 1 = on 0 = off
+  /// Bitmask of devices and their power status: 1 = on 0 = off
   ///
   /// MAVLink type: uint16_t
   ///
@@ -3563,8 +3555,7 @@ class SystemStatus implements MavlinkMessage {
   /// power_status_bitmask
   final EosComponent powerStatusBitmask;
 
-  /// Bitmask of
-  /// health of devices: 1 = healthy 0 = unhealthy
+  /// Bitmask of health of devices: 1 = healthy 0 = unhealthy
   ///
   /// MAVLink type: uint16_t
   ///
@@ -3573,8 +3564,7 @@ class SystemStatus implements MavlinkMessage {
   /// health_status_bitmask
   final EosComponent healthStatusBitmask;
 
-  /// Device
-  /// uptime in seconds
+  /// Device uptime in seconds
   ///
   /// MAVLink type: uint16_t
   ///
@@ -3711,16 +3701,14 @@ class Identifier implements MavlinkMessage {
   /// name
   final List<char> _name;
 
-  /// Friendly name for the site it's at,
-  /// i.e. "57 Rock West"
+  /// Friendly name for the site it's at, i.e. "57 Rock West"
   ///
   /// MAVLink type: char[30]
   ///
   /// site_friendly_name
   final List<char> _siteFriendlyName;
 
-  /// Name of the site where the scanner is located,
-  /// i.e. "Gainesville Plant"
+  /// Name of the site where the scanner is located, i.e. "Gainesville Plant"
   ///
   /// MAVLink type: char[30]
   ///
@@ -3815,8 +3803,7 @@ class Identifier implements MavlinkMessage {
   }
 }
 
-/// Requests that the device tests/retests a specified component. Pass
-/// EOS_COMPONENT_ALL to test all
+/// Requests that the device tests/retests a specified component. Pass EOS_COMPONENT_ALL to test all
 ///
 /// COMPONENT_HEALTH_TEST
 class ComponentHealthTest implements MavlinkMessage {
@@ -3832,8 +3819,7 @@ class ComponentHealthTest implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => crcExtra;
 
-  /// Which component(s) to
-  /// request retest for
+  /// Which component(s) to request retest for
   ///
   /// MAVLink type: uint32_t
   ///
@@ -3898,8 +3884,7 @@ class ScanSettings implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => crcExtra;
 
-  /// Starting
-  /// yaw angle, relative to the homed position
+  /// Starting yaw angle, relative to the homed position
   ///
   /// MAVLink type: float
   ///
@@ -3908,8 +3893,7 @@ class ScanSettings implements MavlinkMessage {
   /// yaw_start
   final float yawStart;
 
-  /// Ending yaw
-  /// angle, relative to the homed position
+  /// Ending yaw angle, relative to the homed position
   ///
   /// MAVLink type: float
   ///
@@ -3918,7 +3902,6 @@ class ScanSettings implements MavlinkMessage {
   /// yaw_stop
   final float yawStop;
 
-  ///
   /// Starting pitch angle, relative to the homed position
   ///
   /// MAVLink type: float
@@ -3928,8 +3911,7 @@ class ScanSettings implements MavlinkMessage {
   /// pitch_start
   final float pitchStart;
 
-  /// Ending
-  /// pitch angle, relative to the homed position
+  /// Ending pitch angle, relative to the homed position
   ///
   /// MAVLink type: float
   ///
@@ -3938,7 +3920,6 @@ class ScanSettings implements MavlinkMessage {
   /// pitch_stop
   final float pitchStop;
 
-  ///
   /// Angle that the pitch to should go to at end of the scan
   ///
   /// MAVLink type: float
@@ -3948,8 +3929,7 @@ class ScanSettings implements MavlinkMessage {
   /// pitch_rest_angle
   final float pitchRestAngle;
 
-  /// Spacing between point samples.
-  /// Smaller spacing leads to denser point clouds
+  /// Spacing between point samples. Smaller spacing leads to denser point clouds
   ///
   /// MAVLink type: float
   ///
@@ -3958,8 +3938,7 @@ class ScanSettings implements MavlinkMessage {
   /// point_spacing
   final float pointSpacing;
 
-  /// How fast, in RPM to
-  /// spin the pitch motor
+  /// How fast, in RPM to spin the pitch motor
   ///
   /// MAVLink type: float
   ///
@@ -3968,8 +3947,7 @@ class ScanSettings implements MavlinkMessage {
   /// scan_speed
   final float scanSpeed;
 
-  /// Bitmask of allowed reasons for the scan to stop. 0 means
-  /// that no detected errors will stop the scan.
+  /// Bitmask of allowed reasons for the scan to stop. 0 means that no detected errors will stop the scan.
   ///
   /// MAVLink type: uint16_t
   ///
@@ -4098,8 +4076,7 @@ class ScanStatus implements MavlinkMessage {
   /// start_time_unix
   final uint32_t startTimeUnix;
 
-  /// Estimated time remaining
-  /// in the scan, in seconds
+  /// Estimated time remaining in the scan, in seconds
   ///
   /// MAVLink type: uint16_t
   ///
@@ -4174,8 +4151,7 @@ class ScanStatus implements MavlinkMessage {
   }
 }
 
-/// Settings for remote server locations. Includes settings server and FTP
-/// server
+/// Settings for remote server locations. Includes settings server and FTP server
 ///
 /// REMOTE_SERVER_SETTINGS
 class RemoteServerSettings implements MavlinkMessage {
@@ -4218,33 +4194,28 @@ class RemoteServerSettings implements MavlinkMessage {
   /// ftp_port
   final uint16_t ftpPort;
 
-  /// Bool value controlling if settings and
-  /// checkin information should be sent to a remote server. 0 = disabled, 1 = enabled. If
-  /// enabled must provide server information.
+  /// Bool value controlling if settings and checkin information should be sent to a remote server. 0 = disabled, 1 = enabled. If enabled must provide server information.
   ///
   /// MAVLink type: uint8_t
   ///
   /// server_enable
   final uint8_t serverEnable;
 
-  /// Server to send checkin info to, as well as get
-  /// settings from
+  /// Server to send checkin info to, as well as get settings from
   ///
   /// MAVLink type: char[64]
   ///
   /// post_server
   final List<char> _postServer;
 
-  /// URI to send checkin info to. appended to post
-  /// server. E.g. /php/api.php
+  /// URI to send checkin info to. appended to post server. E.g. /php/api.php
   ///
   /// MAVLink type: char[32]
   ///
   /// post_uri
   final List<char> _postUri;
 
-  /// Bool value controlling if files should be sent
-  /// to FTP server. 0 = disabled, 1 = enabled. If enabled, must provide valid settings.
+  /// Bool value controlling if files should be sent to FTP server. 0 = disabled, 1 = enabled. If enabled, must provide valid settings.
   ///
   /// MAVLink type: uint8_t
   ///
@@ -4401,7 +4372,6 @@ class PowerInformation implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => crcExtra;
 
-  ///
   /// Accumulated power since last reset in Joules
   ///
   /// MAVLink type: uint32_t
@@ -4411,8 +4381,7 @@ class PowerInformation implements MavlinkMessage {
   /// energy_consumed
   final uint32_t energyConsumed;
 
-  /// current in
-  /// Milliamps
+  /// current in Milliamps
   ///
   /// MAVLink type: uint16_t
   ///
@@ -4421,8 +4390,7 @@ class PowerInformation implements MavlinkMessage {
   /// current
   final uint16_t current;
 
-  /// voltage in
-  /// Millivolts
+  /// voltage in Millivolts
   ///
   /// MAVLink type: uint16_t
   ///
@@ -4440,8 +4408,7 @@ class PowerInformation implements MavlinkMessage {
   /// power
   final uint16_t power;
 
-  /// Type of reading:
-  /// instant, average, max, min
+  /// Type of reading: instant, average, max, min
   ///
   /// MAVLink type: uint8_t
   ///
@@ -4549,8 +4516,7 @@ class WifiInformation implements MavlinkMessage {
   /// ssid
   final List<char> _ssid;
 
-  /// BSSID of the access point that the scanner is
-  /// connected to
+  /// BSSID of the access point that the scanner is connected to
   ///
   /// MAVLink type: uint8_t[6]
   ///
@@ -4714,8 +4680,7 @@ class UploadStatus implements MavlinkMessage {
   /// upload_rate
   final uint16_t uploadRate;
 
-  /// Estimated time remaining,
-  /// in seconds
+  /// Estimated time remaining, in seconds
   ///
   /// MAVLink type: uint16_t
   ///
@@ -4724,8 +4689,7 @@ class UploadStatus implements MavlinkMessage {
   /// time_remaining
   final uint16_t timeRemaining;
 
-  /// Percentage complete of the
-  /// scan
+  /// Percentage complete of the scan
   ///
   /// MAVLink type: uint8_t
   ///
@@ -4831,48 +4795,42 @@ class MotorControl implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => crcExtra;
 
-  /// RPM to set motor shaft too. Ignores gearing. Only
-  /// used if MOTOR_BEHAVIOR_MOTOR_RPM is selected.
+  /// RPM to set motor shaft too. Ignores gearing. Only used if MOTOR_BEHAVIOR_MOTOR_RPM is selected.
   ///
   /// MAVLink type: float
   ///
   /// motor_rpm
   final float motorRpm;
 
-  /// Angle to goto. Accounts for gearing. 0-360.
-  /// Values above 360 will be wrapped around.
+  /// Angle to goto. Accounts for gearing. 0-360. Values above 360 will be wrapped around.
   ///
   /// MAVLink type: float
   ///
   /// target_angle
   final float targetAngle;
 
-  /// RPM to set device too. Takes into
-  /// account gearing. Only used if MOTOR_BEHAVIOR_DEVICE_RPM is selected
+  /// RPM to set device too. Takes into account gearing. Only used if MOTOR_BEHAVIOR_DEVICE_RPM is selected
   ///
   /// MAVLink type: float
   ///
   /// device_rpm
   final float deviceRpm;
 
-  /// Number of steps to execute. Negative values
-  /// will step backwards. Only used if MOTOR_BEHAVIOR_STEP is selected
+  /// Number of steps to execute. Negative values will step backwards. Only used if MOTOR_BEHAVIOR_STEP is selected
   ///
   /// MAVLink type: int16_t
   ///
   /// steps_count
   final int16_t stepsCount;
 
-  /// VACTUAL value to send to stepper driver. Negative
-  /// values will go backwards. Only used if MOTOR_BEHAVIOR_VACTUAL is selected
+  /// VACTUAL value to send to stepper driver. Negative values will go backwards. Only used if MOTOR_BEHAVIOR_VACTUAL is selected
   ///
   /// MAVLink type: int16_t
   ///
   /// vactual
   final int16_t vactual;
 
-  /// Which motor to target. Only
-  /// responds to EOS_COMPONENT_YAW_MOTOR and EOS_COMPONENT_PITCH_MOTOR
+  /// Which motor to target. Only responds to EOS_COMPONENT_YAW_MOTOR and EOS_COMPONENT_PITCH_MOTOR
   ///
   /// MAVLink type: uint8_t
   ///
@@ -4979,8 +4937,7 @@ class MotorControl implements MavlinkMessage {
   }
 }
 
-/// Motor settings. If emitted by device, represents current settings. If
-/// emitted by control software, device will update accordingly
+/// Motor settings. If emitted by device, represents current settings. If emitted by control software, device will update accordingly
 ///
 /// MOTOR_SETTINGS
 class MotorSettings implements MavlinkMessage {
@@ -4996,16 +4953,14 @@ class MotorSettings implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => crcExtra;
 
-  /// Gearing ratio to apply, specified as Motor
-  /// Teeth:Device Teeth; Send as float i.e. 20.0/72.0 becomes 0.2777777
+  /// Gearing ratio to apply, specified as Motor Teeth:Device Teeth; Send as float i.e. 20.0/72.0 becomes 0.2777777
   ///
   /// MAVLink type: float
   ///
   /// gearing_ratio
   final float gearingRatio;
 
-  /// Rate at which microsteps are being
-  /// triggered by the driver internal oscillator. Read Only.
+  /// Rate at which microsteps are being triggered by the driver internal oscillator. Read Only.
   ///
   /// MAVLink type: float
   ///
@@ -5014,8 +4969,7 @@ class MotorSettings implements MavlinkMessage {
   /// usteps_rate
   final float ustepsRate;
 
-  /// Device angle travelled per microstep.
-  /// Read Only.
+  /// Device angle travelled per microstep. Read Only.
   ///
   /// MAVLink type: float
   ///
@@ -5031,24 +4985,21 @@ class MotorSettings implements MavlinkMessage {
   /// current
   final uint16_t current;
 
-  /// Number of steps to move from home
-  /// position after homing.
+  /// Number of steps to move from home position after homing.
   ///
   /// MAVLink type: int16_t
   ///
   /// home_offset_steps
   final int16_t homeOffsetSteps;
 
-  /// Number of steps from home switch
-  /// triggering to repeatable index pulse. Read Only.
+  /// Number of steps from home switch triggering to repeatable index pulse. Read Only.
   ///
   /// MAVLink type: uint16_t
   ///
   /// steps_to_next_index
   final uint16_t stepsToNextIndex;
 
-  /// Which motor
-  /// we're referring to.
+  /// Which motor we're referring to.
   ///
   /// MAVLink type: uint8_t
   ///
@@ -5057,40 +5008,35 @@ class MotorSettings implements MavlinkMessage {
   /// motor
   final EosComponent motor;
 
-  /// Microsteps used for stepping 1-256 in powers of
-  /// 2
+  /// Microsteps used for stepping 1-256 in powers of 2
   ///
   /// MAVLink type: uint8_t
   ///
   /// microsteps
   final uint8_t microsteps;
 
-  /// Boolean if spread cycle is enabled. 0 =
-  /// disabled, 1 = enabled
+  /// Boolean if spread cycle is enabled. 0 = disabled, 1 = enabled
   ///
   /// MAVLink type: uint8_t
   ///
   /// spread_cycle
   final uint8_t spreadCycle;
 
-  /// Boolean if pwm_autoscale is enabled. 0 =
-  /// disabled, 1 = enabled
+  /// Boolean if pwm_autoscale is enabled. 0 = disabled, 1 = enabled
   ///
   /// MAVLink type: uint8_t
   ///
   /// pwm_autoscale
   final uint8_t pwmAutoscale;
 
-  /// Boolean if pwm_autograd is enabled. 0 =
-  /// disabled, 1 = enabled
+  /// Boolean if pwm_autograd is enabled. 0 = disabled, 1 = enabled
   ///
   /// MAVLink type: uint8_t
   ///
   /// pwm_autograd
   final uint8_t pwmAutograd;
 
-  /// Mininimum steps between
-  /// index pulse and home switch. Set to 0 to not enforce a minimum
+  /// Mininimum steps between index pulse and home switch. Set to 0 to not enforce a minimum
   ///
   /// MAVLink type: uint8_t
   ///
@@ -5277,16 +5223,14 @@ class MotorStatus implements MavlinkMessage {
   /// vactual
   final uint16_t vactual;
 
-  /// Number of steps from home. UINT16_MAX if motor
-  /// is in RPM mode.
+  /// Number of steps from home. UINT16_MAX if motor is in RPM mode.
   ///
   /// MAVLink type: int16_t
   ///
   /// steps_count
   final int16_t stepsCount;
 
-  /// Which motor
-  /// we're referring to.
+  /// Which motor we're referring to.
   ///
   /// MAVLink type: uint8_t
   ///
@@ -5295,16 +5239,14 @@ class MotorStatus implements MavlinkMessage {
   /// motor
   final EosComponent motor;
 
-  /// Boolean if the motor is enabled or not. 0 =
-  /// disabled, 1 = enabled.
+  /// Boolean if the motor is enabled or not. 0 = disabled, 1 = enabled.
   ///
   /// MAVLink type: uint8_t
   ///
   /// enabled
   final uint8_t enabled;
 
-  /// Boolean if the motor is homed or not. 0 = not homed,
-  /// 1 = homed.
+  /// Boolean if the motor is homed or not. 0 = not homed, 1 = homed.
   ///
   /// MAVLink type: uint8_t
   ///
@@ -5416,9 +5358,7 @@ class MotorStatus implements MavlinkMessage {
   }
 }
 
-/// Combined Orientation message, including GPS, compass, and accelerometer.
-/// If components are off, their respective fields will use the "INVALID" values
-/// provided.
+/// Combined Orientation message, including GPS, compass, and accelerometer. If components are off, their respective fields will use the "INVALID" values provided.
 ///
 /// ORIENTATION
 class Orientation implements MavlinkMessage {
@@ -5434,8 +5374,7 @@ class Orientation implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => crcExtra;
 
-  /// Roll angle (-pi..+pi). Comes
-  /// from Accelerometer
+  /// Roll angle (-pi..+pi). Comes from Accelerometer
   ///
   /// MAVLink type: float
   ///
@@ -5444,8 +5383,7 @@ class Orientation implements MavlinkMessage {
   /// roll
   final float roll;
 
-  /// Pitch angle (-pi..+pi). Comes
-  /// from Accelerometer
+  /// Pitch angle (-pi..+pi). Comes from Accelerometer
   ///
   /// MAVLink type: float
   ///
@@ -5454,8 +5392,7 @@ class Orientation implements MavlinkMessage {
   /// pitch
   final float pitch;
 
-  /// Temperature. Comes from
-  /// Accelerometer
+  /// Temperature. Comes from Accelerometer
   ///
   /// MAVLink type: float
   ///
@@ -5464,8 +5401,7 @@ class Orientation implements MavlinkMessage {
   /// temp
   final float temp;
 
-  /// heading angle (-pi..+pi).
-  /// Comes from Compass
+  /// heading angle (-pi..+pi). Comes from Compass
   ///
   /// MAVLink type: float
   ///
@@ -5474,8 +5410,7 @@ class Orientation implements MavlinkMessage {
   /// heading
   final float heading;
 
-  /// Latitude (WGS84,
-  /// EGM96 ellipsoid)
+  /// Latitude (WGS84, EGM96 ellipsoid)
   ///
   /// MAVLink type: int32_t
   ///
@@ -5484,8 +5419,7 @@ class Orientation implements MavlinkMessage {
   /// lat
   final int32_t lat;
 
-  /// Longitude (WGS84,
-  /// EGM96 ellipsoid)
+  /// Longitude (WGS84, EGM96 ellipsoid)
   ///
   /// MAVLink type: int32_t
   ///
@@ -5494,8 +5428,7 @@ class Orientation implements MavlinkMessage {
   /// lon
   final int32_t lon;
 
-  /// Altitude (MSL). Positive
-  /// for up.
+  /// Altitude (MSL). Positive for up.
   ///
   /// MAVLink type: int32_t
   ///
@@ -5504,8 +5437,7 @@ class Orientation implements MavlinkMessage {
   /// alt
   final int32_t alt;
 
-  /// X magnetic field
-  /// strength. Comes from compass
+  /// X magnetic field strength. Comes from compass
   ///
   /// MAVLink type: int16_t
   ///
@@ -5514,8 +5446,7 @@ class Orientation implements MavlinkMessage {
   /// xmag
   final int16_t xmag;
 
-  /// Y magnetic field
-  /// strength. Comes from compass
+  /// Y magnetic field strength. Comes from compass
   ///
   /// MAVLink type: int16_t
   ///
@@ -5524,8 +5455,7 @@ class Orientation implements MavlinkMessage {
   /// ymag
   final int16_t ymag;
 
-  /// Z magnetic field
-  /// strength. Comes from compass
+  /// Z magnetic field strength. Comes from compass
   ///
   /// MAVLink type: int16_t
   ///
@@ -5668,8 +5598,7 @@ class WifiCredentials implements MavlinkMessage {
   String get passwordasString => convertMavlinkCharListToString(_password);
   List<char> get password => _password;
 
-  /// What behavior to
-  /// execute, eg, clear, add, list
+  /// What behavior to execute, eg, clear, add, list
   ///
   /// MAVLink type: uint8_t
   ///
@@ -5678,8 +5607,7 @@ class WifiCredentials implements MavlinkMessage {
   /// behavior
   final WifiCredientialsBehavior behavior;
 
-  /// Auth type of the network;
-  /// eg; WPA2
+  /// Auth type of the network; eg; WPA2
   ///
   /// MAVLink type: uint8_t
   ///
@@ -5695,8 +5623,7 @@ class WifiCredentials implements MavlinkMessage {
   /// ssid
   final List<char> _ssid;
 
-  /// Password of the SSID. leave blank for open
-  /// networks. Will be left blank if reporting
+  /// Password of the SSID. leave blank for open networks. Will be left blank if reporting
   ///
   /// MAVLink type: char[50]
   ///
@@ -5796,25 +5723,21 @@ class LidarSettings implements MavlinkMessage {
   /// update_rate
   final uint16_t updateRate;
 
-  /// Boolean for if fog mode should be enabled.
-  /// 0 = off, 1 = on
+  /// Boolean for if fog mode should be enabled. 0 = off, 1 = on
   ///
   /// MAVLink type: uint8_t
   ///
   /// fog_mode_enable
   final uint8_t fogModeEnable;
 
-  /// Boolean for if the lidar should be
-  /// emitting readings when powered up, or if a separate "output enable" command must be
-  /// sent after it's turned on. 0 = false , 1 = true
+  /// Boolean for if the lidar should be emitting readings when powered up, or if a separate "output enable" command must be sent after it's turned on. 0 = false , 1 = true
   ///
   /// MAVLink type: uint8_t
   ///
   /// output_disabled_at_boot
   final uint8_t outputDisabledAtBoot;
 
-  /// String representation of firmware
-  /// version of the lidar eg: "2.1.8". Read-only
+  /// String representation of firmware version of the lidar eg: "2.1.8". Read-only
   ///
   /// MAVLink type: char[10]
   ///
@@ -5931,8 +5854,7 @@ class ScanResultInfo implements MavlinkMessage {
   /// file_size_bytes
   final uint32_t fileSizeBytes;
 
-  /// Duration of the scan, in
-  /// seconds
+  /// Duration of the scan, in seconds
   ///
   /// MAVLink type: uint32_t
   ///
@@ -5941,8 +5863,7 @@ class ScanResultInfo implements MavlinkMessage {
   /// scan_duration
   final uint32_t scanDuration;
 
-  /// Reason for the
-  /// scan stopping
+  /// Reason for the scan stopping
   ///
   /// MAVLink type: uint16_t
   ///
@@ -5951,8 +5872,7 @@ class ScanResultInfo implements MavlinkMessage {
   /// scan_stop_reason
   final ScanStopReason scanStopReason;
 
-  /// Reason for
-  /// scan starting
+  /// Reason for scan starting
   ///
   /// MAVLink type: uint16_t
   ///
@@ -5961,8 +5881,7 @@ class ScanResultInfo implements MavlinkMessage {
   /// scan_start_reason
   final ScanStartReason scanStartReason;
 
-  /// What type of info this
-  /// is, estimated or actual
+  /// What type of info this is, estimated or actual
   ///
   /// MAVLink type: uint8_t
   ///
