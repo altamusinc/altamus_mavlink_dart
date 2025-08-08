@@ -1159,7 +1159,7 @@ class ChangeOperatorControl implements MavlinkMessage {
     var targetSystem = data_.getUint8(0);
     var controlRequest = data_.getUint8(1);
     var version = data_.getUint8(2);
-    var passkey = MavlinkMessage.asInt8List(data_, 3, 25);
+    var passkey = MavlinkMessage.asUint8List(data_, 3, 25);
 
     return ChangeOperatorControl(
         targetSystem: targetSystem,
@@ -1174,7 +1174,7 @@ class ChangeOperatorControl implements MavlinkMessage {
     data_.setUint8(0, targetSystem);
     data_.setUint8(1, controlRequest);
     data_.setUint8(2, version);
-    MavlinkMessage.setInt8List(data_, 3, passkey);
+    MavlinkMessage.setUint8List(data_, 3, passkey);
     return data_;
   }
 }
@@ -3163,7 +3163,7 @@ class NamedValueFloat implements MavlinkMessage {
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
     var value = data_.getFloat32(4, Endian.little);
-    var name = MavlinkMessage.asInt8List(data_, 8, 10);
+    var name = MavlinkMessage.asUint8List(data_, 8, 10);
 
     return NamedValueFloat(timeBootMs: timeBootMs, value: value, name: name);
   }
@@ -3173,7 +3173,7 @@ class NamedValueFloat implements MavlinkMessage {
     var data_ = ByteData(mavlinkEncodedLength);
     data_.setUint32(0, timeBootMs, Endian.little);
     data_.setFloat32(4, value, Endian.little);
-    MavlinkMessage.setInt8List(data_, 8, name);
+    MavlinkMessage.setUint8List(data_, 8, name);
     return data_;
   }
 }
@@ -3259,7 +3259,7 @@ class NamedValueInt implements MavlinkMessage {
     }
     var timeBootMs = data_.getUint32(0, Endian.little);
     var value = data_.getInt32(4, Endian.little);
-    var name = MavlinkMessage.asInt8List(data_, 8, 10);
+    var name = MavlinkMessage.asUint8List(data_, 8, 10);
 
     return NamedValueInt(timeBootMs: timeBootMs, value: value, name: name);
   }
@@ -3269,7 +3269,7 @@ class NamedValueInt implements MavlinkMessage {
     var data_ = ByteData(mavlinkEncodedLength);
     data_.setUint32(0, timeBootMs, Endian.little);
     data_.setInt32(4, value, Endian.little);
-    MavlinkMessage.setInt8List(data_, 8, name);
+    MavlinkMessage.setUint8List(data_, 8, name);
     return data_;
   }
 }
@@ -3370,7 +3370,7 @@ class Statustext implements MavlinkMessage {
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var severity = data_.getUint8(0);
-    var text = MavlinkMessage.asInt8List(data_, 1, 50);
+    var text = MavlinkMessage.asUint8List(data_, 1, 50);
     var id = data_.getUint16(51, Endian.little);
     var chunkSeq = data_.getUint8(53);
 
@@ -3382,7 +3382,7 @@ class Statustext implements MavlinkMessage {
   ByteData serialize() {
     var data_ = ByteData(mavlinkEncodedLength);
     data_.setUint8(0, severity);
-    MavlinkMessage.setInt8List(data_, 1, text);
+    MavlinkMessage.setUint8List(data_, 1, text);
     data_.setUint16(51, id, Endian.little);
     data_.setUint8(53, chunkSeq);
     return data_;
@@ -3786,12 +3786,12 @@ class Identifier implements MavlinkMessage {
           List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
-    var particleId = MavlinkMessage.asInt8List(data_, 0, 24);
+    var particleId = MavlinkMessage.asUint8List(data_, 0, 24);
     var localIp = MavlinkMessage.asUint8List(data_, 24, 4);
     var mac = MavlinkMessage.asUint8List(data_, 28, 6);
-    var name = MavlinkMessage.asInt8List(data_, 34, 20);
-    var siteFriendlyName = MavlinkMessage.asInt8List(data_, 54, 30);
-    var siteName = MavlinkMessage.asInt8List(data_, 84, 30);
+    var name = MavlinkMessage.asUint8List(data_, 34, 20);
+    var siteFriendlyName = MavlinkMessage.asUint8List(data_, 54, 30);
+    var siteName = MavlinkMessage.asUint8List(data_, 84, 30);
 
     return Identifier(
         particleId: particleId,
@@ -3805,12 +3805,12 @@ class Identifier implements MavlinkMessage {
   @override
   ByteData serialize() {
     var data_ = ByteData(mavlinkEncodedLength);
-    MavlinkMessage.setInt8List(data_, 0, particleId);
+    MavlinkMessage.setUint8List(data_, 0, particleId);
     MavlinkMessage.setUint8List(data_, 24, localIp);
     MavlinkMessage.setUint8List(data_, 28, mac);
-    MavlinkMessage.setInt8List(data_, 34, name);
-    MavlinkMessage.setInt8List(data_, 54, siteFriendlyName);
-    MavlinkMessage.setInt8List(data_, 84, siteName);
+    MavlinkMessage.setUint8List(data_, 34, name);
+    MavlinkMessage.setUint8List(data_, 54, siteFriendlyName);
+    MavlinkMessage.setUint8List(data_, 84, siteName);
     return data_;
   }
 }
@@ -4350,12 +4350,12 @@ class RemoteServerSettings implements MavlinkMessage {
     var postPort = data_.getUint16(0, Endian.little);
     var ftpPort = data_.getUint16(2, Endian.little);
     var serverEnable = data_.getUint8(4);
-    var postServer = MavlinkMessage.asInt8List(data_, 5, 64);
-    var postUri = MavlinkMessage.asInt8List(data_, 69, 32);
+    var postServer = MavlinkMessage.asUint8List(data_, 5, 64);
+    var postUri = MavlinkMessage.asUint8List(data_, 69, 32);
     var ftpEnable = data_.getUint8(101);
-    var ftpServer = MavlinkMessage.asInt8List(data_, 102, 64);
-    var ftpUsername = MavlinkMessage.asInt8List(data_, 166, 32);
-    var ftpPassword = MavlinkMessage.asInt8List(data_, 198, 32);
+    var ftpServer = MavlinkMessage.asUint8List(data_, 102, 64);
+    var ftpUsername = MavlinkMessage.asUint8List(data_, 166, 32);
+    var ftpPassword = MavlinkMessage.asUint8List(data_, 198, 32);
 
     return RemoteServerSettings(
         postPort: postPort,
@@ -4375,12 +4375,12 @@ class RemoteServerSettings implements MavlinkMessage {
     data_.setUint16(0, postPort, Endian.little);
     data_.setUint16(2, ftpPort, Endian.little);
     data_.setUint8(4, serverEnable);
-    MavlinkMessage.setInt8List(data_, 5, postServer);
-    MavlinkMessage.setInt8List(data_, 69, postUri);
+    MavlinkMessage.setUint8List(data_, 5, postServer);
+    MavlinkMessage.setUint8List(data_, 69, postUri);
     data_.setUint8(101, ftpEnable);
-    MavlinkMessage.setInt8List(data_, 102, ftpServer);
-    MavlinkMessage.setInt8List(data_, 166, ftpUsername);
-    MavlinkMessage.setInt8List(data_, 198, ftpPassword);
+    MavlinkMessage.setUint8List(data_, 102, ftpServer);
+    MavlinkMessage.setUint8List(data_, 166, ftpUsername);
+    MavlinkMessage.setUint8List(data_, 198, ftpPassword);
     return data_;
   }
 }
@@ -4637,7 +4637,7 @@ class WifiInformation implements MavlinkMessage {
           List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
-    var ssid = MavlinkMessage.asInt8List(data_, 0, 32);
+    var ssid = MavlinkMessage.asUint8List(data_, 0, 32);
     var bssid = MavlinkMessage.asUint8List(data_, 32, 6);
     var rssi = data_.getUint8(38);
     var rssiPercent = data_.getUint8(39);
@@ -4656,7 +4656,7 @@ class WifiInformation implements MavlinkMessage {
   @override
   ByteData serialize() {
     var data_ = ByteData(mavlinkEncodedLength);
-    MavlinkMessage.setInt8List(data_, 0, ssid);
+    MavlinkMessage.setUint8List(data_, 0, ssid);
     MavlinkMessage.setUint8List(data_, 32, bssid);
     data_.setUint8(38, rssi);
     data_.setUint8(39, rssiPercent);
@@ -5749,8 +5749,8 @@ class WifiCredentials implements MavlinkMessage {
     }
     var behavior = data_.getUint8(0);
     var authType = data_.getUint8(1);
-    var ssid = MavlinkMessage.asInt8List(data_, 2, 50);
-    var password = MavlinkMessage.asInt8List(data_, 52, 50);
+    var ssid = MavlinkMessage.asUint8List(data_, 2, 50);
+    var password = MavlinkMessage.asUint8List(data_, 52, 50);
 
     return WifiCredentials(
         behavior: behavior, authType: authType, ssid: ssid, password: password);
@@ -5761,8 +5761,8 @@ class WifiCredentials implements MavlinkMessage {
     var data_ = ByteData(mavlinkEncodedLength);
     data_.setUint8(0, behavior);
     data_.setUint8(1, authType);
-    MavlinkMessage.setInt8List(data_, 2, ssid);
-    MavlinkMessage.setInt8List(data_, 52, password);
+    MavlinkMessage.setUint8List(data_, 2, ssid);
+    MavlinkMessage.setUint8List(data_, 52, password);
     return data_;
   }
 }
@@ -5867,7 +5867,7 @@ class LidarSettings implements MavlinkMessage {
     var updateRate = data_.getUint16(0, Endian.little);
     var fogModeEnable = data_.getUint8(2);
     var outputDisabledAtBoot = data_.getUint8(3);
-    var firmwareVersion = MavlinkMessage.asInt8List(data_, 4, 10);
+    var firmwareVersion = MavlinkMessage.asUint8List(data_, 4, 10);
 
     return LidarSettings(
         updateRate: updateRate,
@@ -5882,7 +5882,7 @@ class LidarSettings implements MavlinkMessage {
     data_.setUint16(0, updateRate, Endian.little);
     data_.setUint8(2, fogModeEnable);
     data_.setUint8(3, outputDisabledAtBoot);
-    MavlinkMessage.setInt8List(data_, 4, firmwareVersion);
+    MavlinkMessage.setUint8List(data_, 4, firmwareVersion);
     return data_;
   }
 }
