@@ -1076,7 +1076,7 @@ class ChangeOperatorControl implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => crcExtra;
 
-  String get passkeyasString => convertMavlinkCharListToString(_passkey);
+  String get passkeyAsString => convertMavlinkCharListToString(_passkey);
   List<char> get passkey => _passkey;
 
   /// System the GCS requests control for
@@ -3094,7 +3094,7 @@ class NamedValueFloat implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => crcExtra;
 
-  String get nameasString => convertMavlinkCharListToString(_name);
+  String get nameAsString => convertMavlinkCharListToString(_name);
   List<char> get name => _name;
 
   /// Timestamp (time since system boot).
@@ -3190,7 +3190,7 @@ class NamedValueInt implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => crcExtra;
 
-  String get nameasString => convertMavlinkCharListToString(_name);
+  String get nameAsString => convertMavlinkCharListToString(_name);
   List<char> get name => _name;
 
   /// Timestamp (time since system boot).
@@ -3286,7 +3286,7 @@ class Statustext implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => crcExtra;
 
-  String get textasString => convertMavlinkCharListToString(_text);
+  String get textAsString => convertMavlinkCharListToString(_text);
   List<char> get text => _text;
 
   /// Severity of status. Relies on the definitions within RFC-5424.
@@ -3663,14 +3663,14 @@ class Identifier implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => crcExtra;
 
-  String get particleIdasString => convertMavlinkCharListToString(_particleId);
+  String get particleIdAsString => convertMavlinkCharListToString(_particleId);
   List<char> get particleId => _particleId;
-  String get nameasString => convertMavlinkCharListToString(_name);
+  String get nameAsString => convertMavlinkCharListToString(_name);
   List<char> get name => _name;
-  String get siteFriendlyNameasString =>
+  String get siteFriendlyNameAsString =>
       convertMavlinkCharListToString(_siteFriendlyName);
   List<char> get siteFriendlyName => _siteFriendlyName;
-  String get siteNameasString => convertMavlinkCharListToString(_siteName);
+  String get siteNameAsString => convertMavlinkCharListToString(_siteName);
   List<char> get siteName => _siteName;
 
   /// Particle ID of device. Unique and unchangable
@@ -4167,16 +4167,16 @@ class RemoteServerSettings implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => crcExtra;
 
-  String get postServerasString => convertMavlinkCharListToString(_postServer);
+  String get postServerAsString => convertMavlinkCharListToString(_postServer);
   List<char> get postServer => _postServer;
-  String get postUriasString => convertMavlinkCharListToString(_postUri);
+  String get postUriAsString => convertMavlinkCharListToString(_postUri);
   List<char> get postUri => _postUri;
-  String get ftpServerasString => convertMavlinkCharListToString(_ftpServer);
+  String get ftpServerAsString => convertMavlinkCharListToString(_ftpServer);
   List<char> get ftpServer => _ftpServer;
-  String get ftpUsernameasString =>
+  String get ftpUsernameAsString =>
       convertMavlinkCharListToString(_ftpUsername);
   List<char> get ftpUsername => _ftpUsername;
-  String get ftpPasswordasString =>
+  String get ftpPasswordAsString =>
       convertMavlinkCharListToString(_ftpPassword);
   List<char> get ftpPassword => _ftpPassword;
 
@@ -4506,7 +4506,7 @@ class WifiInformation implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => crcExtra;
 
-  String get ssidasString => convertMavlinkCharListToString(_ssid);
+  String get ssidAsString => convertMavlinkCharListToString(_ssid);
   List<char> get ssid => _ssid;
 
   /// Name of the SSID
@@ -5593,9 +5593,9 @@ class WifiCredentials implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => crcExtra;
 
-  String get ssidasString => convertMavlinkCharListToString(_ssid);
+  String get ssidAsString => convertMavlinkCharListToString(_ssid);
   List<char> get ssid => _ssid;
-  String get passwordasString => convertMavlinkCharListToString(_password);
+  String get passwordAsString => convertMavlinkCharListToString(_password);
   List<char> get password => _password;
 
   /// What behavior to execute, eg, clear, add, list
@@ -5710,7 +5710,7 @@ class LidarSettings implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => crcExtra;
 
-  String get firmwareVersionasString =>
+  String get firmwareVersionAsString =>
       convertMavlinkCharListToString(_firmwareVersion);
   List<char> get firmwareVersion => _firmwareVersion;
 

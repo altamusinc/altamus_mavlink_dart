@@ -717,7 +717,7 @@ Future<bool> generateCode(String dstPath, String srcDialectPath) async {
     // write getters for char array types to allow both normal and asString returns
     for (var field in msg.orderedFields){
       if(field.isCharArray){
-        content += "String get ${field.nameForDart}asString => convertMavlinkCharListToString(_${field.nameForDart});\n";
+        content += "String get ${field.nameForDart}AsString => convertMavlinkCharListToString(_${field.nameForDart});\n";
         content += "List<char> get ${field.nameForDart} => _${field.nameForDart};\n";
       }
     }
