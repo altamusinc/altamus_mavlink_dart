@@ -708,6 +708,14 @@ const EosState eosStateError = 5;
 /// EOS_STATE_HOMING
 const EosState eosStateHoming = 6;
 
+///
+/// EOS_STATE_STARTING_SCAN
+const EosState eosStateStartingScan = 7;
+
+///
+/// EOS_STATE_STOPPING_SCAN
+const EosState eosStateStoppingScan = 8;
+
 /// Behaviors a motor can execute
 ///
 /// MOTOR_BEHAVIOR
