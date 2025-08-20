@@ -454,9 +454,11 @@ class DialectField {
   final String? enum_;
 
   final String nameForDart;
+  final bool isArray;
 
   DialectField(this.name, this.type, this.description, this.isExtension, this.units, this.enum_)
-    : nameForDart = lowerCamelCase(name);
+    : isArray = (type.contains("[") && type.contains("]")), 
+    nameForDart = lowerCamelCase(name);
 
   ParsedMavlinkType get parsedType =>
     ParsedMavlinkType.parse(type);
@@ -468,6 +470,10 @@ class DialectField {
     }
     return type.substring(0, indexOfBracket);
   }
+
+  bool get isCharArray => isArray && unitType == "char";
+  bool get isFloatArray => isArray && (unitType == "double" || unitType == "float") ;
+  bool get isIntArray => isArray && !isFloatArray && !isCharArray;
 
   static DialectField parseElement(XmlElement? elmFiled, isExtension) {
     if (elmFiled == null) {
@@ -660,6 +666,7 @@ Future<bool> generateCode(String dstPath, String srcDialectPath) async {
   content += "import 'package:dart_mavlink/mavlink_dialect.dart';\n";
   content += "import 'package:dart_mavlink/mavlink_message.dart';\n";
   content += "import 'package:dart_mavlink/types.dart';\n";
+  content += "import 'dart:convert'\n;";
 
   // Write enum fields
   for (var enm in doc.enums) {
@@ -705,6 +712,15 @@ Future<bool> generateCode(String dstPath, String srcDialectPath) async {
     content +='@override int get mavlinkMessageId => msgId;\n';
     content +='\n';
     content +='@override int get mavlinkCrcExtra => crcExtra;\n';
+    content += '\n';
+    
+    // write getters for char array types to allow both normal and asString returns
+    for (var field in msg.orderedFields){
+      if(field.isCharArray){
+        content += "String get ${field.nameForDart}AsString => convertMavlinkCharListToString(_${field.nameForDart});\n";
+        content += "List<char> get ${field.nameForDart} => _${field.nameForDart};\n";
+      }
+    }
 
     for (var field in msg.orderedFields) {
       content += generateAsDartDocumentation(field.description);
@@ -724,24 +740,50 @@ Future<bool> generateCode(String dstPath, String srcDialectPath) async {
       }
       content += '///\n';
       content += '/// ${field.name}\n';
-      content += 'final ${asDartType(field.type, field.enum_)} ${field.nameForDart};\n';
+      content += 'final ${asDartType(field.type, field.enum_)} ${field.isCharArray ? "_" : ""}${field.nameForDart};\n';
     }
     content += '\n';
 
     // Constructor
     content += '${msg.nameForDart}({';
     String arrayInitializationCode = '';
-    for(var f in msg.orderedFields) {
-      content += 'required this.${f.nameForDart}, ';
+    
+    for (var f in msg.orderedFields) {
+      if (f.isCharArray) {
+        content += 'required ${f.nameForDart}, ';
+        arrayInitializationCode += '_${f.nameForDart} = ${f.nameForDart}, \n';
+      } else {
+        content += 'required this.${f.nameForDart}, ';
+      }
     }
     if (arrayInitializationCode.isEmpty) {
       content += '});\n';
     } else {
       content += '})\n';
-      content += ':' + arrayInitializationCode.substring(0, arrayInitializationCode.length - 1) + ';';
+      content += ':' + arrayInitializationCode.substring(0, arrayInitializationCode.length - 3) + ';\n';
     }
     content += '\n';
 
+    // fromJson constructor
+    content += '${msg.nameForDart}.fromJson(Map<String, dynamic> json)\n : ';
+    for (var f in msg.orderedFields) {
+      if(f.isCharArray) {
+        content += "_${f.nameForDart} = convertStringtoMavlinkCharList(json['${f.nameForDart.replaceAll("_", "")}'], length: ${f.parsedType.arrayLength}),\n";
+      }
+      else if (f.isIntArray)
+      {
+        content += "${f.nameForDart} = List<int>.from(json['${f.nameForDart}']),\n";
+      }
+      else if (f.isFloatArray)
+      {
+        content += "${f.nameForDart} = List<double>.from(json['${f.nameForDart}']),\n";
+      }
+      else{
+      content += "${f.nameForDart} = json['${f.nameForDart}'],\n";
+      }
+    }
+    content = content.substring(0, content.length - 2); // trims off last comma and newline.
+    content += ";\n";
     // copyWith builder
     content += '${msg.nameForDart} copyWith({\n';
     for (var f in msg.orderedFields) {
@@ -759,9 +801,12 @@ Future<bool> generateCode(String dstPath, String srcDialectPath) async {
     // toJson builder
     content += '@override Map<String, dynamic> toJson() => {\n';
     content += '\'msgId\': msgId, \n';
-     for (var f in msg.orderedFields) {
-      content +=
-          '\'${f.nameForDart}\': ${f.nameForDart},\n';
+    for (var f in msg.orderedFields) {
+      if (f.isCharArray) {
+        content += "'${f.nameForDart}' : _${f.nameForDart},\n";
+      } else {
+        content += "'${f.nameForDart}': ${f.nameForDart},\n";
+      }
     }
     content += '};\n';
     content += '\n';
@@ -904,6 +949,32 @@ default:
   return -1;
 }
 }
+}
+
+String convertMavlinkCharListToString(List<int>? charList) {
+  if (charList == null) {
+    return "";
+  }
+  List<int> trimmedName = [];
+  for (int character in charList) {
+    if (character != 0x00) {
+      trimmedName.add(character);
+    }
+  }
+  return ascii.decode(trimmedName);
+}
+
+Uint8List convertStringtoMavlinkCharList(String inputString, {int? length}) {
+  // Use passed length if it's there otherwise just use size of the input string
+  length = length ?? inputString.length;
+  Uint8List charList = Uint8List(length);
+  const asciiEncoder = AsciiEncoder();
+  Uint8List stringAsList = asciiEncoder.convert(inputString);
+
+  for (var i = 0; i < stringAsList.length; i++) {
+    charList[i] = stringAsList[i];
+  }
+  return charList;
 }
 ''';
 
