@@ -3176,6 +3176,164 @@ class StateInputEvent implements MavlinkMessage {
   }
 }
 
+/// Indentifiying information about the EOS device
+///
+/// IDENTIFIER
+class Identifier implements MavlinkMessage {
+  static const int msgId = 2;
+
+  static const int crcExtra = 88;
+
+  static const int mavlinkEncodedLength = 114;
+
+  @override
+  int get mavlinkMessageId => msgId;
+
+  @override
+  int get mavlinkCrcExtra => crcExtra;
+
+  String get particleIdAsString => convertMavlinkCharListToString(_particleId);
+  List<char> get particleId => _particleId;
+  String get nameAsString => convertMavlinkCharListToString(_name);
+  List<char> get name => _name;
+  String get siteFriendlyNameAsString =>
+      convertMavlinkCharListToString(_siteFriendlyName);
+  List<char> get siteFriendlyName => _siteFriendlyName;
+  String get siteNameAsString => convertMavlinkCharListToString(_siteName);
+  List<char> get siteName => _siteName;
+
+  /// Particle ID of device. Unique and unchangable
+  ///
+  /// MAVLink type: char[24]
+  ///
+  /// particle_id
+  final List<char> _particleId;
+
+  /// local IPV4 Address of the device
+  ///
+  /// MAVLink type: uint8_t[4]
+  ///
+  /// local_ip
+  final List<int8_t> localIp;
+
+  /// MAC address of the device
+  ///
+  /// MAVLink type: uint8_t[6]
+  ///
+  /// mac
+  final List<int8_t> mac;
+
+  /// Friendly name of device i.e. P2-123456
+  ///
+  /// MAVLink type: char[20]
+  ///
+  /// name
+  final List<char> _name;
+
+  /// Friendly name for the site it's at,
+  /// i.e. "57 Rock West"
+  ///
+  /// MAVLink type: char[30]
+  ///
+  /// site_friendly_name
+  final List<char> _siteFriendlyName;
+
+  /// Name of the site where the scanner is located,
+  /// i.e. "Gainesville Plant"
+  ///
+  /// MAVLink type: char[30]
+  ///
+  /// site_name
+  final List<char> _siteName;
+
+  Identifier({
+    required particleId,
+    required this.localIp,
+    required this.mac,
+    required name,
+    required siteFriendlyName,
+    required siteName,
+  })  : _particleId = particleId,
+        _name = name,
+        _siteFriendlyName = siteFriendlyName,
+        _siteName = siteName;
+
+  Identifier.fromJson(Map<String, dynamic> json)
+      : _particleId =
+            convertStringtoMavlinkCharList(json['particleId'], length: 24),
+        localIp = List<int>.from(json['localIp']),
+        mac = List<int>.from(json['mac']),
+        _name = convertStringtoMavlinkCharList(json['name'], length: 20),
+        _siteFriendlyName = convertStringtoMavlinkCharList(
+            json['siteFriendlyName'],
+            length: 30),
+        _siteName =
+            convertStringtoMavlinkCharList(json['siteName'], length: 30);
+  Identifier copyWith({
+    List<char>? particleId,
+    List<int8_t>? localIp,
+    List<int8_t>? mac,
+    List<char>? name,
+    List<char>? siteFriendlyName,
+    List<char>? siteName,
+  }) {
+    return Identifier(
+      particleId: particleId ?? this.particleId,
+      localIp: localIp ?? this.localIp,
+      mac: mac ?? this.mac,
+      name: name ?? this.name,
+      siteFriendlyName: siteFriendlyName ?? this.siteFriendlyName,
+      siteName: siteName ?? this.siteName,
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'particleId': _particleId,
+        'localIp': localIp,
+        'mac': mac,
+        'name': _name,
+        'siteFriendlyName': _siteFriendlyName,
+        'siteName': _siteName,
+      };
+
+  factory Identifier.parse(ByteData data_) {
+    if (data_.lengthInBytes < Identifier.mavlinkEncodedLength) {
+      var len = Identifier.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var particleId = MavlinkMessage.asUint8List(data_, 0, 24);
+    var localIp = MavlinkMessage.asUint8List(data_, 24, 4);
+    var mac = MavlinkMessage.asUint8List(data_, 28, 6);
+    var name = MavlinkMessage.asUint8List(data_, 34, 20);
+    var siteFriendlyName = MavlinkMessage.asUint8List(data_, 54, 30);
+    var siteName = MavlinkMessage.asUint8List(data_, 84, 30);
+
+    return Identifier(
+        particleId: particleId,
+        localIp: localIp,
+        mac: mac,
+        name: name,
+        siteFriendlyName: siteFriendlyName,
+        siteName: siteName);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    MavlinkMessage.setUint8List(data_, 0, particleId);
+    MavlinkMessage.setUint8List(data_, 24, localIp);
+    MavlinkMessage.setUint8List(data_, 28, mac);
+    MavlinkMessage.setUint8List(data_, 34, name);
+    MavlinkMessage.setUint8List(data_, 54, siteFriendlyName);
+    MavlinkMessage.setUint8List(data_, 84, siteName);
+    return data_;
+  }
+}
+
 class MavlinkDialectTitan implements MavlinkDialect {
   static const int mavlinkVersion = 3;
 
@@ -3219,6 +3377,8 @@ class MavlinkDialectTitan implements MavlinkDialect {
         return Statustext.parse(data);
       case 1:
         return StateInputEvent.parse(data);
+      case 2:
+        return Identifier.parse(data);
       default:
         return null;
     }
@@ -3261,6 +3421,8 @@ class MavlinkDialectTitan implements MavlinkDialect {
         return Statustext.crcExtra;
       case 1:
         return StateInputEvent.crcExtra;
+      case 2:
+        return Identifier.crcExtra;
       default:
         return -1;
     }
