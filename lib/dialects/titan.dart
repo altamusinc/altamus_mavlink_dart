@@ -587,6 +587,43 @@ const GpsFixType gpsFixTypeStatic = 7;
 /// GPS_FIX_TYPE_PPP
 const GpsFixType gpsFixTypePpp = 8;
 
+/// State of the water tracking device
+///
+/// SYSTEM_STATE
+typedef SystemState = int;
+
+///
+/// SYSTEM_STATE_INITALIZING
+const SystemState systemStateInitalizing = 1;
+
+///
+/// SYSTEM_STATE_READY
+const SystemState systemStateReady = 2;
+
+///
+/// SYSTEM_STATE_FILLING_IDENTIFIED
+const SystemState systemStateFillingIdentified = 3;
+
+///
+/// SYSTEM_STATE_FILLING_UNIDENTIFIED
+const SystemState systemStateFillingUnidentified = 4;
+
+///
+/// SYSTEM_STATE_PAUSE
+const SystemState systemStatePause = 5;
+
+///
+/// SYSTEM_STATE_UPLOADING
+const SystemState systemStateUploading = 6;
+
+///
+/// SYSTEM_STATE_OVERRIDE_ON
+const SystemState systemStateOverrideOn = 7;
+
+///
+/// SYSTEM_STATE_ERROR
+const SystemState systemStateError = 8;
+
 /// State inputs to water tracking device
 ///
 /// STATE_INPUT
