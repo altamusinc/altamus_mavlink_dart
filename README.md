@@ -156,4 +156,4 @@ See the comments in the script for more detail on usage.
 
 ```flutter pub get``` to install depenencies
 
-```dart run ./tool/generate.dart -d mavlink/message_definitions/v1.0/altamus.xml``` to generate files
+```dart run ./tool/generate.dart -d mavlink/message_definitions/v1.0/titan.xml``` to generate files
