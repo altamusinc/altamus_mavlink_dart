@@ -3376,9 +3376,9 @@ class Identifier implements MavlinkMessage {
 class WaterTransaction implements MavlinkMessage {
   static const int msgId = 3;
 
-  static const int crcExtra = 98;
+  static const int crcExtra = 28;
 
-  static const int mavlinkEncodedLength = 56;
+  static const int mavlinkEncodedLength = 48;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -3395,24 +3395,6 @@ class WaterTransaction implements MavlinkMessage {
   ///
   /// badge_id_int
   final uint64_t badgeIdInt;
-
-  /// unix start time of the transaction in seconds
-  ///
-  /// MAVLink type: uint64_t
-  ///
-  /// units: s
-  ///
-  /// start_time_utc
-  final uint64_t startTimeUtc;
-
-  /// unix stop time of the transaction in seconds
-  ///
-  /// MAVLink type: uint64_t
-  ///
-  /// units: s
-  ///
-  /// stop_time_utc
-  final uint64_t stopTimeUtc;
 
   /// Number of ML dispensed in currenttransaction
   ///
@@ -3431,6 +3413,24 @@ class WaterTransaction implements MavlinkMessage {
   ///
   /// limit_ml
   final uint32_t limitMl;
+
+  /// unix start time of the transaction in seconds
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// units: s
+  ///
+  /// start_time_utc
+  final uint32_t startTimeUtc;
+
+  /// unix stop time of the transaction in seconds
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// units: s
+  ///
+  /// stop_time_utc
+  final uint32_t stopTimeUtc;
 
   /// Number of pulses in current transaction
   ///
@@ -3455,7 +3455,7 @@ class WaterTransaction implements MavlinkMessage {
   /// start_reason
   final StateInput startReason;
 
-  /// Reason the transaction stopped
+  /// Reason the transaction stopped. 0 if transaction still running
   ///
   /// MAVLink type: uint8_t
   ///
@@ -3466,10 +3466,10 @@ class WaterTransaction implements MavlinkMessage {
 
   WaterTransaction({
     required this.badgeIdInt,
-    required this.startTimeUtc,
-    required this.stopTimeUtc,
     required this.dispensedMl,
     required this.limitMl,
+    required this.startTimeUtc,
+    required this.stopTimeUtc,
     required this.pulses,
     required truckName,
     required this.startReason,
@@ -3478,10 +3478,10 @@ class WaterTransaction implements MavlinkMessage {
 
   WaterTransaction.fromJson(Map<String, dynamic> json)
       : badgeIdInt = json['badgeIdInt'],
-        startTimeUtc = json['startTimeUtc'],
-        stopTimeUtc = json['stopTimeUtc'],
         dispensedMl = json['dispensedMl'],
         limitMl = json['limitMl'],
+        startTimeUtc = json['startTimeUtc'],
+        stopTimeUtc = json['stopTimeUtc'],
         pulses = json['pulses'],
         _truckName =
             convertStringtoMavlinkCharList(json['truckName'], length: 20),
@@ -3489,10 +3489,10 @@ class WaterTransaction implements MavlinkMessage {
         stopReason = json['stopReason'];
   WaterTransaction copyWith({
     uint64_t? badgeIdInt,
-    uint64_t? startTimeUtc,
-    uint64_t? stopTimeUtc,
     uint32_t? dispensedMl,
     uint32_t? limitMl,
+    uint32_t? startTimeUtc,
+    uint32_t? stopTimeUtc,
     uint16_t? pulses,
     List<char>? truckName,
     StateInput? startReason,
@@ -3500,10 +3500,10 @@ class WaterTransaction implements MavlinkMessage {
   }) {
     return WaterTransaction(
       badgeIdInt: badgeIdInt ?? this.badgeIdInt,
-      startTimeUtc: startTimeUtc ?? this.startTimeUtc,
-      stopTimeUtc: stopTimeUtc ?? this.stopTimeUtc,
       dispensedMl: dispensedMl ?? this.dispensedMl,
       limitMl: limitMl ?? this.limitMl,
+      startTimeUtc: startTimeUtc ?? this.startTimeUtc,
+      stopTimeUtc: stopTimeUtc ?? this.stopTimeUtc,
       pulses: pulses ?? this.pulses,
       truckName: truckName ?? this.truckName,
       startReason: startReason ?? this.startReason,
@@ -3515,10 +3515,10 @@ class WaterTransaction implements MavlinkMessage {
   Map<String, dynamic> toJson() => {
         'msgId': msgId,
         'badgeIdInt': badgeIdInt,
-        'startTimeUtc': startTimeUtc,
-        'stopTimeUtc': stopTimeUtc,
         'dispensedMl': dispensedMl,
         'limitMl': limitMl,
+        'startTimeUtc': startTimeUtc,
+        'stopTimeUtc': stopTimeUtc,
         'pulses': pulses,
         'truckName': _truckName,
         'startReason': startReason,
@@ -3533,21 +3533,21 @@ class WaterTransaction implements MavlinkMessage {
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var badgeIdInt = data_.getUint64(0, Endian.little);
-    var startTimeUtc = data_.getUint64(8, Endian.little);
-    var stopTimeUtc = data_.getUint64(16, Endian.little);
-    var dispensedMl = data_.getUint32(24, Endian.little);
-    var limitMl = data_.getUint32(28, Endian.little);
-    var pulses = data_.getUint16(32, Endian.little);
-    var truckName = MavlinkMessage.asUint8List(data_, 34, 20);
-    var startReason = data_.getUint8(54);
-    var stopReason = data_.getUint8(55);
+    var dispensedMl = data_.getUint32(8, Endian.little);
+    var limitMl = data_.getUint32(12, Endian.little);
+    var startTimeUtc = data_.getUint32(16, Endian.little);
+    var stopTimeUtc = data_.getUint32(20, Endian.little);
+    var pulses = data_.getUint16(24, Endian.little);
+    var truckName = MavlinkMessage.asUint8List(data_, 26, 20);
+    var startReason = data_.getUint8(46);
+    var stopReason = data_.getUint8(47);
 
     return WaterTransaction(
         badgeIdInt: badgeIdInt,
-        startTimeUtc: startTimeUtc,
-        stopTimeUtc: stopTimeUtc,
         dispensedMl: dispensedMl,
         limitMl: limitMl,
+        startTimeUtc: startTimeUtc,
+        stopTimeUtc: stopTimeUtc,
         pulses: pulses,
         truckName: truckName,
         startReason: startReason,
@@ -3558,14 +3558,157 @@ class WaterTransaction implements MavlinkMessage {
   ByteData serialize() {
     var data_ = ByteData(mavlinkEncodedLength);
     data_.setUint64(0, badgeIdInt, Endian.little);
-    data_.setUint64(8, startTimeUtc, Endian.little);
-    data_.setUint64(16, stopTimeUtc, Endian.little);
-    data_.setUint32(24, dispensedMl, Endian.little);
-    data_.setUint32(28, limitMl, Endian.little);
-    data_.setUint16(32, pulses, Endian.little);
-    MavlinkMessage.setUint8List(data_, 34, truckName);
-    data_.setUint8(54, startReason);
-    data_.setUint8(55, stopReason);
+    data_.setUint32(8, dispensedMl, Endian.little);
+    data_.setUint32(12, limitMl, Endian.little);
+    data_.setUint32(16, startTimeUtc, Endian.little);
+    data_.setUint32(20, stopTimeUtc, Endian.little);
+    data_.setUint16(24, pulses, Endian.little);
+    MavlinkMessage.setUint8List(data_, 26, truckName);
+    data_.setUint8(46, startReason);
+    data_.setUint8(47, stopReason);
+    return data_;
+  }
+}
+
+/// State of the water filling station
+///
+/// STATION_STATE
+class StationState implements MavlinkMessage {
+  static const int msgId = 4;
+
+  static const int crcExtra = 57;
+
+  static const int mavlinkEncodedLength = 12;
+
+  @override
+  int get mavlinkMessageId => msgId;
+
+  @override
+  int get mavlinkCrcExtra => crcExtra;
+
+  /// number of untracked pulses received
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// untracked_pulses
+  final uint32_t untrackedPulses;
+
+  /// System time in Unix time
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// units: s
+  ///
+  /// system_time
+  final uint32_t systemTime;
+
+  /// Current state of the station
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// enum: [SystemState]
+  ///
+  /// system_state
+  final SystemState systemState;
+
+  /// State of the solenoid: 0 closed 1 open
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// solenoid_state
+  final uint8_t solenoidState;
+
+  /// number of badges current registered by the RFID reader
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// detected_badges_count
+  final uint8_t detectedBadgesCount;
+
+  /// if the station is connected to the internet, 0 false, 1 true
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// internet_connectivity
+  final uint8_t internetConnectivity;
+
+  StationState({
+    required this.untrackedPulses,
+    required this.systemTime,
+    required this.systemState,
+    required this.solenoidState,
+    required this.detectedBadgesCount,
+    required this.internetConnectivity,
+  });
+
+  StationState.fromJson(Map<String, dynamic> json)
+      : untrackedPulses = json['untrackedPulses'],
+        systemTime = json['systemTime'],
+        systemState = json['systemState'],
+        solenoidState = json['solenoidState'],
+        detectedBadgesCount = json['detectedBadgesCount'],
+        internetConnectivity = json['internetConnectivity'];
+  StationState copyWith({
+    uint32_t? untrackedPulses,
+    uint32_t? systemTime,
+    SystemState? systemState,
+    uint8_t? solenoidState,
+    uint8_t? detectedBadgesCount,
+    uint8_t? internetConnectivity,
+  }) {
+    return StationState(
+      untrackedPulses: untrackedPulses ?? this.untrackedPulses,
+      systemTime: systemTime ?? this.systemTime,
+      systemState: systemState ?? this.systemState,
+      solenoidState: solenoidState ?? this.solenoidState,
+      detectedBadgesCount: detectedBadgesCount ?? this.detectedBadgesCount,
+      internetConnectivity: internetConnectivity ?? this.internetConnectivity,
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'untrackedPulses': untrackedPulses,
+        'systemTime': systemTime,
+        'systemState': systemState,
+        'solenoidState': solenoidState,
+        'detectedBadgesCount': detectedBadgesCount,
+        'internetConnectivity': internetConnectivity,
+      };
+
+  factory StationState.parse(ByteData data_) {
+    if (data_.lengthInBytes < StationState.mavlinkEncodedLength) {
+      var len = StationState.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var untrackedPulses = data_.getUint32(0, Endian.little);
+    var systemTime = data_.getUint32(4, Endian.little);
+    var systemState = data_.getUint8(8);
+    var solenoidState = data_.getUint8(9);
+    var detectedBadgesCount = data_.getUint8(10);
+    var internetConnectivity = data_.getUint8(11);
+
+    return StationState(
+        untrackedPulses: untrackedPulses,
+        systemTime: systemTime,
+        systemState: systemState,
+        solenoidState: solenoidState,
+        detectedBadgesCount: detectedBadgesCount,
+        internetConnectivity: internetConnectivity);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint32(0, untrackedPulses, Endian.little);
+    data_.setUint32(4, systemTime, Endian.little);
+    data_.setUint8(8, systemState);
+    data_.setUint8(9, solenoidState);
+    data_.setUint8(10, detectedBadgesCount);
+    data_.setUint8(11, internetConnectivity);
     return data_;
   }
 }
@@ -3617,6 +3760,8 @@ class MavlinkDialectTitan implements MavlinkDialect {
         return Identifier.parse(data);
       case 3:
         return WaterTransaction.parse(data);
+      case 4:
+        return StationState.parse(data);
       default:
         return null;
     }
@@ -3663,6 +3808,8 @@ class MavlinkDialectTitan implements MavlinkDialect {
         return Identifier.crcExtra;
       case 3:
         return WaterTransaction.crcExtra;
+      case 4:
+        return StationState.crcExtra;
       default:
         return -1;
     }
