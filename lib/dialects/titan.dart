@@ -3576,9 +3576,9 @@ class WaterTransaction implements MavlinkMessage {
 class StationState implements MavlinkMessage {
   static const int msgId = 4;
 
-  static const int crcExtra = 57;
+  static const int crcExtra = 158;
 
-  static const int mavlinkEncodedLength = 12;
+  static const int mavlinkEncodedLength = 14;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -3601,6 +3601,13 @@ class StationState implements MavlinkMessage {
   ///
   /// system_time
   final uint32_t systemTime;
+
+  /// number of transactions stored in memory, will be uploaded when internet returns
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// stored_transactions_count
+  final uint16_t storedTransactionsCount;
 
   /// Current state of the station
   ///
@@ -3635,6 +3642,7 @@ class StationState implements MavlinkMessage {
   StationState({
     required this.untrackedPulses,
     required this.systemTime,
+    required this.storedTransactionsCount,
     required this.systemState,
     required this.solenoidState,
     required this.detectedBadgesCount,
@@ -3644,6 +3652,7 @@ class StationState implements MavlinkMessage {
   StationState.fromJson(Map<String, dynamic> json)
       : untrackedPulses = json['untrackedPulses'],
         systemTime = json['systemTime'],
+        storedTransactionsCount = json['storedTransactionsCount'],
         systemState = json['systemState'],
         solenoidState = json['solenoidState'],
         detectedBadgesCount = json['detectedBadgesCount'],
@@ -3651,6 +3660,7 @@ class StationState implements MavlinkMessage {
   StationState copyWith({
     uint32_t? untrackedPulses,
     uint32_t? systemTime,
+    uint16_t? storedTransactionsCount,
     SystemState? systemState,
     uint8_t? solenoidState,
     uint8_t? detectedBadgesCount,
@@ -3659,6 +3669,8 @@ class StationState implements MavlinkMessage {
     return StationState(
       untrackedPulses: untrackedPulses ?? this.untrackedPulses,
       systemTime: systemTime ?? this.systemTime,
+      storedTransactionsCount:
+          storedTransactionsCount ?? this.storedTransactionsCount,
       systemState: systemState ?? this.systemState,
       solenoidState: solenoidState ?? this.solenoidState,
       detectedBadgesCount: detectedBadgesCount ?? this.detectedBadgesCount,
@@ -3671,6 +3683,7 @@ class StationState implements MavlinkMessage {
         'msgId': msgId,
         'untrackedPulses': untrackedPulses,
         'systemTime': systemTime,
+        'storedTransactionsCount': storedTransactionsCount,
         'systemState': systemState,
         'solenoidState': solenoidState,
         'detectedBadgesCount': detectedBadgesCount,
@@ -3686,14 +3699,16 @@ class StationState implements MavlinkMessage {
     }
     var untrackedPulses = data_.getUint32(0, Endian.little);
     var systemTime = data_.getUint32(4, Endian.little);
-    var systemState = data_.getUint8(8);
-    var solenoidState = data_.getUint8(9);
-    var detectedBadgesCount = data_.getUint8(10);
-    var internetConnectivity = data_.getUint8(11);
+    var storedTransactionsCount = data_.getUint16(8, Endian.little);
+    var systemState = data_.getUint8(10);
+    var solenoidState = data_.getUint8(11);
+    var detectedBadgesCount = data_.getUint8(12);
+    var internetConnectivity = data_.getUint8(13);
 
     return StationState(
         untrackedPulses: untrackedPulses,
         systemTime: systemTime,
+        storedTransactionsCount: storedTransactionsCount,
         systemState: systemState,
         solenoidState: solenoidState,
         detectedBadgesCount: detectedBadgesCount,
@@ -3705,10 +3720,178 @@ class StationState implements MavlinkMessage {
     var data_ = ByteData(mavlinkEncodedLength);
     data_.setUint32(0, untrackedPulses, Endian.little);
     data_.setUint32(4, systemTime, Endian.little);
-    data_.setUint8(8, systemState);
-    data_.setUint8(9, solenoidState);
-    data_.setUint8(10, detectedBadgesCount);
-    data_.setUint8(11, internetConnectivity);
+    data_.setUint16(8, storedTransactionsCount, Endian.little);
+    data_.setUint8(10, systemState);
+    data_.setUint8(11, solenoidState);
+    data_.setUint8(12, detectedBadgesCount);
+    data_.setUint8(13, internetConnectivity);
+    return data_;
+  }
+}
+
+/// Station Settings
+///
+/// STATION_SETTINGS
+class StationSettings implements MavlinkMessage {
+  static const int msgId = 7;
+
+  static const int crcExtra = 167;
+
+  static const int mavlinkEncodedLength = 25;
+
+  @override
+  int get mavlinkMessageId => msgId;
+
+  @override
+  int get mavlinkCrcExtra => crcExtra;
+
+  /// Timeout before a present badge is no longer considered present
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// units: ms
+  ///
+  /// badge_present_timeout
+  final uint32_t badgePresentTimeout;
+
+  /// How long a new badge needs to be seen for before it's considered present
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// units: ms
+  ///
+  /// badge_present_threshold
+  final uint32_t badgePresentThreshold;
+
+  /// How often the system should re-attempt uploading files after the last failure
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// units: ms
+  ///
+  /// upload_attempt_timeout
+  final uint32_t uploadAttemptTimeout;
+
+  /// How long the system should wait for the server to confirm that it received the transaction before deleting from memory
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// units: ms
+  ///
+  /// server_reply_timeout
+  final uint32_t serverReplyTimeout;
+
+  /// Default fill limit for each transaction
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// units: mL
+  ///
+  /// fill_limit_ml
+  final uint32_t fillLimitMl;
+
+  /// How many mL are registered per pulse of the measuring device
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// units: mL
+  ///
+  /// ml_per_pulse
+  final uint32_t mlPerPulse;
+
+  /// Timezone of the station
+  ///
+  /// MAVLink type: int8_t
+  ///
+  /// station_timezone
+  final int8_t stationTimezone;
+
+  StationSettings({
+    required this.badgePresentTimeout,
+    required this.badgePresentThreshold,
+    required this.uploadAttemptTimeout,
+    required this.serverReplyTimeout,
+    required this.fillLimitMl,
+    required this.mlPerPulse,
+    required this.stationTimezone,
+  });
+
+  StationSettings.fromJson(Map<String, dynamic> json)
+      : badgePresentTimeout = json['badgePresentTimeout'],
+        badgePresentThreshold = json['badgePresentThreshold'],
+        uploadAttemptTimeout = json['uploadAttemptTimeout'],
+        serverReplyTimeout = json['serverReplyTimeout'],
+        fillLimitMl = json['fillLimitMl'],
+        mlPerPulse = json['mlPerPulse'],
+        stationTimezone = json['stationTimezone'];
+  StationSettings copyWith({
+    uint32_t? badgePresentTimeout,
+    uint32_t? badgePresentThreshold,
+    uint32_t? uploadAttemptTimeout,
+    uint32_t? serverReplyTimeout,
+    uint32_t? fillLimitMl,
+    uint32_t? mlPerPulse,
+    int8_t? stationTimezone,
+  }) {
+    return StationSettings(
+      badgePresentTimeout: badgePresentTimeout ?? this.badgePresentTimeout,
+      badgePresentThreshold:
+          badgePresentThreshold ?? this.badgePresentThreshold,
+      uploadAttemptTimeout: uploadAttemptTimeout ?? this.uploadAttemptTimeout,
+      serverReplyTimeout: serverReplyTimeout ?? this.serverReplyTimeout,
+      fillLimitMl: fillLimitMl ?? this.fillLimitMl,
+      mlPerPulse: mlPerPulse ?? this.mlPerPulse,
+      stationTimezone: stationTimezone ?? this.stationTimezone,
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'badgePresentTimeout': badgePresentTimeout,
+        'badgePresentThreshold': badgePresentThreshold,
+        'uploadAttemptTimeout': uploadAttemptTimeout,
+        'serverReplyTimeout': serverReplyTimeout,
+        'fillLimitMl': fillLimitMl,
+        'mlPerPulse': mlPerPulse,
+        'stationTimezone': stationTimezone,
+      };
+
+  factory StationSettings.parse(ByteData data_) {
+    if (data_.lengthInBytes < StationSettings.mavlinkEncodedLength) {
+      var len = StationSettings.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var badgePresentTimeout = data_.getUint32(0, Endian.little);
+    var badgePresentThreshold = data_.getUint32(4, Endian.little);
+    var uploadAttemptTimeout = data_.getUint32(8, Endian.little);
+    var serverReplyTimeout = data_.getUint32(12, Endian.little);
+    var fillLimitMl = data_.getUint32(16, Endian.little);
+    var mlPerPulse = data_.getUint32(20, Endian.little);
+    var stationTimezone = data_.getInt8(24);
+
+    return StationSettings(
+        badgePresentTimeout: badgePresentTimeout,
+        badgePresentThreshold: badgePresentThreshold,
+        uploadAttemptTimeout: uploadAttemptTimeout,
+        serverReplyTimeout: serverReplyTimeout,
+        fillLimitMl: fillLimitMl,
+        mlPerPulse: mlPerPulse,
+        stationTimezone: stationTimezone);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint32(0, badgePresentTimeout, Endian.little);
+    data_.setUint32(4, badgePresentThreshold, Endian.little);
+    data_.setUint32(8, uploadAttemptTimeout, Endian.little);
+    data_.setUint32(12, serverReplyTimeout, Endian.little);
+    data_.setUint32(16, fillLimitMl, Endian.little);
+    data_.setUint32(20, mlPerPulse, Endian.little);
+    data_.setInt8(24, stationTimezone);
     return data_;
   }
 }
@@ -3762,6 +3945,8 @@ class MavlinkDialectTitan implements MavlinkDialect {
         return WaterTransaction.parse(data);
       case 4:
         return StationState.parse(data);
+      case 7:
+        return StationSettings.parse(data);
       default:
         return null;
     }
@@ -3810,6 +3995,8 @@ class MavlinkDialectTitan implements MavlinkDialect {
         return WaterTransaction.crcExtra;
       case 4:
         return StationState.crcExtra;
+      case 7:
+        return StationSettings.crcExtra;
       default:
         return -1;
     }
