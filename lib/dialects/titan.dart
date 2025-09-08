@@ -3735,9 +3735,9 @@ class StationState implements MavlinkMessage {
 class StationSettings implements MavlinkMessage {
   static const int msgId = 7;
 
-  static const int crcExtra = 167;
+  static const int crcExtra = 254;
 
-  static const int mavlinkEncodedLength = 25;
+  static const int mavlinkEncodedLength = 26;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -3806,6 +3806,13 @@ class StationSettings implements MavlinkMessage {
   /// station_timezone
   final int8_t stationTimezone;
 
+  /// min rssi from card reader for a badge to considered for activation, set to 0 is no threshold is desired
+  ///
+  /// MAVLink type: int8_t
+  ///
+  /// rssi_threshold
+  final int8_t rssiThreshold;
+
   StationSettings({
     required this.badgePresentTimeout,
     required this.badgePresentThreshold,
@@ -3814,6 +3821,7 @@ class StationSettings implements MavlinkMessage {
     required this.fillLimitMl,
     required this.mlPerPulse,
     required this.stationTimezone,
+    required this.rssiThreshold,
   });
 
   StationSettings.fromJson(Map<String, dynamic> json)
@@ -3823,7 +3831,8 @@ class StationSettings implements MavlinkMessage {
         serverReplyTimeout = json['serverReplyTimeout'],
         fillLimitMl = json['fillLimitMl'],
         mlPerPulse = json['mlPerPulse'],
-        stationTimezone = json['stationTimezone'];
+        stationTimezone = json['stationTimezone'],
+        rssiThreshold = json['rssiThreshold'];
   StationSettings copyWith({
     uint32_t? badgePresentTimeout,
     uint32_t? badgePresentThreshold,
@@ -3832,6 +3841,7 @@ class StationSettings implements MavlinkMessage {
     uint32_t? fillLimitMl,
     uint32_t? mlPerPulse,
     int8_t? stationTimezone,
+    int8_t? rssiThreshold,
   }) {
     return StationSettings(
       badgePresentTimeout: badgePresentTimeout ?? this.badgePresentTimeout,
@@ -3842,6 +3852,7 @@ class StationSettings implements MavlinkMessage {
       fillLimitMl: fillLimitMl ?? this.fillLimitMl,
       mlPerPulse: mlPerPulse ?? this.mlPerPulse,
       stationTimezone: stationTimezone ?? this.stationTimezone,
+      rssiThreshold: rssiThreshold ?? this.rssiThreshold,
     );
   }
 
@@ -3855,6 +3866,7 @@ class StationSettings implements MavlinkMessage {
         'fillLimitMl': fillLimitMl,
         'mlPerPulse': mlPerPulse,
         'stationTimezone': stationTimezone,
+        'rssiThreshold': rssiThreshold,
       };
 
   factory StationSettings.parse(ByteData data_) {
@@ -3871,6 +3883,7 @@ class StationSettings implements MavlinkMessage {
     var fillLimitMl = data_.getUint32(16, Endian.little);
     var mlPerPulse = data_.getUint32(20, Endian.little);
     var stationTimezone = data_.getInt8(24);
+    var rssiThreshold = data_.getInt8(25);
 
     return StationSettings(
         badgePresentTimeout: badgePresentTimeout,
@@ -3879,7 +3892,8 @@ class StationSettings implements MavlinkMessage {
         serverReplyTimeout: serverReplyTimeout,
         fillLimitMl: fillLimitMl,
         mlPerPulse: mlPerPulse,
-        stationTimezone: stationTimezone);
+        stationTimezone: stationTimezone,
+        rssiThreshold: rssiThreshold);
   }
 
   @override
@@ -3892,6 +3906,7 @@ class StationSettings implements MavlinkMessage {
     data_.setUint32(16, fillLimitMl, Endian.little);
     data_.setUint32(20, mlPerPulse, Endian.little);
     data_.setInt8(24, stationTimezone);
+    data_.setInt8(25, rssiThreshold);
     return data_;
   }
 }
