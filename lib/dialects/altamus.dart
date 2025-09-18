@@ -3661,9 +3661,9 @@ class SystemStatus implements MavlinkMessage {
 class Identifier implements MavlinkMessage {
   static const int msgId = 7;
 
-  static const int crcExtra = 88;
+  static const int crcExtra = 98;
 
-  static const int mavlinkEncodedLength = 114;
+  static const int mavlinkEncodedLength = 115;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -3680,6 +3680,13 @@ class Identifier implements MavlinkMessage {
   List<char> get siteFriendlyName => _siteFriendlyName;
   String get siteNameAsString => convertMavlinkCharListToString(_siteName);
   List<char> get siteName => _siteName;
+
+  /// Particle FW version
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// fw_version
+  final uint8_t fwVersion;
 
   /// Particle ID of device. Unique and unchangable
   ///
@@ -3724,6 +3731,7 @@ class Identifier implements MavlinkMessage {
   final List<char> _siteName;
 
   Identifier({
+    required this.fwVersion,
     required particleId,
     required this.localIp,
     required this.mac,
@@ -3736,7 +3744,8 @@ class Identifier implements MavlinkMessage {
         _siteName = siteName;
 
   Identifier.fromJson(Map<String, dynamic> json)
-      : _particleId =
+      : fwVersion = json['fwVersion'],
+        _particleId =
             convertStringtoMavlinkCharList(json['particleId'], length: 24),
         localIp = List<int>.from(json['localIp']),
         mac = List<int>.from(json['mac']),
@@ -3747,6 +3756,7 @@ class Identifier implements MavlinkMessage {
         _siteName =
             convertStringtoMavlinkCharList(json['siteName'], length: 30);
   Identifier copyWith({
+    uint8_t? fwVersion,
     List<char>? particleId,
     List<int8_t>? localIp,
     List<int8_t>? mac,
@@ -3755,6 +3765,7 @@ class Identifier implements MavlinkMessage {
     List<char>? siteName,
   }) {
     return Identifier(
+      fwVersion: fwVersion ?? this.fwVersion,
       particleId: particleId ?? this.particleId,
       localIp: localIp ?? this.localIp,
       mac: mac ?? this.mac,
@@ -3767,6 +3778,7 @@ class Identifier implements MavlinkMessage {
   @override
   Map<String, dynamic> toJson() => {
         'msgId': msgId,
+        'fwVersion': fwVersion,
         'particleId': _particleId,
         'localIp': localIp,
         'mac': mac,
@@ -3782,14 +3794,16 @@ class Identifier implements MavlinkMessage {
           List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
-    var particleId = MavlinkMessage.asUint8List(data_, 0, 24);
-    var localIp = MavlinkMessage.asUint8List(data_, 24, 4);
-    var mac = MavlinkMessage.asUint8List(data_, 28, 6);
-    var name = MavlinkMessage.asUint8List(data_, 34, 20);
-    var siteFriendlyName = MavlinkMessage.asUint8List(data_, 54, 30);
-    var siteName = MavlinkMessage.asUint8List(data_, 84, 30);
+    var fwVersion = data_.getUint8(0);
+    var particleId = MavlinkMessage.asUint8List(data_, 1, 24);
+    var localIp = MavlinkMessage.asUint8List(data_, 25, 4);
+    var mac = MavlinkMessage.asUint8List(data_, 29, 6);
+    var name = MavlinkMessage.asUint8List(data_, 35, 20);
+    var siteFriendlyName = MavlinkMessage.asUint8List(data_, 55, 30);
+    var siteName = MavlinkMessage.asUint8List(data_, 85, 30);
 
     return Identifier(
+        fwVersion: fwVersion,
         particleId: particleId,
         localIp: localIp,
         mac: mac,
@@ -3801,12 +3815,13 @@ class Identifier implements MavlinkMessage {
   @override
   ByteData serialize() {
     var data_ = ByteData(mavlinkEncodedLength);
-    MavlinkMessage.setUint8List(data_, 0, particleId);
-    MavlinkMessage.setUint8List(data_, 24, localIp);
-    MavlinkMessage.setUint8List(data_, 28, mac);
-    MavlinkMessage.setUint8List(data_, 34, name);
-    MavlinkMessage.setUint8List(data_, 54, siteFriendlyName);
-    MavlinkMessage.setUint8List(data_, 84, siteName);
+    data_.setUint8(0, fwVersion);
+    MavlinkMessage.setUint8List(data_, 1, particleId);
+    MavlinkMessage.setUint8List(data_, 25, localIp);
+    MavlinkMessage.setUint8List(data_, 29, mac);
+    MavlinkMessage.setUint8List(data_, 35, name);
+    MavlinkMessage.setUint8List(data_, 55, siteFriendlyName);
+    MavlinkMessage.setUint8List(data_, 85, siteName);
     return data_;
   }
 }
@@ -4504,9 +4519,9 @@ class PowerInformation implements MavlinkMessage {
 class WifiInformation implements MavlinkMessage {
   static const int msgId = 13;
 
-  static const int crcExtra = 121;
+  static const int crcExtra = 163;
 
-  static const int mavlinkEncodedLength = 42;
+  static const int mavlinkEncodedLength = 51;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -4559,6 +4574,27 @@ class WifiInformation implements MavlinkMessage {
   /// snr_percent
   final uint8_t snrPercent;
 
+  /// Connected to internet. 0 = false, 1 = true
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// internet_connected
+  final uint8_t internetConnected;
+
+  /// local IPV4 Address of the device
+  ///
+  /// MAVLink type: uint8_t[4]
+  ///
+  /// local_ip
+  final List<int8_t> localIp;
+
+  /// gateway IPV4 Address
+  ///
+  /// MAVLink type: uint8_t[4]
+  ///
+  /// gateway_ip
+  final List<int8_t> gatewayIp;
+
   WifiInformation({
     required ssid,
     required this.bssid,
@@ -4566,6 +4602,9 @@ class WifiInformation implements MavlinkMessage {
     required this.rssiPercent,
     required this.snr,
     required this.snrPercent,
+    required this.internetConnected,
+    required this.localIp,
+    required this.gatewayIp,
   }) : _ssid = ssid;
 
   WifiInformation.fromJson(Map<String, dynamic> json)
@@ -4574,7 +4613,10 @@ class WifiInformation implements MavlinkMessage {
         rssi = json['rssi'],
         rssiPercent = json['rssiPercent'],
         snr = json['snr'],
-        snrPercent = json['snrPercent'];
+        snrPercent = json['snrPercent'],
+        internetConnected = json['internetConnected'],
+        localIp = List<int>.from(json['localIp']),
+        gatewayIp = List<int>.from(json['gatewayIp']);
   WifiInformation copyWith({
     List<char>? ssid,
     List<int8_t>? bssid,
@@ -4582,6 +4624,9 @@ class WifiInformation implements MavlinkMessage {
     uint8_t? rssiPercent,
     uint8_t? snr,
     uint8_t? snrPercent,
+    uint8_t? internetConnected,
+    List<int8_t>? localIp,
+    List<int8_t>? gatewayIp,
   }) {
     return WifiInformation(
       ssid: ssid ?? this.ssid,
@@ -4590,6 +4635,9 @@ class WifiInformation implements MavlinkMessage {
       rssiPercent: rssiPercent ?? this.rssiPercent,
       snr: snr ?? this.snr,
       snrPercent: snrPercent ?? this.snrPercent,
+      internetConnected: internetConnected ?? this.internetConnected,
+      localIp: localIp ?? this.localIp,
+      gatewayIp: gatewayIp ?? this.gatewayIp,
     );
   }
 
@@ -4602,6 +4650,9 @@ class WifiInformation implements MavlinkMessage {
         'rssiPercent': rssiPercent,
         'snr': snr,
         'snrPercent': snrPercent,
+        'internetConnected': internetConnected,
+        'localIp': localIp,
+        'gatewayIp': gatewayIp,
       };
 
   factory WifiInformation.parse(ByteData data_) {
@@ -4617,6 +4668,9 @@ class WifiInformation implements MavlinkMessage {
     var rssiPercent = data_.getUint8(39);
     var snr = data_.getUint8(40);
     var snrPercent = data_.getUint8(41);
+    var internetConnected = data_.getUint8(42);
+    var localIp = MavlinkMessage.asUint8List(data_, 43, 4);
+    var gatewayIp = MavlinkMessage.asUint8List(data_, 47, 4);
 
     return WifiInformation(
         ssid: ssid,
@@ -4624,7 +4678,10 @@ class WifiInformation implements MavlinkMessage {
         rssi: rssi,
         rssiPercent: rssiPercent,
         snr: snr,
-        snrPercent: snrPercent);
+        snrPercent: snrPercent,
+        internetConnected: internetConnected,
+        localIp: localIp,
+        gatewayIp: gatewayIp);
   }
 
   @override
@@ -4636,6 +4693,9 @@ class WifiInformation implements MavlinkMessage {
     data_.setUint8(39, rssiPercent);
     data_.setUint8(40, snr);
     data_.setUint8(41, snrPercent);
+    data_.setUint8(42, internetConnected);
+    MavlinkMessage.setUint8List(data_, 43, localIp);
+    MavlinkMessage.setUint8List(data_, 47, gatewayIp);
     return data_;
   }
 }
