@@ -716,6 +716,35 @@ const EosState eosStateStartingScan = 7;
 /// EOS_STATE_STOPPING_SCAN
 const EosState eosStateStoppingScan = 8;
 
+/// Additional flags for system state flags
+///
+/// EOS_STATE_FLAGS
+typedef EosStateFlags = int;
+
+///
+/// EOS_STATE_FLAG_LOCAL_CONTROL
+const EosStateFlags eosStateFlagLocalControl = 1;
+
+///
+/// EOS_STATE_FLAG_HYPERION_AUTHORIZED
+const EosStateFlags eosStateFlagHyperionAuthorized = 2;
+
+///
+/// EOS_STATE_FLAG_INTERNET_CONNECTED
+const EosStateFlags eosStateFlagInternetConnected = 4;
+
+///
+/// EOS_STATE_FLAG_LAST_SCAN_HEALTHY
+const EosStateFlags eosStateFlagLastScanHealthy = 8;
+
+///
+/// EOS_STATE_FLAG_BLE_CONNECTED
+const EosStateFlags eosStateFlagBleConnected = 16;
+
+///
+/// EOS_STATE_FLAG_WIFI_CONNECTED
+const EosStateFlags eosStateFlagWifiConnected = 32;
+
 /// Behaviors a motor can execute
 ///
 /// MOTOR_BEHAVIOR
@@ -3544,9 +3573,9 @@ class ComponentPowerControl implements MavlinkMessage {
 class SystemStatus implements MavlinkMessage {
   static const int msgId = 3;
 
-  static const int crcExtra = 212;
+  static const int crcExtra = 130;
 
-  static const int mavlinkEncodedLength = 7;
+  static const int mavlinkEncodedLength = 9;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -3581,6 +3610,15 @@ class SystemStatus implements MavlinkMessage {
   /// uptime
   final uint16_t uptime;
 
+  /// system state flags
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// enum: [EosStateFlags]
+  ///
+  /// flags
+  final EosStateFlags flags;
+
   /// Current State of the Device
   ///
   /// MAVLink type: uint8_t
@@ -3594,6 +3632,7 @@ class SystemStatus implements MavlinkMessage {
     required this.powerStatusBitmask,
     required this.healthStatusBitmask,
     required this.uptime,
+    required this.flags,
     required this.state,
   });
 
@@ -3601,17 +3640,20 @@ class SystemStatus implements MavlinkMessage {
       : powerStatusBitmask = json['powerStatusBitmask'],
         healthStatusBitmask = json['healthStatusBitmask'],
         uptime = json['uptime'],
+        flags = json['flags'],
         state = json['state'];
   SystemStatus copyWith({
     EosComponent? powerStatusBitmask,
     EosComponent? healthStatusBitmask,
     uint16_t? uptime,
+    EosStateFlags? flags,
     EosState? state,
   }) {
     return SystemStatus(
       powerStatusBitmask: powerStatusBitmask ?? this.powerStatusBitmask,
       healthStatusBitmask: healthStatusBitmask ?? this.healthStatusBitmask,
       uptime: uptime ?? this.uptime,
+      flags: flags ?? this.flags,
       state: state ?? this.state,
     );
   }
@@ -3622,6 +3664,7 @@ class SystemStatus implements MavlinkMessage {
         'powerStatusBitmask': powerStatusBitmask,
         'healthStatusBitmask': healthStatusBitmask,
         'uptime': uptime,
+        'flags': flags,
         'state': state,
       };
 
@@ -3635,12 +3678,14 @@ class SystemStatus implements MavlinkMessage {
     var powerStatusBitmask = data_.getUint16(0, Endian.little);
     var healthStatusBitmask = data_.getUint16(2, Endian.little);
     var uptime = data_.getUint16(4, Endian.little);
-    var state = data_.getUint8(6);
+    var flags = data_.getUint16(6, Endian.little);
+    var state = data_.getUint8(8);
 
     return SystemStatus(
         powerStatusBitmask: powerStatusBitmask,
         healthStatusBitmask: healthStatusBitmask,
         uptime: uptime,
+        flags: flags,
         state: state);
   }
 
@@ -3650,7 +3695,8 @@ class SystemStatus implements MavlinkMessage {
     data_.setUint16(0, powerStatusBitmask, Endian.little);
     data_.setUint16(2, healthStatusBitmask, Endian.little);
     data_.setUint16(4, uptime, Endian.little);
-    data_.setUint8(6, state);
+    data_.setUint16(6, flags, Endian.little);
+    data_.setUint8(8, state);
     return data_;
   }
 }
@@ -3661,9 +3707,9 @@ class SystemStatus implements MavlinkMessage {
 class Identifier implements MavlinkMessage {
   static const int msgId = 7;
 
-  static const int crcExtra = 98;
+  static const int crcExtra = 86;
 
-  static const int mavlinkEncodedLength = 115;
+  static const int mavlinkEncodedLength = 85;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -3671,15 +3717,13 @@ class Identifier implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => crcExtra;
 
-  String get particleIdAsString => convertMavlinkCharListToString(_particleId);
-  List<char> get particleId => _particleId;
-  String get nameAsString => convertMavlinkCharListToString(_name);
-  List<char> get name => _name;
-  String get siteFriendlyNameAsString =>
-      convertMavlinkCharListToString(_siteFriendlyName);
-  List<char> get siteFriendlyName => _siteFriendlyName;
-  String get siteNameAsString => convertMavlinkCharListToString(_siteName);
-  List<char> get siteName => _siteName;
+  String get particleIdFullAsString =>
+      convertMavlinkCharListToString(_particleIdFull);
+  List<char> get particleIdFull => _particleIdFull;
+  String get deviceIdAsString => convertMavlinkCharListToString(_deviceId);
+  List<char> get deviceId => _deviceId;
+  String get deviceNameAsString => convertMavlinkCharListToString(_deviceName);
+  List<char> get deviceName => _deviceName;
 
   /// Particle FW version
   ///
@@ -3688,12 +3732,26 @@ class Identifier implements MavlinkMessage {
   /// fw_version
   final uint8_t fwVersion;
 
-  /// Particle ID of device. Unique and unchangable
+  /// Particle ID of device. Read Only.
   ///
   /// MAVLink type: char[24]
   ///
-  /// particle_id
-  final List<char> _particleId;
+  /// particle_id_full
+  final List<char> _particleIdFull;
+
+  /// Device id of scanner matching manufacturing sticker. i.e. P2-ABC123. Read only
+  ///
+  /// MAVLink type: char[20]
+  ///
+  /// device_id
+  final List<char> _deviceId;
+
+  /// Friendly name of device. E.g. "57 Rock West". User settable
+  ///
+  /// MAVLink type: char[30]
+  ///
+  /// device_name
+  final List<char> _deviceName;
 
   /// local IPV4 Address of the device
   ///
@@ -3709,69 +3767,42 @@ class Identifier implements MavlinkMessage {
   /// mac
   final List<int8_t> mac;
 
-  /// Friendly name of device i.e. P2-123456
-  ///
-  /// MAVLink type: char[20]
-  ///
-  /// name
-  final List<char> _name;
-
-  /// Friendly name for the site it's at, i.e. "57 Rock West"
-  ///
-  /// MAVLink type: char[30]
-  ///
-  /// site_friendly_name
-  final List<char> _siteFriendlyName;
-
-  /// Name of the site where the scanner is located, i.e. "Gainesville Plant"
-  ///
-  /// MAVLink type: char[30]
-  ///
-  /// site_name
-  final List<char> _siteName;
-
   Identifier({
     required this.fwVersion,
-    required particleId,
+    required particleIdFull,
+    required deviceId,
+    required deviceName,
     required this.localIp,
     required this.mac,
-    required name,
-    required siteFriendlyName,
-    required siteName,
-  })  : _particleId = particleId,
-        _name = name,
-        _siteFriendlyName = siteFriendlyName,
-        _siteName = siteName;
+  })  : _particleIdFull = particleIdFull,
+        _deviceId = deviceId,
+        _deviceName = deviceName;
 
   Identifier.fromJson(Map<String, dynamic> json)
       : fwVersion = json['fwVersion'],
-        _particleId =
-            convertStringtoMavlinkCharList(json['particleId'], length: 24),
+        _particleIdFull =
+            convertStringtoMavlinkCharList(json['particleIdFull'], length: 24),
+        _deviceId =
+            convertStringtoMavlinkCharList(json['deviceId'], length: 20),
+        _deviceName =
+            convertStringtoMavlinkCharList(json['deviceName'], length: 30),
         localIp = List<int>.from(json['localIp']),
-        mac = List<int>.from(json['mac']),
-        _name = convertStringtoMavlinkCharList(json['name'], length: 20),
-        _siteFriendlyName = convertStringtoMavlinkCharList(
-            json['siteFriendlyName'],
-            length: 30),
-        _siteName =
-            convertStringtoMavlinkCharList(json['siteName'], length: 30);
+        mac = List<int>.from(json['mac']);
   Identifier copyWith({
     uint8_t? fwVersion,
-    List<char>? particleId,
+    List<char>? particleIdFull,
+    List<char>? deviceId,
+    List<char>? deviceName,
     List<int8_t>? localIp,
     List<int8_t>? mac,
-    List<char>? name,
-    List<char>? siteFriendlyName,
-    List<char>? siteName,
   }) {
     return Identifier(
       fwVersion: fwVersion ?? this.fwVersion,
-      particleId: particleId ?? this.particleId,
+      particleIdFull: particleIdFull ?? this.particleIdFull,
+      deviceId: deviceId ?? this.deviceId,
+      deviceName: deviceName ?? this.deviceName,
       localIp: localIp ?? this.localIp,
       mac: mac ?? this.mac,
-      name: name ?? this.name,
-      siteFriendlyName: siteFriendlyName ?? this.siteFriendlyName,
-      siteName: siteName ?? this.siteName,
     );
   }
 
@@ -3779,12 +3810,11 @@ class Identifier implements MavlinkMessage {
   Map<String, dynamic> toJson() => {
         'msgId': msgId,
         'fwVersion': fwVersion,
-        'particleId': _particleId,
+        'particleIdFull': _particleIdFull,
+        'deviceId': _deviceId,
+        'deviceName': _deviceName,
         'localIp': localIp,
         'mac': mac,
-        'name': _name,
-        'siteFriendlyName': _siteFriendlyName,
-        'siteName': _siteName,
       };
 
   factory Identifier.parse(ByteData data_) {
@@ -3795,33 +3825,30 @@ class Identifier implements MavlinkMessage {
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var fwVersion = data_.getUint8(0);
-    var particleId = MavlinkMessage.asUint8List(data_, 1, 24);
-    var localIp = MavlinkMessage.asUint8List(data_, 25, 4);
-    var mac = MavlinkMessage.asUint8List(data_, 29, 6);
-    var name = MavlinkMessage.asUint8List(data_, 35, 20);
-    var siteFriendlyName = MavlinkMessage.asUint8List(data_, 55, 30);
-    var siteName = MavlinkMessage.asUint8List(data_, 85, 30);
+    var particleIdFull = MavlinkMessage.asUint8List(data_, 1, 24);
+    var deviceId = MavlinkMessage.asUint8List(data_, 25, 20);
+    var deviceName = MavlinkMessage.asUint8List(data_, 45, 30);
+    var localIp = MavlinkMessage.asUint8List(data_, 75, 4);
+    var mac = MavlinkMessage.asUint8List(data_, 79, 6);
 
     return Identifier(
         fwVersion: fwVersion,
-        particleId: particleId,
+        particleIdFull: particleIdFull,
+        deviceId: deviceId,
+        deviceName: deviceName,
         localIp: localIp,
-        mac: mac,
-        name: name,
-        siteFriendlyName: siteFriendlyName,
-        siteName: siteName);
+        mac: mac);
   }
 
   @override
   ByteData serialize() {
     var data_ = ByteData(mavlinkEncodedLength);
     data_.setUint8(0, fwVersion);
-    MavlinkMessage.setUint8List(data_, 1, particleId);
-    MavlinkMessage.setUint8List(data_, 25, localIp);
-    MavlinkMessage.setUint8List(data_, 29, mac);
-    MavlinkMessage.setUint8List(data_, 35, name);
-    MavlinkMessage.setUint8List(data_, 55, siteFriendlyName);
-    MavlinkMessage.setUint8List(data_, 85, siteName);
+    MavlinkMessage.setUint8List(data_, 1, particleIdFull);
+    MavlinkMessage.setUint8List(data_, 25, deviceId);
+    MavlinkMessage.setUint8List(data_, 45, deviceName);
+    MavlinkMessage.setUint8List(data_, 75, localIp);
+    MavlinkMessage.setUint8List(data_, 79, mac);
     return data_;
   }
 }
@@ -5011,7 +5038,7 @@ class MotorControl implements MavlinkMessage {
 class MotorSettings implements MavlinkMessage {
   static const int msgId = 16;
 
-  static const int crcExtra = 42;
+  static const int crcExtra = 177;
 
   static const int mavlinkEncodedLength = 24;
 
@@ -5104,12 +5131,12 @@ class MotorSettings implements MavlinkMessage {
   /// pwm_autograd
   final uint8_t pwmAutograd;
 
-  /// Mininimum steps between index pulse and home switch. Set to 0 to not enforce a minimum
+  /// Enforce a minimum number of steps to next index. 0 = disabled, 1 = enabled
   ///
   /// MAVLink type: uint8_t
   ///
-  /// min_steps_to_next_index
-  final uint8_t minStepsToNextIndex;
+  /// enforce_minimum_steps
+  final uint8_t enforceMinimumSteps;
 
   MotorSettings({
     required this.gearingRatio,
@@ -5123,7 +5150,7 @@ class MotorSettings implements MavlinkMessage {
     required this.spreadCycle,
     required this.pwmAutoscale,
     required this.pwmAutograd,
-    required this.minStepsToNextIndex,
+    required this.enforceMinimumSteps,
   });
 
   MotorSettings.fromJson(Map<String, dynamic> json)
@@ -5138,7 +5165,7 @@ class MotorSettings implements MavlinkMessage {
         spreadCycle = json['spreadCycle'],
         pwmAutoscale = json['pwmAutoscale'],
         pwmAutograd = json['pwmAutograd'],
-        minStepsToNextIndex = json['minStepsToNextIndex'];
+        enforceMinimumSteps = json['enforceMinimumSteps'];
   MotorSettings copyWith({
     float? gearingRatio,
     float? ustepsRate,
@@ -5151,7 +5178,7 @@ class MotorSettings implements MavlinkMessage {
     uint8_t? spreadCycle,
     uint8_t? pwmAutoscale,
     uint8_t? pwmAutograd,
-    uint8_t? minStepsToNextIndex,
+    uint8_t? enforceMinimumSteps,
   }) {
     return MotorSettings(
       gearingRatio: gearingRatio ?? this.gearingRatio,
@@ -5165,7 +5192,7 @@ class MotorSettings implements MavlinkMessage {
       spreadCycle: spreadCycle ?? this.spreadCycle,
       pwmAutoscale: pwmAutoscale ?? this.pwmAutoscale,
       pwmAutograd: pwmAutograd ?? this.pwmAutograd,
-      minStepsToNextIndex: minStepsToNextIndex ?? this.minStepsToNextIndex,
+      enforceMinimumSteps: enforceMinimumSteps ?? this.enforceMinimumSteps,
     );
   }
 
@@ -5183,7 +5210,7 @@ class MotorSettings implements MavlinkMessage {
         'spreadCycle': spreadCycle,
         'pwmAutoscale': pwmAutoscale,
         'pwmAutograd': pwmAutograd,
-        'minStepsToNextIndex': minStepsToNextIndex,
+        'enforceMinimumSteps': enforceMinimumSteps,
       };
 
   factory MotorSettings.parse(ByteData data_) {
@@ -5204,7 +5231,7 @@ class MotorSettings implements MavlinkMessage {
     var spreadCycle = data_.getUint8(20);
     var pwmAutoscale = data_.getUint8(21);
     var pwmAutograd = data_.getUint8(22);
-    var minStepsToNextIndex = data_.getUint8(23);
+    var enforceMinimumSteps = data_.getUint8(23);
 
     return MotorSettings(
         gearingRatio: gearingRatio,
@@ -5218,7 +5245,7 @@ class MotorSettings implements MavlinkMessage {
         spreadCycle: spreadCycle,
         pwmAutoscale: pwmAutoscale,
         pwmAutograd: pwmAutograd,
-        minStepsToNextIndex: minStepsToNextIndex);
+        enforceMinimumSteps: enforceMinimumSteps);
   }
 
   @override
@@ -5235,7 +5262,7 @@ class MotorSettings implements MavlinkMessage {
     data_.setUint8(20, spreadCycle);
     data_.setUint8(21, pwmAutoscale);
     data_.setUint8(22, pwmAutograd);
-    data_.setUint8(23, minStepsToNextIndex);
+    data_.setUint8(23, enforceMinimumSteps);
     return data_;
   }
 }
@@ -5432,9 +5459,9 @@ class MotorStatus implements MavlinkMessage {
 class Orientation implements MavlinkMessage {
   static const int msgId = 18;
 
-  static const int crcExtra = 78;
+  static const int crcExtra = 178;
 
-  static const int mavlinkEncodedLength = 34;
+  static const int mavlinkEncodedLength = 42;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -5496,6 +5523,24 @@ class Orientation implements MavlinkMessage {
   /// lon
   final int32_t lon;
 
+  /// Horizontal accuracy of lat/lon
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: m
+  ///
+  /// h_acc
+  final float hAcc;
+
+  /// Vertical accuracy of lat/lon
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: m
+  ///
+  /// v_acc
+  final float vAcc;
+
   /// Altitude (MSL). Positive for up.
   ///
   /// MAVLink type: int32_t
@@ -5539,6 +5584,8 @@ class Orientation implements MavlinkMessage {
     required this.heading,
     required this.lat,
     required this.lon,
+    required this.hAcc,
+    required this.vAcc,
     required this.alt,
     required this.xmag,
     required this.ymag,
@@ -5552,6 +5599,8 @@ class Orientation implements MavlinkMessage {
         heading = json['heading'],
         lat = json['lat'],
         lon = json['lon'],
+        hAcc = json['hAcc'],
+        vAcc = json['vAcc'],
         alt = json['alt'],
         xmag = json['xmag'],
         ymag = json['ymag'],
@@ -5563,6 +5612,8 @@ class Orientation implements MavlinkMessage {
     float? heading,
     int32_t? lat,
     int32_t? lon,
+    float? hAcc,
+    float? vAcc,
     int32_t? alt,
     int16_t? xmag,
     int16_t? ymag,
@@ -5575,6 +5626,8 @@ class Orientation implements MavlinkMessage {
       heading: heading ?? this.heading,
       lat: lat ?? this.lat,
       lon: lon ?? this.lon,
+      hAcc: hAcc ?? this.hAcc,
+      vAcc: vAcc ?? this.vAcc,
       alt: alt ?? this.alt,
       xmag: xmag ?? this.xmag,
       ymag: ymag ?? this.ymag,
@@ -5591,6 +5644,8 @@ class Orientation implements MavlinkMessage {
         'heading': heading,
         'lat': lat,
         'lon': lon,
+        'hAcc': hAcc,
+        'vAcc': vAcc,
         'alt': alt,
         'xmag': xmag,
         'ymag': ymag,
@@ -5610,10 +5665,12 @@ class Orientation implements MavlinkMessage {
     var heading = data_.getFloat32(12, Endian.little);
     var lat = data_.getInt32(16, Endian.little);
     var lon = data_.getInt32(20, Endian.little);
-    var alt = data_.getInt32(24, Endian.little);
-    var xmag = data_.getInt16(28, Endian.little);
-    var ymag = data_.getInt16(30, Endian.little);
-    var zmag = data_.getInt16(32, Endian.little);
+    var hAcc = data_.getFloat32(24, Endian.little);
+    var vAcc = data_.getFloat32(28, Endian.little);
+    var alt = data_.getInt32(32, Endian.little);
+    var xmag = data_.getInt16(36, Endian.little);
+    var ymag = data_.getInt16(38, Endian.little);
+    var zmag = data_.getInt16(40, Endian.little);
 
     return Orientation(
         roll: roll,
@@ -5622,6 +5679,8 @@ class Orientation implements MavlinkMessage {
         heading: heading,
         lat: lat,
         lon: lon,
+        hAcc: hAcc,
+        vAcc: vAcc,
         alt: alt,
         xmag: xmag,
         ymag: ymag,
@@ -5637,10 +5696,12 @@ class Orientation implements MavlinkMessage {
     data_.setFloat32(12, heading, Endian.little);
     data_.setInt32(16, lat, Endian.little);
     data_.setInt32(20, lon, Endian.little);
-    data_.setInt32(24, alt, Endian.little);
-    data_.setInt16(28, xmag, Endian.little);
-    data_.setInt16(30, ymag, Endian.little);
-    data_.setInt16(32, zmag, Endian.little);
+    data_.setFloat32(24, hAcc, Endian.little);
+    data_.setFloat32(28, vAcc, Endian.little);
+    data_.setInt32(32, alt, Endian.little);
+    data_.setInt16(36, xmag, Endian.little);
+    data_.setInt16(38, ymag, Endian.little);
+    data_.setInt16(40, zmag, Endian.little);
     return data_;
   }
 }
@@ -6173,7 +6234,7 @@ class ScanTransform implements MavlinkMessage {
 }
 
 class MavlinkDialectAltamus implements MavlinkDialect {
-  static const int mavlinkVersion = 1;
+  static const int mavlinkVersion = 4;
 
   @override
   int get version => mavlinkVersion;
