@@ -745,6 +745,10 @@ const EosStateFlags eosStateFlagBleConnected = 16;
 /// EOS_STATE_FLAG_WIFI_CONNECTED
 const EosStateFlags eosStateFlagWifiConnected = 32;
 
+///
+/// EOS_STATE_FLAG_IDENTIFYING
+const EosStateFlags eosStateFlagIdentifying = 64;
+
 /// Behaviors a motor can execute
 ///
 /// MOTOR_BEHAVIOR
