@@ -3711,7 +3711,7 @@ class SystemStatus implements MavlinkMessage {
 class Identifier implements MavlinkMessage {
   static const int msgId = 7;
 
-  static const int crcExtra = 86;
+  static const int crcExtra = 193;
 
   static const int mavlinkEncodedLength = 85;
 
@@ -3721,13 +3721,12 @@ class Identifier implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => crcExtra;
 
-  String get particleIdFullAsString =>
-      convertMavlinkCharListToString(_particleIdFull);
-  List<char> get particleIdFull => _particleIdFull;
+  String get particleIdAsString => convertMavlinkCharListToString(_particleId);
+  List<char> get particleId => _particleId;
   String get deviceIdAsString => convertMavlinkCharListToString(_deviceId);
   List<char> get deviceId => _deviceId;
-  String get deviceNameAsString => convertMavlinkCharListToString(_deviceName);
-  List<char> get deviceName => _deviceName;
+  String get nameAsString => convertMavlinkCharListToString(_name);
+  List<char> get name => _name;
 
   /// Particle FW version
   ///
@@ -3740,8 +3739,8 @@ class Identifier implements MavlinkMessage {
   ///
   /// MAVLink type: char[24]
   ///
-  /// particle_id_full
-  final List<char> _particleIdFull;
+  /// particle_id
+  final List<char> _particleId;
 
   /// Device id of scanner matching manufacturing sticker. i.e. P2-ABC123. Read only
   ///
@@ -3754,8 +3753,8 @@ class Identifier implements MavlinkMessage {
   ///
   /// MAVLink type: char[30]
   ///
-  /// device_name
-  final List<char> _deviceName;
+  /// name
+  final List<char> _name;
 
   /// local IPV4 Address of the device
   ///
@@ -3773,38 +3772,37 @@ class Identifier implements MavlinkMessage {
 
   Identifier({
     required this.fwVersion,
-    required particleIdFull,
+    required particleId,
     required deviceId,
-    required deviceName,
+    required name,
     required this.localIp,
     required this.mac,
-  })  : _particleIdFull = particleIdFull,
+  })  : _particleId = particleId,
         _deviceId = deviceId,
-        _deviceName = deviceName;
+        _name = name;
 
   Identifier.fromJson(Map<String, dynamic> json)
       : fwVersion = json['fwVersion'],
-        _particleIdFull =
-            convertStringtoMavlinkCharList(json['particleIdFull'], length: 24),
+        _particleId =
+            convertStringtoMavlinkCharList(json['particleId'], length: 24),
         _deviceId =
             convertStringtoMavlinkCharList(json['deviceId'], length: 20),
-        _deviceName =
-            convertStringtoMavlinkCharList(json['deviceName'], length: 30),
+        _name = convertStringtoMavlinkCharList(json['name'], length: 30),
         localIp = List<int>.from(json['localIp']),
         mac = List<int>.from(json['mac']);
   Identifier copyWith({
     uint8_t? fwVersion,
-    List<char>? particleIdFull,
+    List<char>? particleId,
     List<char>? deviceId,
-    List<char>? deviceName,
+    List<char>? name,
     List<int8_t>? localIp,
     List<int8_t>? mac,
   }) {
     return Identifier(
       fwVersion: fwVersion ?? this.fwVersion,
-      particleIdFull: particleIdFull ?? this.particleIdFull,
+      particleId: particleId ?? this.particleId,
       deviceId: deviceId ?? this.deviceId,
-      deviceName: deviceName ?? this.deviceName,
+      name: name ?? this.name,
       localIp: localIp ?? this.localIp,
       mac: mac ?? this.mac,
     );
@@ -3814,9 +3812,9 @@ class Identifier implements MavlinkMessage {
   Map<String, dynamic> toJson() => {
         'msgId': msgId,
         'fwVersion': fwVersion,
-        'particleIdFull': _particleIdFull,
+        'particleId': _particleId,
         'deviceId': _deviceId,
-        'deviceName': _deviceName,
+        'name': _name,
         'localIp': localIp,
         'mac': mac,
       };
@@ -3829,17 +3827,17 @@ class Identifier implements MavlinkMessage {
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
     var fwVersion = data_.getUint8(0);
-    var particleIdFull = MavlinkMessage.asUint8List(data_, 1, 24);
+    var particleId = MavlinkMessage.asUint8List(data_, 1, 24);
     var deviceId = MavlinkMessage.asUint8List(data_, 25, 20);
-    var deviceName = MavlinkMessage.asUint8List(data_, 45, 30);
+    var name = MavlinkMessage.asUint8List(data_, 45, 30);
     var localIp = MavlinkMessage.asUint8List(data_, 75, 4);
     var mac = MavlinkMessage.asUint8List(data_, 79, 6);
 
     return Identifier(
         fwVersion: fwVersion,
-        particleIdFull: particleIdFull,
+        particleId: particleId,
         deviceId: deviceId,
-        deviceName: deviceName,
+        name: name,
         localIp: localIp,
         mac: mac);
   }
@@ -3848,9 +3846,9 @@ class Identifier implements MavlinkMessage {
   ByteData serialize() {
     var data_ = ByteData(mavlinkEncodedLength);
     data_.setUint8(0, fwVersion);
-    MavlinkMessage.setUint8List(data_, 1, particleIdFull);
+    MavlinkMessage.setUint8List(data_, 1, particleId);
     MavlinkMessage.setUint8List(data_, 25, deviceId);
-    MavlinkMessage.setUint8List(data_, 45, deviceName);
+    MavlinkMessage.setUint8List(data_, 45, name);
     MavlinkMessage.setUint8List(data_, 75, localIp);
     MavlinkMessage.setUint8List(data_, 79, mac);
     return data_;
