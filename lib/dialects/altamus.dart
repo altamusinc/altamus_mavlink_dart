@@ -6124,9 +6124,9 @@ class ScanResultInfo implements MavlinkMessage {
 class ScanTransform implements MavlinkMessage {
   static const int msgId = 22;
 
-  static const int crcExtra = 140;
+  static const int crcExtra = 134;
 
-  static const int mavlinkEncodedLength = 16;
+  static const int mavlinkEncodedLength = 22;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -6134,7 +6134,7 @@ class ScanTransform implements MavlinkMessage {
   @override
   int get mavlinkCrcExtra => crcExtra;
 
-  ///
+  /// Offset for the mechanical roll error in the scanner
   ///
   /// MAVLink type: float
   ///
@@ -6143,7 +6143,7 @@ class ScanTransform implements MavlinkMessage {
   /// roll_offset
   final float rollOffset;
 
-  ///
+  /// Offset for the pitch alignement error in the scanner
   ///
   /// MAVLink type: float
   ///
@@ -6152,7 +6152,7 @@ class ScanTransform implements MavlinkMessage {
   /// pitch_offset
   final float pitchOffset;
 
-  ///
+  /// Scale to apply to pitch values
   ///
   /// MAVLink type: float
   ///
@@ -6161,7 +6161,7 @@ class ScanTransform implements MavlinkMessage {
   /// pitch_scale
   final float pitchScale;
 
-  ///
+  /// Scale to apply to the yaw values
   ///
   /// MAVLink type: float
   ///
@@ -6170,29 +6170,55 @@ class ScanTransform implements MavlinkMessage {
   /// yaw_scale
   final float yawScale;
 
+  /// Scale to apply to the range values
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: %
+  ///
+  /// range_scale
+  final float rangeScale;
+
+  /// Maximum range to use. Points with distances beyond this range will not be converted to viewable points. If set to UINT16_MAX field is ignored and all values are passed
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// units: cm
+  ///
+  /// max_range
+  final uint16_t maxRange;
+
   ScanTransform({
     required this.rollOffset,
     required this.pitchOffset,
     required this.pitchScale,
     required this.yawScale,
+    required this.rangeScale,
+    required this.maxRange,
   });
 
   ScanTransform.fromJson(Map<String, dynamic> json)
       : rollOffset = json['rollOffset'],
         pitchOffset = json['pitchOffset'],
         pitchScale = json['pitchScale'],
-        yawScale = json['yawScale'];
+        yawScale = json['yawScale'],
+        rangeScale = json['rangeScale'],
+        maxRange = json['maxRange'];
   ScanTransform copyWith({
     float? rollOffset,
     float? pitchOffset,
     float? pitchScale,
     float? yawScale,
+    float? rangeScale,
+    uint16_t? maxRange,
   }) {
     return ScanTransform(
       rollOffset: rollOffset ?? this.rollOffset,
       pitchOffset: pitchOffset ?? this.pitchOffset,
       pitchScale: pitchScale ?? this.pitchScale,
       yawScale: yawScale ?? this.yawScale,
+      rangeScale: rangeScale ?? this.rangeScale,
+      maxRange: maxRange ?? this.maxRange,
     );
   }
 
@@ -6203,6 +6229,8 @@ class ScanTransform implements MavlinkMessage {
         'pitchOffset': pitchOffset,
         'pitchScale': pitchScale,
         'yawScale': yawScale,
+        'rangeScale': rangeScale,
+        'maxRange': maxRange,
       };
 
   factory ScanTransform.parse(ByteData data_) {
@@ -6216,12 +6244,16 @@ class ScanTransform implements MavlinkMessage {
     var pitchOffset = data_.getFloat32(4, Endian.little);
     var pitchScale = data_.getFloat32(8, Endian.little);
     var yawScale = data_.getFloat32(12, Endian.little);
+    var rangeScale = data_.getFloat32(16, Endian.little);
+    var maxRange = data_.getUint16(20, Endian.little);
 
     return ScanTransform(
         rollOffset: rollOffset,
         pitchOffset: pitchOffset,
         pitchScale: pitchScale,
-        yawScale: yawScale);
+        yawScale: yawScale,
+        rangeScale: rangeScale,
+        maxRange: maxRange);
   }
 
   @override
@@ -6231,6 +6263,8 @@ class ScanTransform implements MavlinkMessage {
     data_.setFloat32(4, pitchOffset, Endian.little);
     data_.setFloat32(8, pitchScale, Endian.little);
     data_.setFloat32(12, yawScale, Endian.little);
+    data_.setFloat32(16, rangeScale, Endian.little);
+    data_.setUint16(20, maxRange, Endian.little);
     return data_;
   }
 }
