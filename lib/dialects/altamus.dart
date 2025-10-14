@@ -6269,6 +6269,249 @@ class ScanTransform implements MavlinkMessage {
   }
 }
 
+/// Collection of values set at the factory that will be used in their respective locations after a factory reset is applied.
+///
+/// FACTORY_CALIBRATION
+class FactoryCalibration implements MavlinkMessage {
+  static const int msgId = 23;
+
+  static const int crcExtra = 188;
+
+  static const int mavlinkEncodedLength = 32;
+
+  @override
+  int get mavlinkMessageId => msgId;
+
+  @override
+  int get mavlinkCrcExtra => crcExtra;
+
+  /// Offset for the mechanical roll error in the scanner
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: degrees
+  ///
+  /// roll_offset
+  final float rollOffset;
+
+  /// Offset for the pitch alignement error in the scanner
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: degrees
+  ///
+  /// pitch_offset
+  final float pitchOffset;
+
+  /// Scale to apply to pitch values
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: %
+  ///
+  /// pitch_scale
+  final float pitchScale;
+
+  /// Scale to apply to the yaw values
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: %
+  ///
+  /// yaw_scale
+  final float yawScale;
+
+  /// Scale to apply to the range values
+  ///
+  /// MAVLink type: float
+  ///
+  /// units: %
+  ///
+  /// range_scale
+  final float rangeScale;
+
+  /// Maximum range to use. Points with distances beyond this range will not be converted to viewable points. If set to UINT16_MAX field is ignored and all values are passed
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// units: cm
+  ///
+  /// max_range
+  final uint16_t maxRange;
+
+  /// Pitch Motor: Number of steps to move from home position after homing.
+  ///
+  /// MAVLink type: int16_t
+  ///
+  /// pitch_home_offset_steps
+  final int16_t pitchHomeOffsetSteps;
+
+  /// Motor current 0-2500
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// pitch_current
+  final uint16_t pitchCurrent;
+
+  /// Pitch Motor: Number of steps to move from home position after homing.
+  ///
+  /// MAVLink type: int16_t
+  ///
+  /// yaw_home_offset_steps
+  final int16_t yawHomeOffsetSteps;
+
+  /// Motor current 0-2500
+  ///
+  /// MAVLink type: uint16_t
+  ///
+  /// yaw_current
+  final uint16_t yawCurrent;
+
+  /// Pitch Motor: Enforce a minimum number of steps to next index. 0 = disabled, 1 = enabled
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// pitch_enforce_minimum_steps
+  final uint8_t pitchEnforceMinimumSteps;
+
+  /// Pitch Motor: Enforce a minimum number of steps to next index. 0 = disabled, 1 = enabled
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// yaw_enforce_minimum_steps
+  final uint8_t yawEnforceMinimumSteps;
+
+  FactoryCalibration({
+    required this.rollOffset,
+    required this.pitchOffset,
+    required this.pitchScale,
+    required this.yawScale,
+    required this.rangeScale,
+    required this.maxRange,
+    required this.pitchHomeOffsetSteps,
+    required this.pitchCurrent,
+    required this.yawHomeOffsetSteps,
+    required this.yawCurrent,
+    required this.pitchEnforceMinimumSteps,
+    required this.yawEnforceMinimumSteps,
+  });
+
+  FactoryCalibration.fromJson(Map<String, dynamic> json)
+      : rollOffset = json['rollOffset'],
+        pitchOffset = json['pitchOffset'],
+        pitchScale = json['pitchScale'],
+        yawScale = json['yawScale'],
+        rangeScale = json['rangeScale'],
+        maxRange = json['maxRange'],
+        pitchHomeOffsetSteps = json['pitchHomeOffsetSteps'],
+        pitchCurrent = json['pitchCurrent'],
+        yawHomeOffsetSteps = json['yawHomeOffsetSteps'],
+        yawCurrent = json['yawCurrent'],
+        pitchEnforceMinimumSteps = json['pitchEnforceMinimumSteps'],
+        yawEnforceMinimumSteps = json['yawEnforceMinimumSteps'];
+  FactoryCalibration copyWith({
+    float? rollOffset,
+    float? pitchOffset,
+    float? pitchScale,
+    float? yawScale,
+    float? rangeScale,
+    uint16_t? maxRange,
+    int16_t? pitchHomeOffsetSteps,
+    uint16_t? pitchCurrent,
+    int16_t? yawHomeOffsetSteps,
+    uint16_t? yawCurrent,
+    uint8_t? pitchEnforceMinimumSteps,
+    uint8_t? yawEnforceMinimumSteps,
+  }) {
+    return FactoryCalibration(
+      rollOffset: rollOffset ?? this.rollOffset,
+      pitchOffset: pitchOffset ?? this.pitchOffset,
+      pitchScale: pitchScale ?? this.pitchScale,
+      yawScale: yawScale ?? this.yawScale,
+      rangeScale: rangeScale ?? this.rangeScale,
+      maxRange: maxRange ?? this.maxRange,
+      pitchHomeOffsetSteps: pitchHomeOffsetSteps ?? this.pitchHomeOffsetSteps,
+      pitchCurrent: pitchCurrent ?? this.pitchCurrent,
+      yawHomeOffsetSteps: yawHomeOffsetSteps ?? this.yawHomeOffsetSteps,
+      yawCurrent: yawCurrent ?? this.yawCurrent,
+      pitchEnforceMinimumSteps:
+          pitchEnforceMinimumSteps ?? this.pitchEnforceMinimumSteps,
+      yawEnforceMinimumSteps:
+          yawEnforceMinimumSteps ?? this.yawEnforceMinimumSteps,
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'rollOffset': rollOffset,
+        'pitchOffset': pitchOffset,
+        'pitchScale': pitchScale,
+        'yawScale': yawScale,
+        'rangeScale': rangeScale,
+        'maxRange': maxRange,
+        'pitchHomeOffsetSteps': pitchHomeOffsetSteps,
+        'pitchCurrent': pitchCurrent,
+        'yawHomeOffsetSteps': yawHomeOffsetSteps,
+        'yawCurrent': yawCurrent,
+        'pitchEnforceMinimumSteps': pitchEnforceMinimumSteps,
+        'yawEnforceMinimumSteps': yawEnforceMinimumSteps,
+      };
+
+  factory FactoryCalibration.parse(ByteData data_) {
+    if (data_.lengthInBytes < FactoryCalibration.mavlinkEncodedLength) {
+      var len = FactoryCalibration.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var rollOffset = data_.getFloat32(0, Endian.little);
+    var pitchOffset = data_.getFloat32(4, Endian.little);
+    var pitchScale = data_.getFloat32(8, Endian.little);
+    var yawScale = data_.getFloat32(12, Endian.little);
+    var rangeScale = data_.getFloat32(16, Endian.little);
+    var maxRange = data_.getUint16(20, Endian.little);
+    var pitchHomeOffsetSteps = data_.getInt16(22, Endian.little);
+    var pitchCurrent = data_.getUint16(24, Endian.little);
+    var yawHomeOffsetSteps = data_.getInt16(26, Endian.little);
+    var yawCurrent = data_.getUint16(28, Endian.little);
+    var pitchEnforceMinimumSteps = data_.getUint8(30);
+    var yawEnforceMinimumSteps = data_.getUint8(31);
+
+    return FactoryCalibration(
+        rollOffset: rollOffset,
+        pitchOffset: pitchOffset,
+        pitchScale: pitchScale,
+        yawScale: yawScale,
+        rangeScale: rangeScale,
+        maxRange: maxRange,
+        pitchHomeOffsetSteps: pitchHomeOffsetSteps,
+        pitchCurrent: pitchCurrent,
+        yawHomeOffsetSteps: yawHomeOffsetSteps,
+        yawCurrent: yawCurrent,
+        pitchEnforceMinimumSteps: pitchEnforceMinimumSteps,
+        yawEnforceMinimumSteps: yawEnforceMinimumSteps);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setFloat32(0, rollOffset, Endian.little);
+    data_.setFloat32(4, pitchOffset, Endian.little);
+    data_.setFloat32(8, pitchScale, Endian.little);
+    data_.setFloat32(12, yawScale, Endian.little);
+    data_.setFloat32(16, rangeScale, Endian.little);
+    data_.setUint16(20, maxRange, Endian.little);
+    data_.setInt16(22, pitchHomeOffsetSteps, Endian.little);
+    data_.setUint16(24, pitchCurrent, Endian.little);
+    data_.setInt16(26, yawHomeOffsetSteps, Endian.little);
+    data_.setUint16(28, yawCurrent, Endian.little);
+    data_.setUint8(30, pitchEnforceMinimumSteps);
+    data_.setUint8(31, yawEnforceMinimumSteps);
+    return data_;
+  }
+}
+
 class MavlinkDialectAltamus implements MavlinkDialect {
   static const int mavlinkVersion = 4;
 
@@ -6348,6 +6591,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return ScanResultInfo.parse(data);
       case 22:
         return ScanTransform.parse(data);
+      case 23:
+        return FactoryCalibration.parse(data);
       default:
         return null;
     }
@@ -6426,6 +6671,8 @@ class MavlinkDialectAltamus implements MavlinkDialect {
         return ScanResultInfo.crcExtra;
       case 22:
         return ScanTransform.crcExtra;
+      case 23:
+        return FactoryCalibration.crcExtra;
       default:
         return -1;
     }
