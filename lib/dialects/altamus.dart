@@ -304,10 +304,35 @@ const MavCmd mavCmdIdentify = 3;
 /// MAV_CMD_SEND_SETTINGS_TO_SERVER
 const MavCmd mavCmdSendSettingsToServer = 4;
 
-/// Requests that device clears it's stored EEPROM. Takes no Arguments
+/// Requests that device clears it's stored EEPROM. Clears all values including factory calibration and scan count. Takes no Arguments
 ///
 /// MAV_CMD_CLEAR_EEPROM
 const MavCmd mavCmdClearEeprom = 5;
+
+/// Requests that the device restores it's factory calibration settings.
+///
+/// MAV_CMD_FACTORY_RESET
+const MavCmd mavCmdFactoryReset = 6;
+
+/// Requests that the device stores it's current settings as factory calibration.
+///
+/// MAV_CMD_SAVE_CALIBRATION
+const MavCmd mavCmdSaveCalibration = 7;
+
+/// Requests that the device re-uploads the latest scan.
+///
+/// MAV_CMD_UPLOAD_LATEST_SCAN
+const MavCmd mavCmdUploadLatestScan = 8;
+
+/// Requests that the device stops the current upload.
+///
+/// MAV_CMD_STOP_UPLOAD
+const MavCmd mavCmdStopUpload = 9;
+
+/// Requests that the device deletes all stored scans.
+///
+/// MAV_CMD_DELETE_ALL_SCANS
+const MavCmd mavCmdDeleteAllScans = 10;
 
 /// These flags encode the MAV mode.
 ///
