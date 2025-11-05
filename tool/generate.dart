@@ -961,15 +961,17 @@ String convertMavlinkCharListToString(List<int>? charList) {
       trimmedName.add(character);
     }
   }
+
+  String decodedName = "";
   try {
-    return ascii.decode(trimmedName);
+    decodedName =  ascii.decode(trimmedName);
   } on FormatException catch (e) {
     print("Format Excepetion on ascii converstion: \$e, returning empty string");
-    return ("");
   } catch (e) {
     print("Parse error: \$e");
-    return ("");
   }
+
+  return decodedName;
 }
 
 Uint8List convertStringtoMavlinkCharList(String inputString, {int? length}) {
