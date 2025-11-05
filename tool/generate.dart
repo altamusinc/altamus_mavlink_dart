@@ -964,7 +964,10 @@ String convertMavlinkCharListToString(List<int>? charList) {
   try {
     return ascii.decode(trimmedName);
   } on FormatException catch (e) {
-    print("Format Excepetion on ascii converstion, returning empty string");
+    print("Format Excepetion on ascii converstion: \$e, returning empty string");
+    return ("");
+  } catch (e) {
+    print("Parse error: \$e");
     return ("");
   }
 }
