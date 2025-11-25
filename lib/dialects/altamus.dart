@@ -647,6 +647,11 @@ const GpsFixType gpsFixTypeStatic = 7;
 /// GPS_FIX_TYPE_PPP
 const GpsFixType gpsFixTypePpp = 8;
 
+/// Last remembered position of the GPS module
+///
+/// GPS_FIX_TYPE_LAST_POSITION
+const GpsFixType gpsFixTypeLastPosition = 16;
+
 /// Components within the EOS scanner
 ///
 /// EOS_COMPONENT
@@ -5739,9 +5744,9 @@ class Orientation implements MavlinkMessage {
 class WifiCredentials implements MavlinkMessage {
   static const int msgId = 19;
 
-  static const int crcExtra = 100;
+  static const int crcExtra = 15;
 
-  static const int mavlinkEncodedLength = 102;
+  static const int mavlinkEncodedLength = 103;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -5772,6 +5777,13 @@ class WifiCredentials implements MavlinkMessage {
   /// auth_type
   final WifiAuthType authType;
 
+  /// Is the SSID Hidden? 1: true - 0: false
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// hidden
+  final uint8_t hidden;
+
   /// Name of the SSID
   ///
   /// MAVLink type: char[50]
@@ -5789,6 +5801,7 @@ class WifiCredentials implements MavlinkMessage {
   WifiCredentials({
     required this.behavior,
     required this.authType,
+    required this.hidden,
     required ssid,
     required password,
   })  : _ssid = ssid,
@@ -5797,18 +5810,21 @@ class WifiCredentials implements MavlinkMessage {
   WifiCredentials.fromJson(Map<String, dynamic> json)
       : behavior = json['behavior'],
         authType = json['authType'],
+        hidden = json['hidden'],
         _ssid = convertStringtoMavlinkCharList(json['ssid'], length: 50),
         _password =
             convertStringtoMavlinkCharList(json['password'], length: 50);
   WifiCredentials copyWith({
     WifiCredientialsBehavior? behavior,
     WifiAuthType? authType,
+    uint8_t? hidden,
     List<char>? ssid,
     List<char>? password,
   }) {
     return WifiCredentials(
       behavior: behavior ?? this.behavior,
       authType: authType ?? this.authType,
+      hidden: hidden ?? this.hidden,
       ssid: ssid ?? this.ssid,
       password: password ?? this.password,
     );
@@ -5819,6 +5835,7 @@ class WifiCredentials implements MavlinkMessage {
         'msgId': msgId,
         'behavior': behavior,
         'authType': authType,
+        'hidden': hidden,
         'ssid': _ssid,
         'password': _password,
       };
@@ -5832,11 +5849,16 @@ class WifiCredentials implements MavlinkMessage {
     }
     var behavior = data_.getUint8(0);
     var authType = data_.getUint8(1);
-    var ssid = MavlinkMessage.asUint8List(data_, 2, 50);
-    var password = MavlinkMessage.asUint8List(data_, 52, 50);
+    var hidden = data_.getUint8(2);
+    var ssid = MavlinkMessage.asUint8List(data_, 3, 50);
+    var password = MavlinkMessage.asUint8List(data_, 53, 50);
 
     return WifiCredentials(
-        behavior: behavior, authType: authType, ssid: ssid, password: password);
+        behavior: behavior,
+        authType: authType,
+        hidden: hidden,
+        ssid: ssid,
+        password: password);
   }
 
   @override
@@ -5844,8 +5866,9 @@ class WifiCredentials implements MavlinkMessage {
     var data_ = ByteData(mavlinkEncodedLength);
     data_.setUint8(0, behavior);
     data_.setUint8(1, authType);
-    MavlinkMessage.setUint8List(data_, 2, ssid);
-    MavlinkMessage.setUint8List(data_, 52, password);
+    data_.setUint8(2, hidden);
+    MavlinkMessage.setUint8List(data_, 3, ssid);
+    MavlinkMessage.setUint8List(data_, 53, password);
     return data_;
   }
 }
