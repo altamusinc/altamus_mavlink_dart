@@ -677,6 +677,27 @@ const StateInput stateInputUploadAbort = 11;
 /// STATE_INPUT_FILL_LIMIT
 const StateInput stateInputFillLimit = 12;
 
+/// Authorization state of a badge
+///
+/// BADGE_AUTH_STATE
+typedef BadgeAuthState = int;
+
+///
+/// BADGE_AUTH_STATE_UNKNOWN
+const BadgeAuthState badgeAuthStateUnknown = 1;
+
+///
+/// BADGE_AUTH_STATE_VERIFYING
+const BadgeAuthState badgeAuthStateVerifying = 2;
+
+///
+/// BADGE_AUTH_STATE_REJECTED
+const BadgeAuthState badgeAuthStateRejected = 3;
+
+///
+/// BADGE_AUTH_STATE_AUTHORIZED
+const BadgeAuthState badgeAuthStateAuthorized = 4;
+
 /// The heartbeat message shows that a system or component is present and responding. The type and autopilot fields (along with the message component id), allow the receiving system to treat further messages from this system appropriately (e.g. by laying out the user interface based on the autopilot). This microservice is documented at https://mavlink.io/en/services/heartbeat.html
 ///
 /// HEARTBEAT
@@ -3274,8 +3295,7 @@ class Identifier implements MavlinkMessage {
   /// site_friendly_name
   final List<char> _siteFriendlyName;
 
-  /// Name of the site where the scanner is located,
-  /// i.e. "Gainesville Plant"
+  /// Name of the site where the scanner is located,i.e. "Gainesville Plant"
   ///
   /// MAVLink type: char[30]
   ///
@@ -3576,9 +3596,9 @@ class WaterTransaction implements MavlinkMessage {
 class StationState implements MavlinkMessage {
   static const int msgId = 4;
 
-  static const int crcExtra = 158;
+  static const int crcExtra = 176;
 
-  static const int mavlinkEncodedLength = 14;
+  static const int mavlinkEncodedLength = 15;
 
   @override
   int get mavlinkMessageId => msgId;
@@ -3639,6 +3659,13 @@ class StationState implements MavlinkMessage {
   /// internet_connectivity
   final uint8_t internetConnectivity;
 
+  /// State of the light tower indicator
+  ///
+  /// MAVLink type: uint8_t
+  ///
+  /// indicator_state
+  final uint8_t indicatorState;
+
   StationState({
     required this.untrackedPulses,
     required this.systemTime,
@@ -3647,6 +3674,7 @@ class StationState implements MavlinkMessage {
     required this.solenoidState,
     required this.detectedBadgesCount,
     required this.internetConnectivity,
+    required this.indicatorState,
   });
 
   StationState.fromJson(Map<String, dynamic> json)
@@ -3656,7 +3684,8 @@ class StationState implements MavlinkMessage {
         systemState = json['systemState'],
         solenoidState = json['solenoidState'],
         detectedBadgesCount = json['detectedBadgesCount'],
-        internetConnectivity = json['internetConnectivity'];
+        internetConnectivity = json['internetConnectivity'],
+        indicatorState = json['indicatorState'];
   StationState copyWith({
     uint32_t? untrackedPulses,
     uint32_t? systemTime,
@@ -3665,6 +3694,7 @@ class StationState implements MavlinkMessage {
     uint8_t? solenoidState,
     uint8_t? detectedBadgesCount,
     uint8_t? internetConnectivity,
+    uint8_t? indicatorState,
   }) {
     return StationState(
       untrackedPulses: untrackedPulses ?? this.untrackedPulses,
@@ -3675,6 +3705,7 @@ class StationState implements MavlinkMessage {
       solenoidState: solenoidState ?? this.solenoidState,
       detectedBadgesCount: detectedBadgesCount ?? this.detectedBadgesCount,
       internetConnectivity: internetConnectivity ?? this.internetConnectivity,
+      indicatorState: indicatorState ?? this.indicatorState,
     );
   }
 
@@ -3688,6 +3719,7 @@ class StationState implements MavlinkMessage {
         'solenoidState': solenoidState,
         'detectedBadgesCount': detectedBadgesCount,
         'internetConnectivity': internetConnectivity,
+        'indicatorState': indicatorState,
       };
 
   factory StationState.parse(ByteData data_) {
@@ -3704,6 +3736,7 @@ class StationState implements MavlinkMessage {
     var solenoidState = data_.getUint8(11);
     var detectedBadgesCount = data_.getUint8(12);
     var internetConnectivity = data_.getUint8(13);
+    var indicatorState = data_.getUint8(14);
 
     return StationState(
         untrackedPulses: untrackedPulses,
@@ -3712,7 +3745,8 @@ class StationState implements MavlinkMessage {
         systemState: systemState,
         solenoidState: solenoidState,
         detectedBadgesCount: detectedBadgesCount,
-        internetConnectivity: internetConnectivity);
+        internetConnectivity: internetConnectivity,
+        indicatorState: indicatorState);
   }
 
   @override
@@ -3725,6 +3759,7 @@ class StationState implements MavlinkMessage {
     data_.setUint8(11, solenoidState);
     data_.setUint8(12, detectedBadgesCount);
     data_.setUint8(13, internetConnectivity);
+    data_.setUint8(14, indicatorState);
     return data_;
   }
 }
@@ -3911,8 +3946,202 @@ class StationSettings implements MavlinkMessage {
   }
 }
 
+/// Information about the present truck
+///
+/// TRUCK_INFO
+class TruckInfo implements MavlinkMessage {
+  static const int msgId = 8;
+
+  static const int crcExtra = 201;
+
+  static const int mavlinkEncodedLength = 32;
+
+  @override
+  int get mavlinkMessageId => msgId;
+
+  @override
+  int get mavlinkCrcExtra => crcExtra;
+
+  String get truckNameAsString => convertMavlinkCharListToString(_truckName);
+  List<char> get truckName => _truckName;
+
+  /// badge ID as int
+  ///
+  /// MAVLink type: uint64_t
+  ///
+  /// badge_id_int
+  final uint64_t badgeIdInt;
+
+  /// unix start time of when the truck arrived
+  ///
+  /// MAVLink type: uint32_t
+  ///
+  /// units: s
+  ///
+  /// arrival_time
+  final uint32_t arrivalTime;
+
+  /// Truck name associated with badge ID
+  ///
+  /// MAVLink type: char[20]
+  ///
+  /// truck_name
+  final List<char> _truckName;
+
+  TruckInfo({
+    required this.badgeIdInt,
+    required this.arrivalTime,
+    required truckName,
+  }) : _truckName = truckName;
+
+  TruckInfo.fromJson(Map<String, dynamic> json)
+      : badgeIdInt = json['badgeIdInt'],
+        arrivalTime = json['arrivalTime'],
+        _truckName =
+            convertStringtoMavlinkCharList(json['truckName'], length: 20);
+  TruckInfo copyWith({
+    uint64_t? badgeIdInt,
+    uint32_t? arrivalTime,
+    List<char>? truckName,
+  }) {
+    return TruckInfo(
+      badgeIdInt: badgeIdInt ?? this.badgeIdInt,
+      arrivalTime: arrivalTime ?? this.arrivalTime,
+      truckName: truckName ?? this.truckName,
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'badgeIdInt': badgeIdInt,
+        'arrivalTime': arrivalTime,
+        'truckName': _truckName,
+      };
+
+  factory TruckInfo.parse(ByteData data_) {
+    if (data_.lengthInBytes < TruckInfo.mavlinkEncodedLength) {
+      var len = TruckInfo.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var badgeIdInt = data_.getUint64(0, Endian.little);
+    var arrivalTime = data_.getUint32(8, Endian.little);
+    var truckName = MavlinkMessage.asUint8List(data_, 12, 20);
+
+    return TruckInfo(
+        badgeIdInt: badgeIdInt, arrivalTime: arrivalTime, truckName: truckName);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    data_.setUint64(0, badgeIdInt, Endian.little);
+    data_.setUint32(8, arrivalTime, Endian.little);
+    MavlinkMessage.setUint8List(data_, 12, truckName);
+    return data_;
+  }
+}
+
+/// Array of visible badge ids, along with authorization state and arrival times
+///
+/// VISIBLE_BADGES
+class VisibleBadges implements MavlinkMessage {
+  static const int msgId = 9;
+
+  static const int crcExtra = 75;
+
+  static const int mavlinkEncodedLength = 195;
+
+  @override
+  int get mavlinkMessageId => msgId;
+
+  @override
+  int get mavlinkCrcExtra => crcExtra;
+
+  /// List of visible badge ids
+  ///
+  /// MAVLink type: uint64_t[15]
+  ///
+  /// badge_id_int
+  final List<int64_t> badgeIdInt;
+
+  /// unix start time of when the badge arrived
+  ///
+  /// MAVLink type: uint32_t[15]
+  ///
+  /// units: s
+  ///
+  /// arrival_time
+  final List<int32_t> arrivalTime;
+
+  ///
+  ///
+  /// MAVLink type: uint8_t[15]
+  ///
+  /// enum: [BadgeAuthState]
+  ///
+  /// auth_state
+  final List<BadgeAuthState> authState;
+
+  VisibleBadges({
+    required this.badgeIdInt,
+    required this.arrivalTime,
+    required this.authState,
+  });
+
+  VisibleBadges.fromJson(Map<String, dynamic> json)
+      : badgeIdInt = List<int>.from(json['badgeIdInt']),
+        arrivalTime = List<int>.from(json['arrivalTime']),
+        authState = List<int>.from(json['authState']);
+  VisibleBadges copyWith({
+    List<int64_t>? badgeIdInt,
+    List<int32_t>? arrivalTime,
+    List<BadgeAuthState>? authState,
+  }) {
+    return VisibleBadges(
+      badgeIdInt: badgeIdInt ?? this.badgeIdInt,
+      arrivalTime: arrivalTime ?? this.arrivalTime,
+      authState: authState ?? this.authState,
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'msgId': msgId,
+        'badgeIdInt': badgeIdInt,
+        'arrivalTime': arrivalTime,
+        'authState': authState,
+      };
+
+  factory VisibleBadges.parse(ByteData data_) {
+    if (data_.lengthInBytes < VisibleBadges.mavlinkEncodedLength) {
+      var len = VisibleBadges.mavlinkEncodedLength - data_.lengthInBytes;
+      var d = data_.buffer.asUint8List().sublist(0, data_.lengthInBytes) +
+          List<int>.filled(len, 0);
+      data_ = Uint8List.fromList(d).buffer.asByteData();
+    }
+    var badgeIdInt = MavlinkMessage.asUint64List(data_, 0, 15);
+    var arrivalTime = MavlinkMessage.asUint32List(data_, 120, 15);
+    var authState = MavlinkMessage.asUint8List(data_, 180, 15);
+
+    return VisibleBadges(
+        badgeIdInt: badgeIdInt, arrivalTime: arrivalTime, authState: authState);
+  }
+
+  @override
+  ByteData serialize() {
+    var data_ = ByteData(mavlinkEncodedLength);
+    MavlinkMessage.setUint64List(data_, 0, badgeIdInt);
+    MavlinkMessage.setUint32List(data_, 120, arrivalTime);
+    MavlinkMessage.setUint8List(data_, 180, authState);
+    return data_;
+  }
+}
+
 class MavlinkDialectTitan implements MavlinkDialect {
-  static const int mavlinkVersion = 3;
+  static const int mavlinkVersion = 0;
 
   @override
   int get version => mavlinkVersion;
@@ -3962,6 +4191,10 @@ class MavlinkDialectTitan implements MavlinkDialect {
         return StationState.parse(data);
       case 7:
         return StationSettings.parse(data);
+      case 8:
+        return TruckInfo.parse(data);
+      case 9:
+        return VisibleBadges.parse(data);
       default:
         return null;
     }
@@ -4012,6 +4245,10 @@ class MavlinkDialectTitan implements MavlinkDialect {
         return StationState.crcExtra;
       case 7:
         return StationSettings.crcExtra;
+      case 8:
+        return TruckInfo.crcExtra;
+      case 9:
+        return VisibleBadges.crcExtra;
       default:
         return -1;
     }
