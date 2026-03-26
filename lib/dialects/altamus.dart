@@ -1748,7 +1748,8 @@ class GpsRawInt implements MavlinkMessage {
           List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
-    var timeUsec = data_.getUint64(0, Endian.little);
+    var timeUsec = BigInt.from((data_.getUint32(0, Endian.little) +
+        data_.getUint32(4, Endian.little)));
     var lat = data_.getInt32(8, Endian.little);
     var lon = data_.getInt32(12, Endian.little);
     var alt = data_.getInt32(16, Endian.little);
@@ -1787,7 +1788,7 @@ class GpsRawInt implements MavlinkMessage {
   @override
   ByteData serialize() {
     var data_ = ByteData(mavlinkEncodedLength);
-    data_.setUint64(0, timeUsec, Endian.little);
+    data_.setUint64(0, timeUsec.toInt(), Endian.little);
     data_.setInt32(8, lat, Endian.little);
     data_.setInt32(12, lon, Endian.little);
     data_.setInt32(16, alt, Endian.little);
@@ -6131,8 +6132,10 @@ class ScanResultInfo implements MavlinkMessage {
           List<int>.filled(len, 0);
       data_ = Uint8List.fromList(d).buffer.asByteData();
     }
-    var startTimeUnix = data_.getUint64(0, Endian.little);
-    var endTimeUnix = data_.getUint64(8, Endian.little);
+    var startTimeUnix = BigInt.from((data_.getUint32(0, Endian.little) +
+        data_.getUint32(4, Endian.little)));
+    var endTimeUnix = BigInt.from((data_.getUint32(8, Endian.little) +
+        data_.getUint32(12, Endian.little)));
     var numPoints = data_.getUint32(16, Endian.little);
     var fileSizeBytes = data_.getUint32(20, Endian.little);
     var scanDuration = data_.getUint32(24, Endian.little);
@@ -6154,8 +6157,8 @@ class ScanResultInfo implements MavlinkMessage {
   @override
   ByteData serialize() {
     var data_ = ByteData(mavlinkEncodedLength);
-    data_.setUint64(0, startTimeUnix, Endian.little);
-    data_.setUint64(8, endTimeUnix, Endian.little);
+    data_.setUint64(0, startTimeUnix.toInt(), Endian.little);
+    data_.setUint64(8, endTimeUnix.toInt(), Endian.little);
     data_.setUint32(16, numPoints, Endian.little);
     data_.setUint32(20, fileSizeBytes, Endian.little);
     data_.setUint32(24, scanDuration, Endian.little);

@@ -9,6 +9,6 @@ typedef uint16_t = int;
 typedef int32_t = int;
 typedef uint32_t = int;
 typedef int64_t = int;
-typedef uint64_t = int;
+typedef uint64_t = BigInt;
 typedef char = int;
 typedef float = double;

@@ -844,7 +844,14 @@ Future<bool> generateCode(String dstPath, String srcDialectPath) async {
           content += 'var ${f.nameForDart} = data_.getInt${t.bit}($byteOffset$endianArgument);\n';
           break;
         case BasicType.uint:
+          // Special case for uint64. getUint64 isn't available in web mode, so we add two getUint32 calls together and cast to BigInt
+          if(t.bit == 64){
+            content += 'var ${f.nameForDart} = BigInt.from((data_.getUint32($byteOffset$endianArgument) + data_.getUint32(${byteOffset + 4}$endianArgument)));\n';
+          }
+           else {
           content += 'var ${f.nameForDart} = data_.getUint${t.bit}($byteOffset$endianArgument);\n';
+           }
+
           break;
         case BasicType.float:
           content += 'var ${f.nameForDart} = data_.getFloat${t.bit}($byteOffset, Endian.little);\n';
@@ -892,7 +899,14 @@ var data_ = ByteData(mavlinkEncodedLength);''';
           content += 'data_.setInt${t.bit}($byteOffset, ${f.nameForDart}$endianArgument);\n';
           break;
         case BasicType.uint:
+          // Special case for uint64; any value with this type is stored as a BigInt, so parse it back to a int here for the setUint64 call
+          if(t.bit == 64){
+              content += 'data_.setUint${t.bit}($byteOffset, ${f.nameForDart}.toInt()$endianArgument);\n';
+          }
+          else{
+
           content += 'data_.setUint${t.bit}($byteOffset, ${f.nameForDart}$endianArgument);\n';
+          }
           break;
         case BasicType.float:
           content += 'data_.setFloat${t.bit}($byteOffset, ${f.nameForDart}, Endian.little);\n';
